@@ -91,6 +91,17 @@
             color: var(--bunny-pink);
         }
 
+        .nav-button {
+            -webkit-user-select: none;
+            /* Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE10+/Edge */
+            user-select: none;
+            /* Standard */
+        }
+
         /* Bunny SVG Icon Styles */
         .bunny-icon {
             width: 1.5rem;
@@ -142,6 +153,27 @@
         .onboarding-step.active {
             display: block;
             animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* NEW: Force-fix for stubborn cursor bug */
+        #reset-app-button, #confirm-reset-button, #cancel-reset-button {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            cursor: pointer !important;
+        }
+
+        /* NEW: Fixes text cursor on ALL buttons */
+        button {
+            -webkit-user-select: none;
+            /* Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE10+/Edge */
+            user-select: none;
+            /* Standard */
         }
 
         /* Transaction History List */
@@ -385,41 +417,43 @@
                             <span id="budget-summary-salary" class="text-lg font-medium text-gray-800">€0.00</span>
                         </div>
                         <div id="other-income-container" class="border-t border-gray-200 pt-4 hidden">
-                        <button id="other-income-toggle-btn" class="w-full flex justify-between items-center text-left">
-                            <span class="text-lg font-semibold" data-i18n="budgetOtherIncome">Other Income</span>
-                            <div class="flex items-center space-x-2">
-                                <span id="other-income-total-span" class="font-medium text-green-600">€0.00</span>
-                                <svg id="other-income-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </div>
-                        </button>
-                        <div id="other-income-details" class="mt-2 hidden">
-                            <div id="other-income-list" class="space-y-2">
+                            <button id="other-income-toggle-btn" class="w-full flex justify-between items-center text-left">
+                                <span class="text-lg font-semibold" data-i18n="budgetOtherIncome">Other Income</span>
+                                <div class="flex items-center space-x-2">
+                                    <span id="other-income-total-span" class="font-medium text-green-600">€0.00</span>
+                                    <svg id="other-income-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
                                 </div>
-                            <p id="other-income-empty" class="text-gray-500 hidden" data-i18n="budgetNoOtherIncome">No other income added this month.</p>
-                        </div>
-                    </div>
-                        <div id="fixed-costs-container" class="border-t border-gray-200 pt-4 hidden">
-                        <button id="fixed-costs-toggle-btn" class="w-full flex justify-between items-center text-left">
-                            <span class="text-lg font-semibold" data-i18n="budgetFixedCosts">Bills & Debts</span>
-                            <div class="flex items-center space-x-2">
-                                <span id="budget-summary-fixed-costs" class="font-medium text-gray-800">€0.00</span>
-                                <svg id="fixed-costs-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </div>
-                        </button>
-                        <div id="fixed-costs-details" class="mt-2 hidden space-y-2">
-                            <div id="fixed-costs-list" class="space-y-2">
+                            </button>
+                            <div id="other-income-details" class="mt-2 hidden">
+                                <div id="other-income-list" class="space-y-2">
                                 </div>
+                                <p id="other-income-empty" class="text-gray-500 hidden" data-i18n="budgetNoOtherIncome">No other income added this month.</p>
+                            </div>
                         </div>
-                    </div>
-                        <div
-                            class="flex justify-between items-center text-lg font-semibold border-t border-gray-200 pt-2 mt-2">
+                        
+                        <div class="flex justify-between items-center text-lg font-semibold border-t border-gray-200 pt-2 mt-2">
                             <span data-i18n="budgetTotalIncome">Total Income</span>
                             <span id="budget-summary-total-income" class="text-gray-900">€0.00</span>
                         </div>
+
+                        <div id="fixed-costs-container" class="border-t border-gray-200 pt-4 hidden">
+                            <button id="fixed-costs-toggle-btn" class="w-full flex justify-between items-center text-left">
+                                <span class="text-lg font-semibold" data-i18n="budgetFixedCosts">Bills & Debts</span>
+                                <div class="flex items-center space-x-2">
+                                    <span id="budget-summary-fixed-costs" class="font-medium text-gray-800">€0.00</span>
+                                    <svg id="fixed-costs-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </div>
+                            </button>
+                            <div id="fixed-costs-details" class="mt-2 hidden space-y-2">
+                                <div id="fixed-costs-list" class="space-y-2">
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
 
                 </div> <div
@@ -522,6 +556,12 @@
                                         class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                                         placeholder="1000.00" step="0.01" min="0">
                                 </div>
+                            </div>
+                            <div id="category-goal-date-group" class="hidden">
+                                <label for="category-goal-date" class="block text-sm font-medium text-gray-700"
+                                    data-i18n="settingsGoalDate">Goal Date (Optional)</label>
+                                <input type="date" id="category-goal-date"
+                                    class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
                             </div>
                             <div>
                                 <label for="category-amount" class="block text-sm font-medium text-gray-700"
@@ -826,7 +866,7 @@
                     <div class="pt-2">
                         <button type="submit"
                             class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg transition-all"
-                            data-i18n="save">Save Expense</button>
+                            data-i18n="save" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Save Expense</button>
                     </div>
                 </form>
             </div>
@@ -855,7 +895,7 @@
                      <div class="pt-2">
                         <button type="submit"
                             class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-all"
-                            data-i18n="save">Save Income</button>
+                            data-i18n="save" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Save Income</button>
                     </div>
                 </form>
             </div>
@@ -967,10 +1007,10 @@
             <div class="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
                 <button type="button" id="cancel-reset-button"
                     class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg transition-all"
-                    data-i18n="cancel">Cancel</button>
+                    data-i18n="cancel" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Cancel</button>
                 <button type="button" id="confirm-reset-button"
                     class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition-all"
-                    data-i18n="modalResetConfirm">Yes, Reset App</button>
+                    data-i18n="modalResetConfirm" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Yes, Reset App</button>
             </div>
         </div>
     </div>
@@ -1012,6 +1052,12 @@
                             class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                             placeholder="1000.00" step="0.01" min="0">
                     </div>
+                </div>
+                <div id="edit-category-goal-date-group" class="hidden">
+                    <label for="edit-category-goal-date" class="block text-sm font-medium text-gray-700"
+                        data-i18n="settingsGoalDate">Goal Date (Optional)</label>
+                    <input type="date" id="edit-category-goal-date"
+                        class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
                 </div>
                 <div>
                     <label for="edit-category-amount" class="block text-sm font-medium text-gray-700"
@@ -1095,9 +1141,144 @@
                 </h3>
                 <p class="text-gray-600 mb-4" data-i18n="settingsResetSubtitle">This will permanently delete all your
                     data (salary, categories, transactions) and restart the app.</p>
-                <button id="reset-app-button"
-                    class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
-                    data-i18n="settingsResetButton">Reset App</button>
+                <button id="reset-app-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all" data-i18n="settingsResetButton" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Reset App</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="goal-history-modal"
+        class="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-40 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto p-6 space-y-4">
+            <div id="goal-history-view">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800" id="goal-history-title">Goal History</h2>
+                    <button type="button" id="goal-history-close-btn"
+                        class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg mb-4 text-center">
+                    <p class="text-sm font-medium text-green-700">Current Balance</p>
+                    <p id="goal-history-balance" class="text-3xl font-bold text-green-800">€0.00</p>
+                </div>
+                
+                <h3 class="text-lg font-semibold mb-2" data-i18n="statsHistory">Activity</h3>
+                <ul id="goal-history-list" class="max-h-60 overflow-y-auto divide-y divide-gray-200">
+                    </ul>
+                <p id="goal-history-empty" class="text-gray-500 hidden" data-i18n="modalTxHistoryEmpty">No activity
+                    found for this goal.</p>
+                
+                <button id="goal-history-withdraw-btn"
+                    class="w-full mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all">
+                    Withdraw Funds
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="withdraw-goal-modal"
+        class="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto p-6 space-y-4">
+            
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-2xl font-bold text-gray-800" data-i18n="modalWithdrawTitle">Use Savings</h2>
+                <button type="button" id="withdraw-goal-close-btn"
+                    class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+            </div>
+
+            <input type="hidden" id="withdraw-goal-category-id">
+
+            <p id="withdraw-goal-penalty-warning" class="text-sm font-medium text-red-600 bg-red-50 p-3 rounded-lg hidden"></p>
+
+            <div class="flex border-b border-gray-200">
+                <button id="modal-goal-tab-spend"
+                    class="tab-button active border-pink-500 text-pink-600 w-1/2 py-3 px-1 text-center border-b-2 font-medium"
+                    data-i18n="modalGoalTabSpend">
+                    Record an Expense
+                </button>
+                <button id="modal-goal-tab-transfer"
+                    class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/2 py-3 px-1 text-center border-b-2 font-medium"
+                    data-i18n="modalGoalTabTransfer">
+                    Move to Spending
+                </button>
+            </div>
+
+            <div id="goal-spend-form-container" class="tab-panel active">
+                <form id="goal-spend-form" class="space-y-4">
+                    <p class="text-sm text-gray-600">Record an expense paid for <strong>directly</strong> from this savings goal (e.g., buying plane tickets from your "Vacation" fund).</p>
+                    <div>
+                        <label for="goal-spend-notes" class="block text-sm font-medium text-gray-700"
+                            data-i18n="modalAddExpenseNotes">Notes (Optional)</label>
+                        <textarea id="goal-spend-notes"
+                            class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                            rows="2" placeholder="e.g. Flights to Rome"
+                            data-i18n="modalAddExpenseNotesPlaceholder"></textarea>
+                    </div>
+                    <div>
+                        <label for="goal-spend-date" class="block text-sm font-medium text-gray-700"
+                            data-i18n="modalAddExpenseDate">Date</label>
+                        <input type="date" id="goal-spend-date"
+                            class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                            required>
+                    </div>
+                    <div>
+                        <label for="goal-spend-amount" class="block text-sm font-medium text-gray-700"
+                            data-i18n="modalAddExpenseAmount">Amount</label>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span id="goal-spend-currency-symbol" class="text-xl font-medium text-gray-500">€</span>
+                            <input type="number" id="goal-spend-amount"
+                                class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                placeholder="150.00" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <button type="submit"
+                            class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg transition-all"
+                            data-i18n="save" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Log Expense</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="goal-transfer-form-container" class="tab-panel hidden">
+                <form id="goal-transfer-form" class="space-y-4">
+                    <p class="text-sm text-gray-600">Move money <strong>out</strong> of this goal and <strong>into</strong> one of your monthly spending envelopes (like "Groceries" or "Dining Out").</p>
+                    <div>
+                        <label for="goal-transfer-category" class="block text-sm font-medium text-gray-700"
+                            data-i18n="modalAddExpenseCategory">Transfer to Envelope</label>
+                        <select id="goal-transfer-category"
+                            class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                            required>
+                            </select>
+                    </div>
+                    <div>
+                        <label for="goal-transfer-notes" class="block text-sm font-medium text-gray-700"
+                            data-i18n="modalAddExpenseNotes">Notes (Optional)</label>
+                        <textarea id="goal-transfer-notes"
+                            class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                            rows="2" placeholder="e.g. Souvenir money"></textarea>
+                    </div>
+                    <div>
+                        <label for="goal-transfer-date" class="block text-sm font-medium text-gray-700"
+                            data-i18n="modalAddExpenseDate">Date</label>
+                        <input type="date" id="goal-transfer-date"
+                            class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                            required>
+                    </div>
+                    <div>
+                        <label for="goal-transfer-amount" class="block text-sm font-medium text-gray-700"
+                            data-i18n="modalAddExpenseAmount">Amount</label>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span id="goal-transfer-currency-symbol" class="text-xl font-medium text-gray-500">€</span>
+                            <input type="number" id="goal-transfer-amount"
+                                class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                placeholder="50.00" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <button type="submit"
+                            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-all"
+                            data-i18n="save" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Transfer Funds</button>
+                    </div>
+                </form>
             </div>
             
         </div>
@@ -1236,6 +1417,12 @@
         // --- INTERNATIONALIZATION (i18n) ---
         const translations = {
             de: {
+                penaltyWarning: "Warnung: Frühes Abheben kostet 5 🪙!",
+                penaltyToast: "Du hast 5 🪙 für frühes Abheben verloren!",
+                dashboardInflows: "Eingänge",
+                modalWithdrawTitle: "Erspartes Nutzen",
+                modalGoalTabSpend: "Ausgabe Erfassen",
+                modalGoalTabTransfer: "Umbuchen",
                 appTitle: "Bunny Budget",
                 navDashboard: "Übersicht",
                 navManage: "Verwalten", // NEW
@@ -1289,7 +1476,10 @@
                 settingsTypeDebtGoal: "Schulden (Tilgungsziel)",
                 settingsCategoryName: "Name",
                 settingsGoalAmount: "Gesamtziel (Optional)",
+                settingsGoalDate: "Zieldatum (Optional)", // NEW
                 settingsDefaultAmount: "Monatl. Zahlung (Optional)",
+                goalDateLabel: "Zieldatum", // NEW
+                suggestedContribution: "Empfohlen", // NEW
                 settingsAddCategoryButton: "Kategorie Hinzufügen",
                 modalEditCategoryTitle: "Kategorie Bearbeiten",
                 settingsManageCategories: "Kategorien Verwalten",
@@ -1410,6 +1600,12 @@
                 // --- End NEW v3.0 Keys ---
             },
             en: {
+                penaltyWarning: "Warning: Withdrawing early will cost 5 🪙!",
+                penaltyToast: "You lost 5 🪙 for withdrawing early!",
+                dashboardInflows: "Inflows",
+                modalWithdrawTitle: "Use Savings",
+                modalGoalTabSpend: "Record an Expense",
+                modalGoalTabTransfer: "Move to Spending",
                 appTitle: "Bunny Budget",
                 navDashboard: "Dashboard",
                 navManage: "Manage", // NEW
@@ -1463,7 +1659,10 @@
                 settingsTypeDebtGoal: "Debt (Paydown Goal)",
                 settingsCategoryName: "Name",
                 settingsGoalAmount: "Total Goal (Optional)",
+                settingsGoalDate: "Goal Date (Optional)", // NEW
                 settingsDefaultAmount: "Monthly Payment (Optional)",
+                goalDateLabel: "Goal Date", // NEW
+                suggestedContribution: "Suggested", // NEW
                 settingsAddCategoryButton: "Add Category",
                 modalEditCategoryTitle: "Edit Category",
                 settingsManageCategories: "Manage Categories",
@@ -1684,7 +1883,7 @@
         const dbStore = {
             db: null,
             dbName: "BunnyBudgetDB",
-            version: 5, // Last update: Add notes to transactions
+            version: 6, // NEW: Add goalTransactions store
 
             /**
              * Initialize the database
@@ -1737,6 +1936,12 @@
                             // Add 'notes' to transactions
                             // No migration needed, new optional property
                         }
+
+                        if (oldVersion < 6) {
+                            // Version 6: Add goalTransactions store
+                            const goalTxStore = this.db.createObjectStore('goalTransactions', { keyPath: 'id', autoIncrement: true });
+                            goalTxStore.createIndex('categoryId', 'categoryId', { unique: false });
+                        }
                     };
 
                     request.onsuccess = (event) => {
@@ -1751,38 +1956,28 @@
              * @param {string} lang - 'en' or 'de' (now just 'en')
              */
             async loadTemplateData() {
+                // Today is Nov 3, 2025
                 const template = {
                     settings: [
-                        { key: 'salary', value: 2500 }
+                        { key: 'salary', value: 3000 }
                     ],
                     categories: [
-                        // Fixed
-                        { type: 'fixed', name: 'Rent', amount: 750 },
-                        { type: 'fixed', name: 'Electricity', amount: 71 },
-                        { type: 'fixed', name: 'Internet', amount: 40 },
-                        { type: 'fixed', name: 'Mobile Phone', amount: 49 },
-                        { type: 'fixed', name: 'Car Insurance', amount: 83 },
-                        { type: 'debt-payment', name: 'Car Loan', amount: 252 },
+                        // --- Bills (Total: 1110) ---
+                        { type: 'fixed', name: 'Rent', amount: 800 },
+                        { type: 'debt-payment', name: 'Car Loan', amount: 300 },
+                        { type: 'sinking-bill', name: 'Car Insurance (Annual)', amount: 10 }, // 120/yr
 
-                        // Sinking Fund (Bill)
-                        { type: 'sinking-bill', name: 'TV/Radio Tax', amount: 18.36 },
-                        { type: 'sinking-bill', name: 'Dog Tax', amount: 6 },
-                        { type: 'sinking-bill', name: 'Car Tax', amount: 8.33 },
+                        // --- Envelopes (Total Assigned: 550) ---
+                        { type: 'variable', name: 'Groceries', amount: 400 },
+                        { type: 'variable', name: 'Dining Out' }, // Test $0 envelope
 
-                        // Variable
-                        { type: 'variable', name: 'Groceries', amount: 250 },
-                        { type: 'variable', name: 'Auto', amount: 100 },
-                        { type: 'variable', name: 'Household', amount: 50 },
-                        { type: 'variable', name: 'Dog', amount: 80 },
-                        { type: 'variable', name: 'Dining Out', amount: 75 },
-
-                        // Sinking Fund (Goal)
-                        { type: 'sinking-goal', name: 'Vacation', amount: 100 },
-                        { type: 'sinking-goal', name: 'Christmas', amount: 50 },
-                        { type: 'sinking-goal', name: 'Emergency Fund', amount: 150 },
-
-                        // Debt Goal
-                        { type: 'debt-goal', name: 'Credit Card', amount: 50 },
+                        // --- Goals (Total Assigned: 300) ---
+                        // 1. Test Penalty (Future Date)
+                        { type: 'sinking-goal', name: 'Vacation', amount: 150, goalAmount: 2000, goalDate: '2026-07-01' },
+                        // 2. Test No Penalty (Past Date)
+                        { type: 'sinking-goal', name: 'New PC', amount: 50, goalAmount: 1000, goalDate: '2025-10-01' },
+                        // 3. Test Debt Goal
+                        { type: 'debt-goal', name: 'Credit Card', amount: 100 },
                     ]
                 };
 
@@ -2257,7 +2452,38 @@
                     // Use add() to always create a new entry
                     const request = store.add(coinEntry);
 
-                    request.onsuccess = () => resolve();
+                    request.onsuccess = (event) => resolve(event.target.result); // Return the new ID
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            /**
+             * Add a goal transaction
+             * @param {object} transaction - { categoryId, type, amount, date, notes, targetCategoryId }
+             */
+            async addGoalTransaction(transaction) {
+                return new Promise((resolve, reject) => {
+                    const dbTransaction = this.db.transaction('goalTransactions', 'readwrite');
+                    const store = dbTransaction.objectStore('goalTransactions');
+                    const request = store.add(transaction);
+
+                    request.onsuccess = (event) => resolve(event.target.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            /**
+             * Get all goal transactions for a specific category
+             * @param {number} categoryId
+             */
+            async getGoalTransactions(categoryId) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction('goalTransactions', 'readonly');
+                    const store = transaction.objectStore('goalTransactions');
+                    const index = store.index('categoryId');
+                    const request = index.getAll(categoryId);
+
+                    request.onsuccess = () => resolve(request.result);
                     request.onerror = (event) => reject(event.target.error);
                 });
             },
@@ -2271,7 +2497,7 @@
                     
                     const allStores = [
                         'categories', 'transactions', 'settings', 'budget',
-                        'otherIncome', 'envelopes', 'bunnyCoins'
+                        'otherIncome', 'envelopes', 'bunnyCoins', 'goalTransactions'
                     ];
                     
                     const transaction = this.db.transaction(allStores, 'readwrite');
@@ -2517,6 +2743,8 @@
                     categoryAmount: document.getElementById('category-amount'),
                     categoryGoalAmountGroup: document.getElementById('category-goal-amount-group'),
                     categoryGoalAmount: document.getElementById('category-goal-amount'),
+                    categoryGoalDateGroup: document.getElementById('category-goal-date-group'), // NEW
+                    categoryGoalDate: document.getElementById('category-goal-date'), // NEW
                     
                     // NEW: Manage Categories Modal
                     manageCategoriesButton: document.getElementById('manage-categories-button'),
@@ -2586,6 +2814,8 @@
                     editCategoryAmount: document.getElementById('edit-category-amount'),
                     editCategoryGoalAmountGroup: document.getElementById('edit-category-goal-amount-group'),
                     editCategoryGoalAmount: document.getElementById('edit-category-goal-amount'),
+                    editCategoryGoalDateGroup: document.getElementById('edit-category-goal-date-group'), // NEW
+                    editCategoryGoalDate: document.getElementById('edit-category-goal-date'), // NEW
                     
                     toast: document.getElementById('toast'),
                     toastMessage: document.getElementById('toast-message'),
@@ -2610,6 +2840,36 @@
                     editTxNotes: document.getElementById('edit-tx-notes'),
                     editTxCancel: document.getElementById('edit-tx-cancel'),
                     editTxDelete: document.getElementById('edit-tx-delete'),
+
+                    // NEW: Goal Hub Modals (Task 3)
+                    goalHistoryModal: document.getElementById('goal-history-modal'),
+                    goalHistoryView: document.getElementById('goal-history-view'),
+                    goalHistoryTitle: document.getElementById('goal-history-title'),
+                    goalHistoryCloseBtn: document.getElementById('goal-history-close-btn'),
+                    goalHistoryBalance: document.getElementById('goal-history-balance'),
+                    goalHistoryList: document.getElementById('goal-history-list'),
+                    goalHistoryEmpty: document.getElementById('goal-history-empty'),
+                    goalHistoryWithdrawBtn: document.getElementById('goal-history-withdraw-btn'),
+                    
+                    withdrawGoalModal: document.getElementById('withdraw-goal-modal'),
+                    withdrawGoalCloseBtn: document.getElementById('withdraw-goal-close-btn'),
+                    withdrawGoalCategoryId: document.getElementById('withdraw-goal-category-id'),
+                    withdrawGoalPenaltyWarning: document.getElementById('withdraw-goal-penalty-warning'),
+                    modalGoalTabSpend: document.getElementById('modal-goal-tab-spend'),
+                    modalGoalTabTransfer: document.getElementById('modal-goal-tab-transfer'),
+                    
+                    goalSpendFormContainer: document.getElementById('goal-spend-form-container'),
+                    goalSpendForm: document.getElementById('goal-spend-form'),
+                    goalSpendDate: document.getElementById('goal-spend-date'),
+                    goalSpendAmount: document.getElementById('goal-spend-amount'),
+                    goalSpendNotes: document.getElementById('goal-spend-notes'),
+                    
+                    goalTransferFormContainer: document.getElementById('goal-transfer-form-container'),
+                    goalTransferForm: document.getElementById('goal-transfer-form'),
+                    goalTransferCategory: document.getElementById('goal-transfer-category'),
+                    goalTransferDate: document.getElementById('goal-transfer-date'),
+                    goalTransferAmount: document.getElementById('goal-transfer-amount'),
+                    goalTransferNotes: document.getElementById('goal-transfer-notes'),
 
                     // NEW: App Settings Modal
                     showSettingsModalBtn: document.getElementById('show-settings-modal-btn'),
@@ -2770,6 +3030,7 @@
                 // NEW: Add Transaction (Unified Tabbed Modal)
                 this.dom.addExpenseButton.addEventListener('click', () => this.showAddTransactionModal());
                 this.dom.cancelAddTransactionButton.addEventListener('click', () => this.hideAddTransactionModal());
+                this.dom.addTransactionModal.addEventListener('click', (e) => { if (e.target === this.dom.addTransactionModal) this.hideAddTransactionModal(); });
 
                 // NEW: Tab Listeners
                 this.dom.modalTxTabExpense.addEventListener('click', () => this.switchTransactionTab('expense'));
@@ -2783,6 +3044,7 @@
 
                 // Edit Income
                 this.dom.cancelEditIncomeButton.addEventListener('click', () => this.hideEditIncomeModal());
+                this.dom.editIncomeModal.addEventListener('click', (e) => { if (e.target === this.dom.editIncomeModal) this.hideEditIncomeModal(); });
                 this.dom.editIncomeForm.addEventListener('submit', (e) => this.onUpdateIncome(e));
 
                 // Manage Page (Settings)
@@ -2802,12 +3064,14 @@
 
                 // Edit Category Modal Listeners
                 this.dom.cancelEditCategoryButton.addEventListener('click', () => this.hideEditCategoryModal());
+                this.dom.editCategoryModal.addEventListener('click', (e) => { if (e.target === this.dom.editCategoryModal) this.hideEditCategoryModal(); });
                 this.dom.editCategoryForm.addEventListener('submit', (e) => this.onUpdateCategory(e));
                 this.dom.editCategoryType.addEventListener('change', () => this.toggleGoalAmountField('edit'));
 
                 // NEW: Manage Categories Modal
                 this.dom.manageCategoriesButton.addEventListener('click', () => this.showManageCategoriesModal());
                 this.dom.cancelManageCategoriesButton.addEventListener('click', () => this.hideManageCategoriesModal());
+                this.dom.manageCategoriesModal.addEventListener('click', (e) => { if (e.target === this.dom.manageCategoriesModal) this.hideManageCategoriesModal(); });
                 this.dom.modalManageTabBills.addEventListener('click', () => this.handleManageCategoriesTabClick('bills'));
                 this.dom.modalManageTabEnvelopes.addEventListener('click', () => this.handleManageCategoriesTabClick('envelopes'));
 
@@ -2849,13 +3113,32 @@
                 // NEW: App Settings Modal
                 this.dom.showSettingsModalBtn.addEventListener('click', () => this.showSettingsModal());
                 this.dom.cancelSettingsButton.addEventListener('click', () => this.hideSettingsModal());
+                this.dom.appSettingsModal.addEventListener('click', (e) => { if (e.target === this.dom.appSettingsModal) this.hideSettingsModal(); });
 
                 // NEW: PWA Install Button
                 this.dom.installPwaButton.addEventListener('click', () => this.onInstallPwa());
 
                 // Transaction History Modal
                 this.dom.variableEnvelopesList.addEventListener('click', (e) => this.handleEnvelopeClick(e));
+                
+                // NEW: Goal Hub Click Listeners (Task 3)
+                this.dom.sinkingFundGoalsList.addEventListener('click', (e) => this.handleGoalCardClick(e));
+                this.dom.debtGoalDashboardList.addEventListener('click', (e) => this.handleGoalCardClick(e));
+                this.dom.goalHistoryCloseBtn.addEventListener('click', () => this.hideGoalHistoryModal());
+                this.dom.goalHistoryModal.addEventListener('click', (e) => { if (e.target === this.dom.goalHistoryModal) this.hideGoalHistoryModal(); });
+                this.dom.goalHistoryWithdrawBtn.addEventListener('click', () => this.onOpenWithdrawModal());
+                
+                this.dom.withdrawGoalCloseBtn.addEventListener('click', () => this.hideWithdrawGoalModal());
+                this.dom.withdrawGoalModal.addEventListener('click', (e) => { if (e.target === this.dom.withdrawGoalModal) this.hideWithdrawGoalModal(); });
+                this.dom.modalGoalTabSpend.addEventListener('click', () => this.switchWithdrawGoalTab('spend'));
+                this.dom.modalGoalTabTransfer.addEventListener('click', () => this.switchWithdrawGoalTab('transfer'));
+                
+                this.dom.goalSpendForm.addEventListener('submit', (e) => this.onSpendFromGoal(e));
+                this.dom.goalTransferForm.addEventListener('submit', (e) => this.onTransferFromGoal(e));
+
+
                 this.dom.txHistoryCloseBtn.addEventListener('click', () => this.hideTransactionHistory());
+                this.dom.txHistoryModal.addEventListener('click', (e) => { if (e.target === this.dom.txHistoryModal) this.hideTransactionHistory(); });
                 this.dom.txHistoryList.addEventListener('click', (e) => this.handleTransactionClick(e));
                 this.dom.editTxForm.addEventListener('submit', (e) => this.onUpdateTransaction(e));
                 this.dom.editTxCancel.addEventListener('click', () => this.showTxHistoryList());
@@ -2953,9 +3236,12 @@
                     const budgetedThisMonth = budgetMap.get(`${cat.type}-${cat.id}`) || 0;
                     
                     if (cat.type === 'variable') {
-                        const spent = spentPerCategory[cat.id] || 0;
+                        const spent = calculations.outflowsPerCategory[cat.id] || 0;
+                        const inflows = calculations.inflowsPerCategory[cat.id] || 0;
                         const startingBalance = envelope.balance || 0;
-                        const rollover = (startingBalance + budgetedThisMonth) - spent;
+                        
+                        // Rollover is what's left of (balance + new budget + transfers-in) - spending
+                        const rollover = (startingBalance + budgetedThisMonth + inflows) - spent;
                         
                         if (rollover > 0) {
                             totalVariableRollover += rollover;
@@ -2982,7 +3268,13 @@
                     this.lastMonthRollover = newTotalRollover; // Update state
                 }
 
-                const newCoins = Math.floor(finalTotalRollover / 10); // 1 coin per €10
+                // NEW: Convert rollover to a "Standard Value" (USD-based) for fair coin calculation
+                const conversionRate = this.CURRENCY_TO_STANDARD[i18n.currency] || 1.0;
+                const standardRolloverValue = finalTotalRollover * conversionRate;
+                
+                // Calculate coins based on the standard (1 coin per 10 "Standard Dollars")
+                const newCoins = Math.floor(standardRolloverValue / 10); 
+                
                 if (newCoins > 0) {
                     const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
                     const lastMonthString = `${lastMonthDate.getFullYear()}-${(lastMonthDate.getMonth() + 1).toString().padStart(2, '0')}`;
@@ -3083,15 +3375,26 @@
                 variableCategories.forEach(cat => {
                     const budgetItem = this.budget.find(b => b.id === `variable-${cat.id}`);
                     const budgetedThisMonth = budgetItem ? budgetItem.amount : 0;
-                    const totalAvailable = budgetedThisMonth;
-
-                    if (!budgetItem) return; 
+                    
+                    const inflows = calculations.inflowsPerCategory[cat.id] || 0;
+                    // Total available money is what you budgeted PLUS what you transferred in
+                    const totalAvailable = budgetedThisMonth + inflows;
+                    
+                    // Only show envelopes that have been budgeted for OR have received a transfer
+                    if (!budgetItem && inflows === 0) return; 
                     
                     hasVariable = true;
-                    const spent = calculations.spentPerCategory[cat.id] || 0;
-                    totalSpent += spent;
+                    // "Spent" is now only your positive expenses
+                    const spent = calculations.outflowsPerCategory[cat.id] || 0;
+                    
+                    // "Remaining" is your total pool of money minus what you spent
                     const remaining = totalAvailable - spent;
                     const progressValue = Math.min(spent, totalAvailable); 
+
+                    // NEW: Show inflows if they exist
+                    const inflowsHTML = inflows > 0 ? 
+                        `<span class="text-xs block text-green-600">${i18n.t('dashboardInflows') || 'Inflows'}: +${this.formatCurrency(inflows)}</span>` : 
+                        '';
 
                     const card = `
                 <div class="bg-white p-4 rounded-2xl shadow hover:shadow-md transition-shadow cursor-pointer" data-category-id="${cat.id}" data-category-name="${cat.name}">
@@ -3104,8 +3407,11 @@
                     </div>
                     <progress class="w-full" value="${progressValue}" max="${totalAvailable}"></progress>
                     <div class="flex justify-between items-center text-sm text-gray-500 mt-2">
-                        <span>${i18n.t('dashboardSpent')}: ${this.formatCurrency(spent)}</span>
-                        <span>${i18n.t('dashboardBudgeted')}: ${this.formatCurrency(totalAvailable)}</span>
+                        <div class="flex-1 min-w-0">
+                            <span>${i18n.t('dashboardSpent')}: ${this.formatCurrency(spent)}</span>
+                            ${inflowsHTML}
+                        </div>
+                        <span class="text-right ml-2">${i18n.t('dashboardBudgeted')}: ${this.formatCurrency(budgetedThisMonth)}</span>
                     </div>
                 </div>
             `;
@@ -3115,7 +3421,8 @@
                 this.dom.variableEnvelopesEmpty.classList.toggle('hidden', !(variableCategories.length === 0));
                 if (hasVariable) this.dom.variableEnvelopesEmpty.classList.add('hidden');
 
-                this.dom.dashboardTotalSpent.textContent = this.formatCurrency(totalSpent);
+                // Use the new, accurate total from the calculator
+                this.dom.dashboardTotalSpent.textContent = this.formatCurrency(calculations.totalVariableSpent);
 
                 // Render Sinking Fund Goals
                 this.dom.sinkingFundGoalsList.innerHTML = '';
@@ -3138,12 +3445,13 @@
                     }
 
                     const card = `
-                <div class="bg-white p-4 rounded-2xl shadow">
+                <div class="bg-white p-4 rounded-2xl shadow hover:shadow-md transition-shadow cursor-pointer goal-card-clickable" data-category-id="${cat.id}" data-category-name="${cat.name}">
                     <div class="flex justify-between items-center">
                         <span class="font-semibold text-lg text-gray-800">${cat.name}</span>
                         <span class="font-bold text-green-600 text-right">${savedText}</span>
                     </div>
                     <p class="text-sm text-gray-500 mt-1">${i18n.t('dashboardTotalSaved')}</p>
+                    ${cat.goalDate ? `<p class="text-sm text-pink-600 mt-1">${i18n.t('goalDateLabel')}: ${this.formatDate(cat.goalDate)}</p>` : ''}
                     ${progressHTML}
                 </div>
             `;
@@ -3164,7 +3472,7 @@
                     const totalSaved = envelope ? envelope.balance : 0;
 
                     const card = `
-                <div class="bg-white p-4 rounded-2xl shadow">
+                <div class="bg-white p-4 rounded-2xl shadow hover:shadow-md transition-shadow cursor-pointer goal-card-clickable" data-category-id="${cat.id}" data-category-name="${cat.name}">
                     <div class="flex justify-between items-center">
                         <span class="font-semibold text-lg text-gray-800">${cat.name}</span>
                         <span class="font-bold text-green-600">${this.formatCurrency(totalSaved)}</span>
@@ -3308,11 +3616,14 @@
                         `<p class="text-sm text-gray-500">${i18n.t('budgetLastMonth')}: ${this.formatCurrency(lastMonthAmount)}</p>` :
                         '';
 
+                    const suggestedHTML = this.calculateSuggestedContribution(cat); // <-- ADD THIS
+
                     const card = `
                 <div class="bg-white p-4 rounded-2xl shadow flex items-center space-x-3">
                     <div class="flex-1">
                         <label for="budget-sinking-goal-${cat.id}" class="font-medium text-gray-700">${cat.name}</label>
                         ${lastMonthHTML}
+                        ${suggestedHTML} 
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="text-xl font-medium text-gray-500">${i18n.currency}</span>
@@ -3838,7 +4149,7 @@
                 this.dom.autoSaveStatus.textContent = "Saved!"; // Update feedback
                 
                 // Re-render the budget section to update summaries
-                this.renderManagePage(); // ****** THIS IS THE FIX ******
+                this.renderBudgetSection();
                 // If on dashboard, re-render that too
                 if (this.currentPage === 'dashboard-page') {
                     this.renderDashboard();
@@ -3850,19 +4161,23 @@
              * @param {string} modalType - 'add' or 'edit'
              */
             toggleGoalAmountField(modalType = 'add') {
-                let type, group;
+                let type, amountGroup, dateGroup;
                 if (modalType === 'add') {
                     type = this.dom.categoryType.value;
-                    group = this.dom.categoryGoalAmountGroup;
+                    amountGroup = this.dom.categoryGoalAmountGroup;
+                    dateGroup = this.dom.categoryGoalDateGroup; // NEW
                 } else {
                     type = this.dom.editCategoryType.value;
-                    group = this.dom.editCategoryGoalAmountGroup;
+                    amountGroup = this.dom.editCategoryGoalAmountGroup;
+                    dateGroup = this.dom.editCategoryGoalDateGroup; // NEW
                 }
                 
                 if (type === 'sinking-goal') {
-                    group.classList.remove('hidden');
+                    amountGroup.classList.remove('hidden');
+                    dateGroup.classList.remove('hidden'); // NEW
                 } else {
-                    group.classList.add('hidden');
+                    amountGroup.classList.add('hidden');
+                    dateGroup.classList.add('hidden'); // NEW
                 }
             },
 
@@ -3876,13 +4191,14 @@
                 const type = this.dom.categoryType.value;
                 const amount = parseFloat(this.dom.categoryAmount.value) || 0;
                 const goalAmount = parseFloat(this.dom.categoryGoalAmount.value) || 0;
+                const goalDate = this.dom.categoryGoalDate.value || null; // NEW
 
                 if (!name) {
                     this.showToast("Please enter a category name.");
                     return;
                 }
 
-                const newCategory = { name, type, amount, goalAmount };
+                const newCategory = { name, type, amount, goalAmount, goalDate }; // NEW
                 const newId = await dbStore.addCategory(newCategory);
                 this.categories.push({ id: newId, ...newCategory });
 
@@ -3929,6 +4245,7 @@
                 this.dom.editCategoryName.value = cat.name;
                 this.dom.editCategoryAmount.value = cat.amount || '';
                 this.dom.editCategoryGoalAmount.value = cat.goalAmount || '';
+                this.dom.editCategoryGoalDate.value = cat.goalDate || ''; // NEW
                 
                 this.toggleGoalAmountField('edit');
                 
@@ -3957,6 +4274,7 @@
                 const name = this.dom.editCategoryName.value;
                 const amount = parseFloat(this.dom.editCategoryAmount.value) || 0;
                 const goalAmount = parseFloat(this.dom.editCategoryGoalAmount.value) || 0;
+                const goalDate = this.dom.editCategoryGoalDate.value || null; // NEW
                 
                 const cat = this.categories.find(c => c.id === id);
                 if (!cat) return;
@@ -3969,6 +4287,7 @@
                 cat.name = name;
                 cat.amount = amount;
                 cat.goalAmount = goalAmount;
+                cat.goalDate = goalDate; // NEW
                 
                 await dbStore.updateCategory(cat);
                 
@@ -4234,8 +4553,15 @@
                     
                     const notesHTML = tx.notes ? `<span class="block text-sm text-gray-500 truncate italic">${tx.notes}</span>` : '';
 
+                    // --- NEW: Handle positive (expense) vs negative (transfer-in) ---
+                    const isTransferIn = tx.amount < 0;
+                    const displayAmount = Math.abs(tx.amount);
+                    // Inflows are green with a '+', outflows are regular
+                    const amountColor = isTransferIn ? 'text-green-600' : 'text-gray-800';
+                    const sign = isTransferIn ? '+' : '';
+
                     li.innerHTML = `
-                        <div class="flex-1 min-w-0"> <span class="block font-medium text-gray-800">${this.formatCurrency(tx.amount)}</span>
+                        <div class="flex-1 min-w-0"> <span class="block font-medium ${amountColor}">${sign} ${this.formatCurrency(displayAmount)}</span>
                             <span class="block text-sm text-gray-600">${this.formatDate(tx.date)}</span>
                             ${notesHTML}
                         </div>
@@ -4332,6 +4658,318 @@
                 this.renderDashboard();
             },
 
+            // --- NEW: Goal Hub Functions (Task 3) ---
+
+            /**
+             * Handle clicking on a goal card
+             */
+            handleGoalCardClick(e) {
+                const card = e.target.closest('.goal-card-clickable');
+                if (!card) return;
+
+                const categoryId = parseInt(card.dataset.categoryId);
+                const categoryName = card.dataset.categoryName;
+                this.showGoalHistoryModal(categoryId, categoryName);
+            },
+
+            /**
+             * Show the goal history modal
+             */
+            async showGoalHistoryModal(categoryId, categoryName) {
+                this.dom.goalHistoryTitle.textContent = categoryName;
+                this.dom.goalHistoryList.innerHTML = '';
+                
+                // Find the envelope to get current balance
+                const envelope = this.envelopes.find(e => e.categoryId === categoryId);
+                const currentBalance = envelope ? envelope.balance : 0;
+                this.dom.goalHistoryBalance.textContent = this.formatCurrency(currentBalance);
+                
+                // Store categoryId in the withdraw button for later
+                this.dom.goalHistoryWithdrawBtn.dataset.categoryId = categoryId;
+                this.dom.goalHistoryWithdrawBtn.dataset.categoryName = categoryName;
+                this.dom.goalHistoryWithdrawBtn.dataset.balance = currentBalance;
+
+                // Disable withdraw button if balance is zero
+                if (currentBalance <= 0) {
+                    this.dom.goalHistoryWithdrawBtn.disabled = true;
+                    this.dom.goalHistoryWithdrawBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    this.dom.goalHistoryWithdrawBtn.disabled = false;
+                    this.dom.goalHistoryWithdrawBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                // Get goal transactions
+                const transactions = await dbStore.getGoalTransactions(categoryId);
+                transactions.sort((a, b) => b.date.localeCompare(a.date));
+
+                if (transactions.length === 0) {
+                    this.dom.goalHistoryEmpty.classList.remove('hidden');
+                    this.dom.goalHistoryModal.classList.remove('hidden');
+                    this.dom.goalHistoryModal.classList.add('flex');
+                    return;
+                }
+                
+                this.dom.goalHistoryEmpty.classList.add('hidden');
+                
+                transactions.forEach(tx => {
+                    const li = document.createElement('li');
+                    li.className = "flex justify-between items-center p-3";
+                    
+                    let notesHTML = tx.notes ? `<span class="block text-sm text-gray-500 truncate italic">${tx.notes}</span>` : '';
+                    let amountColor = tx.type === 'transfer' ? 'text-blue-600' : 'text-red-600';
+                    let amountSign = tx.type === 'transfer' ? '→' : '-';
+
+                    li.innerHTML = `
+                        <div class="flex-1 min-w-0"> <span class="block font-medium ${amountColor}">${amountSign} ${this.formatCurrency(tx.amount)}</span>
+                            <span class="block text-sm text-gray-600">${this.formatDate(tx.date)}</span>
+                            ${notesHTML}
+                        </div>
+                    `;
+                    this.dom.goalHistoryList.appendChild(li);
+                });
+
+                this.dom.goalHistoryModal.classList.remove('hidden');
+                this.dom.goalHistoryModal.classList.add('flex');
+            },
+
+            /**
+             * Hide the goal history modal
+             */
+            hideGoalHistoryModal() {
+                this.dom.goalHistoryModal.classList.add('hidden');
+                this.dom.goalHistoryModal.classList.remove('flex');
+            },
+
+            /**
+             * Handle clicking the "Withdraw" button from the history modal
+             */
+            onOpenWithdrawModal() {
+                const btn = this.dom.goalHistoryWithdrawBtn;
+                const categoryId = parseInt(btn.dataset.categoryId);
+                const categoryName = btn.dataset.categoryName;
+                const balance = parseFloat(btn.dataset.balance);
+                
+                // --- NEW: Check for penalty ---
+                const category = this.categories.find(c => c.id === categoryId);
+                let penaltyApplies = false;
+                
+                if (category && category.goalDate) {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Normalize today to midnight
+                    
+                    // Parse 'YYYY-MM-DD' string as UTC to avoid timezone issues
+                    const goalDateParts = category.goalDate.split('-');
+                    const goalDate = new Date(Date.UTC(goalDateParts[0], goalDateParts[1] - 1, goalDateParts[2]));
+                    
+                    if (goalDate > today) {
+                        penaltyApplies = true; // The goal date is in the future
+                    }
+                }
+                // --- End Penalty Check ---
+                
+                this.hideGoalHistoryModal();
+                this.showWithdrawGoalModal(categoryId, categoryName, balance, penaltyApplies);
+            },
+            
+            /**
+             * Show the withdraw/transfer modal
+             */
+            showWithdrawGoalModal(categoryId, categoryName, balance, penaltyApplies) {
+                // Set the hidden ID
+                this.dom.withdrawGoalCategoryId.value = categoryId;
+                // --- NEW: Store penalty status ---
+                this.dom.withdrawGoalCategoryId.dataset.penalty = penaltyApplies;
+                
+                // --- NEW: Show/Hide Warning ---
+                if (penaltyApplies) {
+                    this.dom.withdrawGoalPenaltyWarning.textContent = i18n.t('penaltyWarning');
+                    this.dom.withdrawGoalPenaltyWarning.classList.remove('hidden');
+                } else {
+                    this.dom.withdrawGoalPenaltyWarning.classList.add('hidden');
+                }
+                
+                // Reset and default to 'spend' tab
+                this.dom.goalSpendForm.reset();
+                this.dom.goalTransferForm.reset();
+                this.switchWithdrawGoalTab('spend');
+                
+                // Set dates to today
+                this.dom.goalSpendDate.valueAsDate = new Date();
+                this.dom.goalTransferDate.valueAsDate = new Date();
+                
+                // Set max spend/transfer amount
+                this.dom.goalSpendAmount.max = balance;
+                this.dom.goalTransferAmount.max = balance;
+                
+                // Populate transfer category dropdown
+                this.dom.goalTransferCategory.innerHTML = '';
+                const variableCategories = this.categories.filter(c => c.type === 'variable');
+                variableCategories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    this.dom.goalTransferCategory.appendChild(option);
+                });
+                
+                // Update currency symbols
+                document.getElementById('goal-spend-currency-symbol').textContent = i18n.currency;
+                document.getElementById('goal-transfer-currency-symbol').textContent = i18n.currency;
+
+                this.dom.withdrawGoalModal.classList.remove('hidden');
+                this.dom.withdrawGoalModal.classList.add('flex');
+            },
+            
+            /**
+             * Hide the withdraw/transfer modal
+             */
+            hideWithdrawGoalModal() {
+                this.dom.withdrawGoalModal.classList.add('hidden');
+                this.dom.withdrawGoalModal.classList.remove('flex');
+            },
+            
+            /**
+             * Switch tabs in the withdraw modal
+             */
+            switchWithdrawGoalTab(tabName) {
+                const spendTab = this.dom.modalGoalTabSpend;
+                const transferTab = this.dom.modalGoalTabTransfer;
+                const spendForm = this.dom.goalSpendFormContainer;
+                const transferForm = this.dom.goalTransferFormContainer;
+
+                if (tabName === 'spend') {
+                    spendTab.classList.add('active', 'border-pink-500', 'text-pink-600');
+                    spendTab.classList.remove('border-transparent', 'text-gray-500');
+                    transferTab.classList.remove('active', 'border-pink-500', 'text-pink-600');
+                    transferTab.classList.add('border-transparent', 'text-gray-500');
+                    spendForm.classList.remove('hidden');
+                    transferForm.classList.add('hidden');
+                } else {
+                    spendTab.classList.remove('active', 'border-pink-500', 'text-pink-600');
+                    spendTab.classList.add('border-transparent', 'text-gray-500');
+                    transferTab.classList.add('active', 'border-pink-500', 'text-pink-600');
+                    transferTab.classList.remove('border-transparent', 'text-gray-500');
+                    spendForm.classList.add('hidden');
+                    transferForm.classList.remove('hidden');
+                }
+            },
+            
+            /**
+             * Handle "Spend from Goal" form submission
+             */
+            async onSpendFromGoal(e) {
+                e.preventDefault();
+                
+                const categoryId = parseInt(this.dom.withdrawGoalCategoryId.value);
+                const amount = parseFloat(this.dom.goalSpendAmount.value);
+                const date = this.dom.goalSpendDate.value;
+                const notes = this.dom.goalSpendNotes.value;
+                
+                const envelope = this.envelopes.find(e => e.categoryId === categoryId);
+                
+                if (!envelope || isNaN(amount) || amount <= 0 || !date) {
+                    this.showToast("Invalid amount or date.");
+                    return;
+                }
+                
+                if (amount > envelope.balance) {
+                    this.showToast("Cannot withdraw more than the goal balance.");
+                    return;
+                }
+                
+                // 1. Create goal transaction
+                const goalTx = { categoryId, type: 'spend', amount, date, notes };
+                await dbStore.addGoalTransaction(goalTx);
+                
+                // 2. Update envelope balance
+                envelope.balance -= amount;
+                await dbStore.saveEnvelope(envelope);
+                this.envelopes = this.envelopes.map(e => e.categoryId === categoryId ? envelope : e);
+                
+                // --- NEW: Apply Penalty ---
+                const penaltyApplies = this.dom.withdrawGoalCategoryId.dataset.penalty === 'true';
+                if (penaltyApplies) {
+                    await this.applyCoinPenalty(-5, 'Early withdrawal');
+                }
+                
+                this.hideWithdrawGoalModal();
+                this.showToast("Expense logged from goal!");
+                this.renderDashboard();
+            },
+            
+            /**
+             * Handle "Transfer from Goal" form submission
+             */
+            /**
+             * NEW: Applies a coin penalty and updates UI
+             */
+            async applyCoinPenalty(amount, reason) {
+                const month = this.getCurrentMonthString();
+                const coinEntry = {
+                    month: month,
+                    coins: amount, // e.g., -5
+                    rollover: 0,
+                    reason: reason // This field is for our future reference
+                };
+                
+                try {
+                    const newId = await dbStore.saveBunnyCoins(coinEntry);
+                    this.bunnyCoins.push({ id: newId, ...coinEntry });
+                    this.renderBunnyCoins(); // Update header
+                    this.showToast(i18n.t('penaltyToast'));
+                } catch (e) {
+                    console.error("Failed to apply coin penalty:", e);
+                }
+            },
+
+            async onTransferFromGoal(e) {
+                e.preventDefault();
+                
+                const categoryId = parseInt(this.dom.withdrawGoalCategoryId.value);
+                const targetCategoryId = parseInt(this.dom.goalTransferCategory.value);
+                const amount = parseFloat(this.dom.goalTransferAmount.value);
+                const date = this.dom.goalTransferDate.value;
+                const notes = this.dom.goalTransferNotes.value;
+                
+                const goalEnvelope = this.envelopes.find(e => e.categoryId === categoryId);
+                
+                if (!goalEnvelope || !targetCategoryId || isNaN(amount) || amount <= 0 || !date) {
+                    this.showToast("Invalid amount, date, or category.");
+                    return;
+                }
+                
+                if (amount > goalEnvelope.balance) {
+                    this.showToast("Cannot transfer more than the goal balance.");
+                    return;
+                }
+                
+                // 1. Create goal transaction
+                const goalTx = { categoryId, type: 'transfer', amount, date, notes, targetCategoryId };
+                await dbStore.addGoalTransaction(goalTx);
+                
+                // 2. Update goal envelope balance (subtract)
+                goalEnvelope.balance -= amount;
+                await dbStore.saveEnvelope(goalEnvelope);
+                
+                // 3. Create a NEGATIVE expense transaction to "add" money to the variable envelope
+                const transferNote = `Transfer from goal: ${notes}`;
+                const newTx = { categoryId: targetCategoryId, amount: -amount, date, notes: transferNote };
+                const newId = await dbStore.addTransaction(newTx);
+                this.transactions.push({ id: newId, ...newTx }); // Update local state
+                
+               // 4. Update local envelope state
+                this.envelopes = this.envelopes.map(e => e.categoryId === categoryId ? goalEnvelope : e);
+                
+                // --- NEW: Apply Penalty ---
+                const penaltyApplies = this.dom.withdrawGoalCategoryId.dataset.penalty === 'true';
+                if (penaltyApplies) {
+                    await this.applyCoinPenalty(-5, 'Early withdrawal');
+                }
+                
+                this.hideWithdrawGoalModal();
+                this.showToast("Funds transferred to envelope!");
+                this.renderDashboard();
+            },
+
 
             // --- Calculations & Formatting ---
 
@@ -4387,12 +5025,20 @@
                     .reduce((sum, b) => sum + (b.amount || 0), 0);
 
                 // 5. Calculate spending per category
-                const spentPerCategory = this.transactions
-                    .reduce((acc, tx) => {
-                        const id = tx.categoryId;
-                        acc[id] = (acc[id] || 0) + tx.amount;
-                        return acc;
-                    }, {});
+                const outflowsPerCategory = {};
+                const inflowsPerCategory = {};
+                let totalVariableSpent = 0; // This will ONLY track positive spending
+                
+                this.transactions.forEach(tx => {
+                    const id = tx.categoryId;
+                    if (tx.amount > 0) {
+                        outflowsPerCategory[id] = (outflowsPerCategory[id] || 0) + tx.amount;
+                        totalVariableSpent += tx.amount; // Add to total
+                    } else {
+                        // Inflows are stored as positive numbers
+                        inflowsPerCategory[id] = (inflowsPerCategory[id] || 0) + Math.abs(tx.amount);
+                    }
+                });
 
                 return {
                     totalIncome,
@@ -4400,7 +5046,9 @@
                     moneyToBudget,
                     totalFixed,
                     totalBudgeted,
-                    spentPerCategory
+                    totalVariableSpent, // NEW
+                    outflowsPerCategory, // NEW
+                    inflowsPerCategory // NEW
                 };
             },
 
@@ -4463,6 +5111,65 @@
                     this.dom.toast.classList.add('opacity-0', 'translate-y-4'); // Hide toast
                     this.toastTimeout = null; // Clear the timer ID
                 }, 2000);
+            },
+
+            /**
+             * NEW: Calculates the number of months between now and a goal date
+             * @param {string} goalDateString - 'YYYY-MM-DD'
+             * @returns {number} - Number of months
+             */
+            getMonthsRemaining(goalDateString) {
+                if (!goalDateString) return 0;
+                
+                try {
+                    const today = new Date();
+                    // Set today to the 1st of the month for clean comparison
+                    const start = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
+                    
+                    // Parse goal date, accounting for timezone issues
+                    const parts = goalDateString.split('-');
+                    const goal = new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])));
+
+                    if (goal <= start) return 0; // Goal is in the past or this month
+
+                    const yearDiff = goal.getFullYear() - start.getFullYear();
+                    const monthDiff = goal.getMonth() - start.getMonth();
+
+                    const totalMonths = (yearDiff * 12) + monthDiff;
+                    return totalMonths + 1; // +1 to include the current month
+                } catch (e) {
+                    console.error("Error parsing goal date:", e);
+                    return 0;
+                }
+            },
+
+            /**
+             * NEW: Calculates the suggested monthly contribution
+             * @param {object} cat - The category object
+             * @returns {string} - HTML string for the suggestion
+             */
+            calculateSuggestedContribution(cat) {
+                if (!cat.goalAmount || !cat.goalDate) {
+                    return ''; // Not enough info
+                }
+                
+                const goalAmount = cat.goalAmount;
+                const envelope = this.envelopes.find(e => e.categoryId === cat.id);
+                const currentBalance = envelope ? envelope.balance : 0;
+                
+                const remainingToSave = goalAmount - currentBalance;
+                if (remainingToSave <= 0) {
+                    return ''; // Goal is already met
+                }
+                
+                const monthsRemaining = this.getMonthsRemaining(cat.goalDate);
+                if (monthsRemaining <= 0) {
+                    return ''; // Goal date is in the past
+                }
+
+                const suggestedAmount = remainingToSave / monthsRemaining;
+                
+                return `<p class="text-sm text-gray-500">${i18n.t('suggestedContribution')}: ${this.formatCurrency(suggestedAmount)}</p>`;
             },
         };
 
