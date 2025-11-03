@@ -1159,7 +1159,7 @@
     </div>
 
     <div id="toast"
-        class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-lg opacity-0 translate-y-4 transition-all duration-300 z-60">
+        class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-lg opacity-0 translate-y-4 transition-all duration-300 z-[9999]">
         <span id="toast-message">Saved!</span>
     </div>
 
@@ -2323,6 +2323,7 @@
             currentPage: 'dashboard-page',
             currentEditingTxId: null,
             deferredPwaPrompt: null, // For PWA install
+            toastTimeout: null, // NEW: To manage toast hiding
             
             // Cached DOM Elements
             dom: {},
@@ -4011,6 +4012,8 @@
                     this.envelopes = this.envelopes.filter(e => e.categoryId !== id); // Don't forget envelopes
 
                     this.showToast(i18n.t('toastCategoryDeleted'));
+                    
+                    this.renderManageCategoriesModal(); // ****** THIS IS THE FIX ******
 
                     this.renderAllPages();
                 } catch (err) {
@@ -4447,10 +4450,18 @@
              * @param {string} message - The message to display
              */
             showToast(message) {
+                // NEW: Clear any existing "hide" timer
+                if (this.toastTimeout) {
+                    clearTimeout(this.toastTimeout);
+                }
+
                 this.dom.toastMessage.textContent = message;
-                this.dom.toast.classList.remove('opacity-0', 'translate-y-4');
-                setTimeout(() => {
-                    this.dom.toast.classList.add('opacity-0', 'translate-y-4');
+                this.dom.toast.classList.remove('opacity-0', 'translate-y-4'); // Show toast
+
+                // NEW: Store the new timer
+                this.toastTimeout = setTimeout(() => {
+                    this.dom.toast.classList.add('opacity-0', 'translate-y-4'); // Hide toast
+                    this.toastTimeout = null; // Clear the timer ID
                 }, 2000);
             },
         };
