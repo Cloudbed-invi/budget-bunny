@@ -380,25 +380,13 @@
                 <div class="bg-white p-5 rounded-2xl shadow-lg space-y-4">
                     
                     <div>
-                        <h3 class="text-lg font-semibold mb-2" data-i18n="budgetIncomeTitle">Income</h3>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600" data-i18n="helpTermSalaryTitle">Salary</span>
-                            <span id="budget-summary-salary" class="font-medium text-gray-800">€0.00</span>
+                            <span class="text-lg font-semibold" data-i18n="helpTermSalaryTitle">Salary</span>
+                            <span id="budget-summary-salary" class="text-lg font-medium text-gray-800">€0.00</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600" data-i18n="budgetRollover">Rollover Savings</span>
-                            <span id="budget-summary-rollover" class="font-medium text-green-600">€0.00</span>
-                        </div>
-                        <div
-                            class="flex justify-between items-center text-lg font-semibold border-t border-gray-200 pt-2 mt-2">
-                            <span data-i18n="budgetTotalIncome">Total Income</span>
-                            <span id="budget-summary-total-income" class="text-gray-900">€0.00</span>
-                        </div>
-                    </div>
-
-                    <div id="other-income-container" class="border-t border-gray-200 pt-4 hidden">
+                        <div id="other-income-container" class="border-t border-gray-200 pt-4 hidden">
                         <button id="other-income-toggle-btn" class="w-full flex justify-between items-center text-left">
-                            <span class="text-lg font-semibold" data-i18n="budgetOtherIncomeList">Other Income Items</span>
+                            <span class="text-lg font-semibold" data-i18n="budgetOtherIncome">Other Income</span>
                             <div class="flex items-center space-x-2">
                                 <span id="other-income-total-span" class="font-medium text-green-600">€0.00</span>
                                 <svg id="other-income-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -412,8 +400,7 @@
                             <p id="other-income-empty" class="text-gray-500 hidden" data-i18n="budgetNoOtherIncome">No other income added this month.</p>
                         </div>
                     </div>
-
-                    <div id="fixed-costs-container" class="border-t border-gray-200 pt-4 hidden">
+                        <div id="fixed-costs-container" class="border-t border-gray-200 pt-4 hidden">
                         <button id="fixed-costs-toggle-btn" class="w-full flex justify-between items-center text-left">
                             <span class="text-lg font-semibold" data-i18n="budgetFixedCosts">Bills & Debts</span>
                             <div class="flex items-center space-x-2">
@@ -428,10 +415,16 @@
                                 </div>
                         </div>
                     </div>
-                    
-                    <div
-                        class="bg-pink-50 border-2 border-pink-200 p-4 rounded-lg space-y-3">
-                        <div>
+                        <div
+                            class="flex justify-between items-center text-lg font-semibold border-t border-gray-200 pt-2 mt-2">
+                            <span data-i18n="budgetTotalIncome">Total Income</span>
+                            <span id="budget-summary-total-income" class="text-gray-900">€0.00</span>
+                        </div>
+                    </div>
+
+                </div> <div
+                    class="bg-pink-50 border-2 border-pink-200 p-4 rounded-lg space-y-3">
+                    <div>
                             <p class="text-sm font-medium text-pink-700" data-i18n="budgetMoneyToBudget">Money to Budget
                             </p>
                             <p id="budget-money-to-budget" class="text-3xl font-bold text-pink-900">€0.00</p>
@@ -447,7 +440,6 @@
                             <p id="budget-remaining" class="text-lg font-semibold text-green-600">€0.00</p>
                         </div>
                     </div>
-                </div>
 
                 <div class="bg-white rounded-2xl shadow-lg">
                     <h2 class="text-xl font-semibold p-5" data-i18n="assignTitle">Assign Your Money</h2>
@@ -2488,7 +2480,6 @@
                     budgetRemaining: document.getElementById('budget-remaining'),
                     budgetSummarySalary: document.getElementById('budget-summary-salary'),
                     budgetSummaryOtherIncome: document.getElementById('budget-summary-other-income'),
-                    budgetSummaryRollover: document.getElementById('budget-summary-rollover'),
                     budgetSummaryTotalIncome: document.getElementById('budget-summary-total-income'),
                     budgetSummaryFixedCosts: document.getElementById('budget-summary-fixed-costs'),
                     // addOtherIncomeBtn: (Removed)
@@ -3199,20 +3190,36 @@
 
                 this.dom.budgetSummarySalary.textContent = this.formatCurrency(this.salary);
                 // this.dom.budgetSummaryOtherIncome.textContent = this.formatCurrency(calculations.otherIncomeTotal); // DELETED
-                this.dom.budgetSummaryRollover.textContent = this.formatCurrency(this.lastMonthRollover);
                 this.dom.budgetSummaryTotalIncome.textContent = this.formatCurrency(calculations.totalIncome);
                 this.dom.budgetSummaryFixedCosts.textContent = `-${this.formatCurrency(calculations.totalFixed)}`;
                 this.dom.budgetMoneyToBudget.textContent = this.formatCurrency(calculations.moneyToBudget);
 
                 // --- Part 2: Render the Other Income list (Expandable) ---
                 this.dom.otherIncomeList.innerHTML = '';
-                this.dom.otherIncomeTotalSpan.textContent = this.formatCurrency(calculations.otherIncomeTotal);
+                // NEW: Add Rollover to this section
+                const totalOtherIncome = calculations.otherIncomeTotal + this.lastMonthRollover;
+                this.dom.otherIncomeTotalSpan.textContent = this.formatCurrency(totalOtherIncome);
                 this.dom.otherIncomeEmpty.classList.toggle('hidden', this.otherIncome.length > 0);
                 // Conditionally show the whole container
                 this.dom.otherIncomeContainer.classList.toggle('hidden', this.otherIncome.length === 0);
 
                 const iconDelete = document.getElementById('icon-delete').outerHTML;
                 const iconEdit = document.getElementById('icon-edit').outerHTML;
+
+                // NEW: Add Rollover Savings as the first item in this list
+                if (this.lastMonthRollover > 0) {
+                    const rolloverHtml = `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-1">
+                                <span class="font-medium text-gray-800" data-i18n="budgetRollover">Rollover Savings</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-medium text-green-600">${this.formatCurrency(this.lastMonthRollover)}</span>
+                            </div>
+                        </div>
+                    `;
+                    this.dom.otherIncomeList.insertAdjacentHTML('beforeend', rolloverHtml);
+                }
                 
                 this.otherIncome.forEach(income => {
                     const item = `
@@ -3588,8 +3595,11 @@
                 const variableCategories = this.categories.filter(c => c.type === 'variable');
 
                 if (variableCategories.length === 0) {
-                    this.showToast(i18n.t('dashboardNoVariable'));
-                    return;
+                    // NEW: If no categories, open modal but switch to 'income' tab
+                    this.dom.addTransactionModal.classList.remove('hidden');
+                    this.dom.addTransactionModal.classList.add('flex');
+                    this.switchTransactionTab('income');
+                    return; // Stop here
                 }
 
                 variableCategories.forEach(cat => {
