@@ -386,10 +386,6 @@
                             <span id="budget-summary-salary" class="font-medium text-gray-800">€0.00</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600" data-i18n="budgetOtherIncome">Other Income</span>
-                            <span id="budget-summary-other-income" class="font-medium text-gray-800">€0.00</span>
-                        </div>
-                        <div class="flex justify-between items-center">
                             <span class="text-gray-600" data-i18n="budgetRollover">Rollover Savings</span>
                             <span id="budget-summary-rollover" class="font-medium text-green-600">€0.00</span>
                         </div>
@@ -400,18 +396,36 @@
                         </div>
                     </div>
 
-                    <div class="border-t border-gray-200 pt-4">
-                        <h3 class="text-lg font-semibold mb-2" data-i18n="budgetOtherIncomeList">Other Income Items</h3>
-                        <div id="other-income-list" class="space-y-2">
+                    <div id="other-income-container" class="border-t border-gray-200 pt-4 hidden">
+                        <button id="other-income-toggle-btn" class="w-full flex justify-between items-center text-left">
+                            <span class="text-lg font-semibold" data-i18n="budgetOtherIncomeList">Other Income Items</span>
+                            <div class="flex items-center space-x-2">
+                                <span id="other-income-total-span" class="font-medium text-green-600">€0.00</span>
+                                <svg id="other-income-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
                             </div>
-                        <p id="other-income-empty" class="text-gray-500 hidden" data-i18n="budgetNoOtherIncome">No other income added this month.</p>
+                        </button>
+                        <div id="other-income-details" class="mt-2 hidden">
+                            <div id="other-income-list" class="space-y-2">
+                                </div>
+                            <p id="other-income-empty" class="text-gray-500 hidden" data-i18n="budgetNoOtherIncome">No other income added this month.</p>
+                        </div>
                     </div>
 
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2" data-i18n="budgetCostsTitle">Fixed Costs</h3>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600" data-i18n="budgetFixedCosts">Bills & Debts</span>
-                            <span id="budget-summary-fixed-costs" class="font-medium text-gray-800">€0.00</span>
+                    <div id="fixed-costs-container" class="border-t border-gray-200 pt-4 hidden">
+                        <button id="fixed-costs-toggle-btn" class="w-full flex justify-between items-center text-left">
+                            <span class="text-lg font-semibold" data-i18n="budgetFixedCosts">Bills & Debts</span>
+                            <div class="flex items-center space-x-2">
+                                <span id="budget-summary-fixed-costs" class="font-medium text-gray-800">€0.00</span>
+                                <svg id="fixed-costs-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div id="fixed-costs-details" class="mt-2 hidden space-y-2">
+                            <div id="fixed-costs-list" class="space-y-2">
+                                </div>
                         </div>
                     </div>
                     
@@ -2484,8 +2498,19 @@
                     budgetDebtGoalList: document.getElementById('budget-debt-goal-list'),
                     // budgetFixedCostsList: (Removed)
                     // budgetFixedCostsEmpty: (Removed)
-                    otherIncomeList: document.getElementById('other-income-list'), // This ID is in Card 1 now, it's correct
-                    otherIncomeEmpty: document.getElementById('other-income-empty'), // This ID is in Card 1 now, it's correct
+                    otherIncomeList: document.getElementById('other-income-list'),
+                    otherIncomeEmpty: document.getElementById('other-income-empty'),
+                    otherIncomeContainer: document.getElementById('other-income-container'),
+                    otherIncomeToggleBtn: document.getElementById('other-income-toggle-btn'),
+                    otherIncomeDetails: document.getElementById('other-income-details'),
+                    otherIncomeTotalSpan: document.getElementById('other-income-total-span'),
+                    otherIncomeChevron: document.getElementById('other-income-chevron'),
+                    
+                    fixedCostsContainer: document.getElementById('fixed-costs-container'),
+                    fixedCostsToggleBtn: document.getElementById('fixed-costs-toggle-btn'),
+                    fixedCostsDetails: document.getElementById('fixed-costs-details'),
+                    fixedCostsList: document.getElementById('fixed-costs-list'),
+                    fixedCostsChevron: document.getElementById('fixed-costs-chevron'),
                     budgetVariableEmpty: document.getElementById('budget-variable-empty'),
                     budgetSinkingFundEmpty: document.getElementById('budget-sinking-fund-empty'),
                     budgetDebtGoalEmpty: document.getElementById('budget-debt-goal-empty'),
@@ -2805,6 +2830,16 @@
                 // Manage Page (Budget Form)
                 // this.dom.budgetForm.addEventListener('submit', (e) => this.onSaveBudget(e)); // Removed for auto-save
                 this.dom.otherIncomeList.addEventListener('click', (e) => this.handleIncomeListClick(e));
+                // NEW: Expandable Section Toggles
+                this.dom.otherIncomeToggleBtn.addEventListener('click', () => {
+                    this.dom.otherIncomeDetails.classList.toggle('hidden');
+                    this.dom.otherIncomeChevron.classList.toggle('rotate-180');
+                });
+                
+                this.dom.fixedCostsToggleBtn.addEventListener('click', () => {
+                    this.dom.fixedCostsDetails.classList.toggle('hidden');
+                    this.dom.fixedCostsChevron.classList.toggle('rotate-180');
+                });
                 
                 const budgetInputHandler = () => {
                     this.updateBudgetSummary(); // Update UI immediately
@@ -3163,16 +3198,19 @@
                 const lastMonthBudgetMap = new Map((this.lastMonthBudget || []).map(b => [b.id, b.amount]));
 
                 this.dom.budgetSummarySalary.textContent = this.formatCurrency(this.salary);
-                this.dom.budgetSummaryOtherIncome.textContent = this.formatCurrency(calculations.otherIncomeTotal);
+                // this.dom.budgetSummaryOtherIncome.textContent = this.formatCurrency(calculations.otherIncomeTotal); // DELETED
                 this.dom.budgetSummaryRollover.textContent = this.formatCurrency(this.lastMonthRollover);
                 this.dom.budgetSummaryTotalIncome.textContent = this.formatCurrency(calculations.totalIncome);
                 this.dom.budgetSummaryFixedCosts.textContent = `-${this.formatCurrency(calculations.totalFixed)}`;
                 this.dom.budgetMoneyToBudget.textContent = this.formatCurrency(calculations.moneyToBudget);
 
-                // --- Part 2: Render the Other Income list (MOVED HERE) ---
-                // This code was causing the crash because it was in the wrong function!
+                // --- Part 2: Render the Other Income list (Expandable) ---
                 this.dom.otherIncomeList.innerHTML = '';
+                this.dom.otherIncomeTotalSpan.textContent = this.formatCurrency(calculations.otherIncomeTotal);
                 this.dom.otherIncomeEmpty.classList.toggle('hidden', this.otherIncome.length > 0);
+                // Conditionally show the whole container
+                this.dom.otherIncomeContainer.classList.toggle('hidden', this.otherIncome.length === 0);
+
                 const iconDelete = document.getElementById('icon-delete').outerHTML;
                 const iconEdit = document.getElementById('icon-edit').outerHTML;
                 
@@ -3196,7 +3234,27 @@
                     this.dom.otherIncomeList.insertAdjacentHTML('beforeend', item);
                 });
 
-                // --- Part 3: Render the Assign Money Card ---
+                // --- Part 3: Render the Fixed Costs list (Expandable) ---
+                this.dom.fixedCostsList.innerHTML = '';
+                const fixedCategories = this.categories.filter(c => 
+                    c.type === 'fixed' || c.type === 'debt-payment' || c.type === 'sinking-bill'
+                );
+
+                // Conditionally show the whole container
+                this.dom.fixedCostsContainer.classList.toggle('hidden', fixedCategories.length === 0);
+
+                fixedCategories.forEach(cat => {
+                    const item = `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium text-gray-800">${cat.name}</span>
+                            <span class="font-medium text-gray-600">${this.formatCurrency(cat.amount)}</span>
+                        </div>
+                    `;
+                    this.dom.fixedCostsList.insertAdjacentHTML('beforeend', item);
+                });
+
+
+                // --- Part 4: Render the Assign Money Card (No Change) ---
                 this.dom.budgetVariableList.innerHTML = '';
                 const variableCategories = this.categories.filter(c => c.type === 'variable');
                 this.dom.budgetVariableEmpty.classList.toggle('hidden', variableCategories.length > 0);
