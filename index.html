@@ -3838,7 +3838,7 @@
                 this.dom.autoSaveStatus.textContent = "Saved!"; // Update feedback
                 
                 // Re-render the budget section to update summaries
-                this.renderBudgetSection();
+                this.renderManagePage(); // ****** THIS IS THE FIX ******
                 // If on dashboard, re-render that too
                 if (this.currentPage === 'dashboard-page') {
                     this.renderDashboard();
