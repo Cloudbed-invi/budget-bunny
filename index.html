@@ -20,16 +20,47 @@
     <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./src/output.css">
     <!-- Inter Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- NEW: OFFLINE FONT DEFINITIONS (Roboto) --- */
+        /* roboto-regular - 400 */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            src: url('./fonts/Roboto-Regular.ttf') format('truetype');
+        }
+        
+        /* roboto-medium - 500 (replaces semibold 600) */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 500;
+            src: url('./fonts/Roboto-Medium.ttf') format('truetype');
+        }
+
+        /* roboto-bold - 700 */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 700;
+            src: url('./fonts/Roboto-Bold.ttf') format('truetype');
+        }
+        
+        /* roboto-black - 900 (replaces extrabold 800) */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 900;
+            src: url('./fonts/Roboto-Black.ttf') format('truetype');
+        }
+        /* --- END OFFLINE FONT DEFINITIONS --- */
+
         /* Base styles */
         body,
         html {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f7f3f8;
             /* Lighter bunny pink-white */
             color: #3f3c47;
@@ -1225,16 +1256,14 @@
                 <input type="hidden" id="edit-category-id">
                 <div>
                     <label for="edit-category-type" class="block text-sm font-medium text-gray-700"
-                        data-i18n="settingsCategoryType">Type</label>
+                        data-i18n="categoryTypeLabel">Type</label>
                     <select id="edit-category-type"
                         class="w-full p-3 border border-gray-300 rounded-lg mt-1 bg-gray-100 text-gray-500 cursor-not-allowed"
                         disabled>
-                        <option value="variable" data-i18n="settingsTypeVariable">Variable Envelope</option>
-                        <option value="fixed" data-i18n="settingsTypeFixed">Fixed Cost</option>
-                        <option value="debt-payment" data-i18n="settingsTypeDebtPayment">Debt (Fixed Payment)</option>
-                        <option value="sinking-bill" data-i18n="settingsTypeSinkingBill">Sinking Fund (Annual Bill)</option>
-                        <option value="sinking-goal" data-i18n="settingsTypeSinkingGoal">Sinking Fund (Goal)</option>
-                        <option value="debt-goal" data-i18n="settingsTypeDebtGoal">Debt (Paydown Goal)</option>
+                        <option value="bill" data-i18n="categoryTypeBill">Bill</option>
+                        <option value="envelope" data-i18n="categoryTypeEnvelope">Envelope</option>
+                        <option value="saving" data-i18n="categoryTypeSaving">Saving</option>
+                        <option value="debt" data-i18n="categoryTypeDebt">Debt</option>
                     </select>
                 </div>
                 <div>
@@ -3785,12 +3814,12 @@
                 const budgetMap = new Map(budget.map(b => [b.id, b.amount]));
 
                 categories.forEach(cat => {
-                    if (cat.type === 'variable') {
+                    if (cat.type === 'envelope') {
                         envelopes.push({ categoryId: cat.id, type: 'variable', balance: 0 });
-                    } else if (cat.type === 'sinking-goal') {
+                    } else if (cat.type === 'saving') {
                         const saved = budgetMap.get(`sinking-goal-${cat.id}`) || 0;
                         envelopes.push({ categoryId: cat.id, type: 'sinking-goal', balance: saved });
-                    } else if (cat.type === 'debt-goal') {
+                    } else if (cat.type === 'debt') {
                         const saved = budgetMap.get(`debt-goal-${cat.id}`) || 0;
                         envelopes.push({ categoryId: cat.id, type: 'debt-goal', balance: saved });
                     }
@@ -4607,7 +4636,7 @@
                             <div class="flex-1">
                                 <span class="font-medium text-gray-800">${income.source}</span>
                             </div>
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-3">
                                 <span class="font-medium text-green-600">${this.formatCurrency(income.amount)}</span>
                                 <button class="edit-income-btn p-2 text-gray-400 hover:text-blue-500" data-id="${income.id}">
                                     ${iconEdit}
@@ -5337,14 +5366,16 @@
                 this.categories.push({ id: newId, ...newCategory });
 
                 // 4. Create its associated envelope with the correct "Initial Stock"
-                // ALL types (even Bills) get an envelope now. This simplifies logic.
+                // *** BUG FIX IS HERE ***
+                // This logic is now OUTSIDE the 'if' block, so it runs for ALL types.
                 const newEnvelope = { 
                     categoryId: newId, 
                     type: type, 
-                    balance: currentBalance // <-- THIS IS THE "INITIAL STOCK" FIX
+                    balance: currentBalance // <-- This saves the "Initial Stock"
                 };
                 await dbStore.saveEnvelope(newEnvelope);
                 this.envelopes.push(newEnvelope);
+                // *** END BUG FIX ***
 
                 this.showToast(i18n.t('toastCategoryAdded'));
                 
@@ -5376,7 +5407,7 @@
                     // --- THIS IS YOUR "AUTO-UPDATE" FEATURE ---
                     // We add the first month's budgeted amount ('amount')
                     // on top of the 'currentBalance' already in the envelope.
-                    newEnvelope.balance += amount; // e.g., 1000 + 50 = 1050
+                    newEnvelope.balance += amount; // e.g., 0 + 50 = 50
                     await dbStore.saveEnvelope(newEnvelope);
                     
                     // Update the local state
@@ -5450,7 +5481,7 @@
                 this.categories = this.categories.map(c => c.id === id ? cat : c);
 
                 // 4. --- NEW: Update the *actual budget value* for this month ---
-                const budgettableTypes = ['variable', 'sinking-goal', 'debt-goal'];
+                const budgettableTypes = ['envelope', 'saving', 'debt'];
                 if (budgettableTypes.includes(cat.type)) {
                     const budgetId = `${cat.type}-${id}`;
                     const budgetItemIndex = this.budget.findIndex(b => b.id === budgetId);
@@ -5560,7 +5591,7 @@
                         });
                     }
 
-                    if (type === 'sinking-goal' || type === 'debt-goal') {
+                    if (type === 'saving' || type === 'debt') {
                         const envelope = envelopeMap.get(id);
                         if (envelope) {
                             const diff = newAmount - oldAmount;
@@ -6403,9 +6434,7 @@
                 const moneyToBudget = totalIncome - totalFixed;
 
                 // 4. Calculate total budgeted (assigned to variable/goals)
-                const totalBudgeted = this.budget
-                    .filter(b => b.type === 'variable' || b.type === 'sinking-goal' || b.type === 'debt-goal')
-                    .reduce((sum, b) => sum + (b.amount || 0), 0);
+                const totalBudgeted = this.budget.filter(b => b.type === 'envelope' || b.type === 'saving' || b.type === 'debt')
 
                 // 5. Calculate spending per category
                 const outflowsPerCategory = {};
@@ -6755,12 +6784,14 @@
 
                 // Group them by type for <optgroup>
                 const grouped = {
-                    variable: [],
+                    bill: [],
+                    envelope: [],
+                    saving: [],
+                    debt: [],
+                    // Keep these just in case, though they are likely unused
                     fixed: [],
                     'debt-payment': [],
-                    'sinking-bill': [],
-                    'sinking-goal': [],
-                    'debt-goal': []
+                    'sinking-bill': []
                 };
 
                 for (const cat of allCategories) {
@@ -6778,12 +6809,10 @@
                     return `<optgroup label="${label}">${options}</optgroup>`;
                 };
                 
-                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Variable Envelopes', grouped.variable));
-                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Savings Goals', grouped['sinking-goal']));
-                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Debt Goals', grouped['debt-goal']));
-                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Fixed Costs (Bills)', grouped.fixed));
-                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Fixed Debts', grouped['debt-payment']));
-                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Annual Bills', grouped['sinking-bill']));
+                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Bills', grouped.bill));
+                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Envelopes', grouped.envelope));
+                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Savings', grouped.saving));
+                this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Debts', grouped.debt));
             },
 
             /**
@@ -6815,16 +6844,14 @@
                     const catType = cat.type;
 
                     switch (catType) {
-                        case 'variable':
+                        case 'envelope': // RENAMED
                             return snapshot.transactions
                                 .filter(t => t.categoryId === catId && t.amount > 0)
                                 .reduce((sum, t) => sum + t.amount, 0);
-                        case 'fixed':
-                        case 'debt-payment':
-                        case 'sinking-bill':
+                        case 'bill': // RENAMED
                             return cat.amount || 0;
-                        case 'sinking-goal':
-                        case 'debt-goal':
+                        case 'saving': // RENAMED
+                        case 'debt': // RENAMED
                             const budgetItem = snapshot.budget.find(b => b.id === `${catType}-${catId}`);
                             return budgetItem ? budgetItem.amount : 0;
                         default:
