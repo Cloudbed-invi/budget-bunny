@@ -283,7 +283,29 @@
     <!-- Chart.js - for new stats page -->
     <script src="./chart.min.js"></script>
     <script src="./chartjs-plugin-zoom.min.js"></script>
-</head>
+    <script>
+    // Restore the intended deep link after 404->index.html redirect on GitHub Pages
+    (function () {
+        var redirect = sessionStorage.getItem('redirect');
+        if (redirect) {
+        sessionStorage.removeItem('redirect');
+        if (location.href !== redirect) history.replaceState(null, '', redirect);
+        }
+    })();
+    </script>
+    <script>
+    // Restore deep link after 404->index.html redirect on GitHub Pages
+    (function () {
+        var redirect = sessionStorage.getItem('redirect');
+        if (redirect) {
+        sessionStorage.removeItem('redirect');
+        if (location.href !== redirect) history.replaceState(null, '', redirect);
+        }
+    })();
+    </script>
+    </head>
+
+
 
 <body class="antialiased">
 
@@ -3425,10 +3447,10 @@
                     window.addEventListener('load', () => {
                         navigator.serviceWorker.register('./sw.js')
                             .then(registration => {
-                                console.log('Service Worker registered successfully:', registration);
+                                if (location.hostname === 'localhost') console.log('SW registered:', registration);
                             })
                             .catch(error => {
-                                console.log('Service Worker registration failed:', error);
+                                if (location.hostname === 'localhost') console.warn('SW registration failed:', error);
                             });
                     });
                 }
@@ -5044,7 +5066,7 @@
                 this.deferredPwaPrompt = e;
                 // Show our custom install button
                 this.dom.installPwaSection.classList.remove('hidden');
-                console.log("PWA install prompt saved.");
+                //console.log("PWA install prompt saved.");
             },
             
             /**
@@ -5117,7 +5139,7 @@
                 this.deferredPwaPrompt.prompt();
                 // Wait for the user to respond to the prompt
                 const { outcome } = await this.deferredPwaPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
+                if (location.hostname === 'localhost') console.log('Install prompt outcome:', outcome);
                 // We've used the prompt, so clear it
                 this.deferredPwaPrompt = null;
             },
@@ -7059,7 +7081,7 @@
                         
                     } catch (err) {
                         console.error("Restore failed:", err);
-                        this.showToast(i1Errors.t('toastRestoreError'));
+                        this.showToast(i18n.t('toastRestoreError'));
                     }
                 };
                 reader.onerror = () => {
@@ -7425,11 +7447,37 @@
 
         // --- App Entry Point ---
         document.addEventListener('DOMContentLoaded', () => {
-            window.dbStore = dbStore; // NEW: Expose DB for testing
+            //window.dbStore = dbStore; // NEW: Expose DB for testing
             app.init();
         });
 
     </script>
+    <script>
+    // Show release notes once per SW version
+    (function () {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (e) => {
+        const { type, version, note } = e.data || {};
+        if (type !== 'SW_ACTIVATED' || !version) return;
+        const key = 'bb-announced-' + version;
+        if (!localStorage.getItem(key) && note) {
+            // Use your existing toast, or create a simple banner
+            if (window.app && app.showToast) {
+            app.showToast(note);
+            } else {
+            const n = document.createElement('div');
+            n.textContent = note;
+            n.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:999px;z-index:99999';
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 5000);
+            }
+            localStorage.setItem(key, '1');
+        }
+        });
+    }
+    })();
+    </script>
+
 </body>
 
 </html>
