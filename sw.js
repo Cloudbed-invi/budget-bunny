@@ -1,8 +1,8 @@
 // Bunny Budget PWA service worker – with activation toast
 // Bump VERSION and CACHE_NAME on each deploy
-const VERSION = 'v1.0.5';
-const CACHE_NAME = 'bb-announcement-v4';
-const RELEASE_NOTE = 'Bunny Budget updated, test toast message';
+const VERSION = 'v1.0.6';
+const CACHE_NAME = 'bb-shell-v4';
+const RELEASE_NOTE = 'Icon update for mobiles';
 
 const APP_SHELL = ['./index.html']; // repo-relative for GitHub Pages
 
