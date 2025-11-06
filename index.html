@@ -212,6 +212,42 @@
             color: var(--bunny-pink);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        /* NEW: Zoom Button Styles */
+        .chart-zoom-btn {
+            padding: 0.25rem 0.75rem;
+            min-width: 38px;
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            color: #4b5563; /* text-gray-600 */
+            transition: all 0.15s ease-in-out;
+        }
+        .chart-zoom-btn:hover {
+            background-color: var(--bunny-white);
+            color: var(--bunny-pink);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .chart-zoom-btn:active {
+            transform: scale(0.95);
+        }
+        /* NEW: Fix for coin wrapping */
+        #stats-total-coins {
+            white-space: nowrap;
+        }
+        /* NEW: Segmented Control Button Styles */
+        .category-type-btn {
+            padding: 0.5rem 0.25rem;
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            color: #4b5563; /* text-gray-600 */
+            transition: all 0.15s ease-in-out;
+        }
+        .category-type-btn.active {
+            background-color: var(--bunny-white);
+            color: var(--bunny-pink);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
     </style>
     <!-- Chart.js - for new stats page -->
     <script src="./chart.min.js"></script>
@@ -225,7 +261,7 @@
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto overflow-hidden">
 
             <div id="onboarding-step-language" class="onboarding-step active p-6 md:p-8 space-y-6">
-                <h2 class="text-2xl font-bold text-center text-gray-800" data-i18n="onboardingLanguageTitle">Select Language</h2>
+                <h2 class="text-2xl font-bold text-center te    xt-gray-800" data-i18n="onboardingLanguageTitle">Select Language</h2>
                 <p class="text-center text-gray-600" data-i18n="onboardingLanguageSubtitle">Choose your preferred language.</p>
                 <div class="flex space-x-4 justify-center pt-4">
                     <button id="onboarding-lang-en"
@@ -286,6 +322,11 @@
                     <button id="onboarding-try-demo"
                         class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
                         data-i18n="onboardingTryDemo"> Try a Demo
+                    </button>
+                    
+                    <button id="onboarding-restore"
+                        class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
+                        data-i18n="onboardingRestore">Restore from Backup
                     </button>
                     
                     <button id="onboarding-go-to-help"
@@ -409,15 +450,34 @@
                             <p id="dashboard-total-budgeted" class="text-lg font-semibold text-pink-600">€0.00</p>
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <p class="text-sm font-medium text-gray-500" data-i18n="dashboardTotalSpent">Total Spent
-                            (Variable)</p>
-                        <p id="dashboard-total-spent" class="text-3xl font-bold text-gray-800">€0.00</p>
+                    <div id="dashboard-toggle-area" class="mt-4 cursor-pointer" data-view="spent">
+                        <p id="dashboard-toggle-label" class="text-sm font-medium text-gray-500" data-i18n="dashboardTotalSpent">Total Spent (Variable)</p>
+                        <p id="dashboard-toggle-value" class="text-3xl font-bold text-gray-800">€0.00</p>
+                        <input type="hidden" id="dashboard-available-value" value="">
+                        <input type="hidden" id="dashboard-spent-value" value="">
+                    </div>
+                </div>
+                
+                <div id="bills-card-container" class="bg-white p-5 rounded-2xl shadow-lg space-y-3 hidden">
+                    <button id="bills-card-toggle-btn" class="w-full flex justify-between items-center text-left">
+                        <div>
+                            <h2 class="text-xl font-semibold" data-i18n="dashboardBillsTitle">Bills & Fixed Debts</h2>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="bills-card-total" class="font-semibold text-lg text-red-600">€0.00</span>
+                            <svg id="bills-card-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                    </button>
+                    <div id="bills-card-details" class="mt-2 hidden space-y-2 border-t border-gray-100 pt-3">
+                        <div id="bills-card-list" class="space-y-2">
+                            </div>
+                        <p id="bills-card-empty" class="text-gray-500" data-i18n="dashboardBillsEmpty">No monthly bills. Go to 'Manage' to add one.</p>
                     </div>
                 </div>
 
-                <!-- Variable Envelopes -->
-                <div>
+                <div id="variable-envelopes-container" class="hidden">
                     <h2 class="text-xl font-semibold mb-3" data-i18n="dashboardVariableEnvelopes">Variable Envelopes
                     </h2>
                     <div id="variable-envelopes-list" class="space-y-3">
@@ -428,20 +488,18 @@
                 </div>
 
                 <!-- Sinking Funds (Goals) -->
-                <div id="sinking-funds-container" class="hidden"> <h2 class="text-xl font-semibold mb-3" data-i18n="dashboardSinkingFunds">Sinking Fund Goals</h2>
-                    <div id="sinking-fund-goals-list" class="space-y-3">
-                        <!-- JS will render goals here -->
-                    </div>
-                    <p id="sinking-fund-goals-empty" class="text-gray-500" data-i18n="dashboardNoSinking">No sinking fund
+                <div id="saving-goals-container" class="hidden"> <h2 class="text-xl font-semibold mb-3" data-i18n="dashboardSinkingFunds">Savings Goals</h2>
+                    <div id="saving-goals-list" class="space-y-3">
+                        </div>
+                    <p id="saving-goals-empty" class="text-gray-500" data-i18n="dashboardNoSinking">No savings
                         goals. Go to the 'Manage' page to create one!</p>
                 </div>
 
                 <!-- Debt Paydown Goals -->
                 <div id="debt-goals-container" class="hidden"> <h2 class="text-xl font-semibold mb-3" data-i18n="dashboardDebtGoals">Debt Paydown Goals</h2>
-                    <div id="debt-goal-dashboard-list" class="space-y-3">
-                        <!-- JS will render goals here -->
-                    </div>
-                    <p id="debt-goal-dashboard-empty" class="text-gray-500" data-i18n="dashboardNoDebtGoals">No debt
+                    <div id="debt-goals-list" class="space-y-3">
+                        </div>
+                    <p id="debt-goals-empty" class="text-gray-500" data-i18n="dashboardNoDebtGoals">No debt
                         paydown goals. Go to 'Manage' to add one.</p>
                 </div>
             </section>
@@ -482,7 +540,7 @@
                             <button id="fixed-costs-toggle-btn" class="w-full flex justify-between items-center text-left">
                                 <span class="text-lg font-semibold" data-i18n="budgetFixedCosts">Bills & Debts</span>
                                 <div class="flex items-center space-x-2">
-                                    <span id="budget-summary-fixed-costs" class="font-medium text-gray-800">€0.00</span>
+                                    <span id="budget-summary-fixed-costs" class="font-medium text-red-600">€0.00</span>
                                     <svg id="fixed-costs-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                     </svg>
@@ -517,30 +575,59 @@
 
                 <div class="bg-white rounded-2xl shadow-lg">
                     <h2 class="text-xl font-semibold p-5" data-i18n="assignTitle">Assign Your Money</h2>
-                    <form id="budget-form" class="space-y-6 p-5 pt-0">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-3" data-i18n="assignEnvelopes">Fill Your Envelopes</h3>
-                            <div id="budget-variable-list" class="space-y-3">
-                                </div>
-                            <p id="budget-variable-empty" class="text-gray-500" data-i18n="budgetNoVariable">No variable
-                                envelopes. Add one in 'Add New Category' below.</p>
+                    <form id="budget-form" class="space-y-1 p-5 pt-0">
+                        
+                        <div class="border-t border-gray-100 py-3">
+                            <button type="button" id="assign-bills-toggle-btn" class="assign-toggle-btn w-full flex justify-between items-center text-left" data-target-details="assignBillsDetails" data-target-chevron="assignBillsChevron">
+                                <span class="text-lg font-semibold" data-i18n="assignBills">Assign to Bills</span>
+                                <svg id="assign-bills-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                            <div id="assign-bills-details" class="mt-3 hidden">
+                                <div id="budget-bill-list" class="space-y-3"></div>
+                                <p id="budget-bill-empty" class="text-gray-500" data-i18n="budgetNoVariable">No bills. Add one below.</p>
+                            </div>
                         </div>
 
-                        <div>
-                            <h3 class="text-lg font-semibold mb-3" data-i18n="assignSinking">Contribute to Savings Goals</h3>
-                            <div id="budget-sinking-fund-list" class="space-y-3">
-                                </div>
-                            <p id="budget-sinking-fund-empty" class="text-gray-500" data-i18n="budgetNoSinking">No sinking
-                                fund goals. Add one in 'Add New Category' below.</p>
+                        <div class="border-t border-gray-100 py-3">
+                            <button type="button" id="assign-envelopes-toggle-btn" class="assign-toggle-btn w-full flex justify-between items-center text-left" data-target-details="assignEnvelopesDetails" data-target-chevron="assignEnvelopesChevron">
+                                <span class="text-lg font-semibold" data-i18n="assignEnvelopes">Fill Envelopes</span>
+                                <svg id="assign-envelopes-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                            <div id="assign-envelopes-details" class="mt-3 hidden"> <div id="budget-envelope-list" class="space-y-3"></div>
+                                <p id="budget-envelope-empty" class="text-gray-500" data-i18n="budgetNoVariable">No envelopes. Add one below.</p>
+                            </div>
                         </div>
 
-                        <div>
-                            <h3 class="text-lg font-semibold mb-3" data-i18n="assignDebt">Make Extra Debt Payments</h3>
-                            <div id="budget-debt-goal-list" class="space-y-3">
-                                </div>
-                            <p id="budget-debt-goal-empty" class="text-gray-500" data-i18n="budgetNoDebtGoals">No debt
-                                paydown goals. Add one in 'Add New Category' below.</p>
+                        <div class="border-t border-gray-100 py-3">
+                            <button type="button" id="assign-savings-toggle-btn" class="assign-toggle-btn w-full flex justify-between items-center text-left" data-target-details="assignSavingsDetails" data-target-chevron="assignSavingsChevron">
+                                <span class="text-lg font-semibold" data-i18n="assignSavings">Contribute to Savings</span>
+                                <svg id="assign-savings-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                            <div id="assign-savings-details" class="mt-3 hidden">
+                                <div id="budget-saving-list" class="space-y-3"></div>
+                                <p id="budget-saving-empty" class="text-gray-500" data-i18n="budgetNoSinking">No saving goals. Add one below.</p>
+                            </div>
                         </div>
+
+                        <div class="border-t border-gray-100 py-3">
+                            <button type="button" id="assign-debts-toggle-btn" class="assign-toggle-btn w-full flex justify-between items-center text-left" data-target-details="assignDebtsDetails" data-target-chevron="assignDebtsChevron">
+                                <span class="text-lg font-semibold" data-i18n="assignDebts">Pay Down Debts</span>
+                                <svg id="assign-debts-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                            <div id="assign-debts-details" class="mt-3 hidden">
+                                <div id="budget-debt-list" class="space-y-3"></div>
+                                <p id="budget-debt-empty" class="text-gray-500" data-i18n="budgetNoDebtGoals">No debt goals. Add one below.</p>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
 
@@ -562,50 +649,32 @@
                     </div>
 
                     <div class="border-t border-gray-200 pt-6">
-                        <h3 class="text-lg font-semibold mb-3" data-i18n="settingsAddCategory">Add New Category</h3>
-                        <form id="add-category-form" class="space-y-3">
+                        <h3 class="text-lg font-semibold mb-3" data-i18n="addCategoryTitle">Add New Category</h3>
+                        <form id="add-category-form" class="space-y-4">
+                            
                             <div>
-                                <label for="category-type" class="block text-sm font-medium text-gray-700"
-                                    data-i18n="settingsCategoryType">Type</label>
-                                <select id="category-type"
-                                    class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
-                                    <option value="variable" data-i18n="settingsTypeVariable">Variable Envelope</option>
-                                    <option value="fixed" data-i18n="settingsTypeFixed">Fixed Cost</option>
-                                    <option value="debt-payment" data-i18n="settingsTypeDebtPayment">Debt (Fixed Payment)
-                                    </option>
-                                    <option value="sinking-bill" data-i18n="settingsTypeSinkingBill">Sinking Fund (Annual
-                                        Bill)</option>
-                                    <option value="sinking-goal" data-i18n="settingsTypeSinkingGoal">Sinking Fund (Goal)
-                                    </option>
-                                    <option value="debt-goal" data-i18n="settingsTypeDebtGoal">Debt (Paydown Goal)</option>
-                                </select>
+                                <label class="block text-sm font-medium text-gray-700" data-i18n="categoryTypeLabel">Choose a Type</label>
+                                <input type="hidden" id="category-type" value="envelope"> <div id="category-type-selector" class="flex items-center space-x-1 bg-gray-100 p-1 rounded-lg mt-1">
+                                    <button type="button" data-type="bill" class="category-type-btn w-1/4" data-i18n="categoryTypeBill">Bill</button>
+                                    <button type="button" data-type="envelope" class="category-type-btn w-1/4 active" data-i18n="categoryTypeEnvelope">Envelope</button>
+                                    <button type="button" data-type="saving" class="category-type-btn w-1/4" data-i18n="categoryTypeSaving">Saving</button>
+                                    <button type="button" data-type="debt" class="category-type-btn w-1/4" data-i18n="categoryTypeDebt">Debt</button>
+                                </div>
+                                <p id="category-type-description" class="text-xs text-gray-500 mt-2" data-i18n="categoryTypeEnvelopeDesc">Flexible spending (e.g., Groceries, Gas)</p>
                             </div>
+
                             <div>
                                 <label for="category-name" class="block text-sm font-medium text-gray-700"
-                                    data-i18n="settingsCategoryName">Name</label>
+                                    data-i18n="categoryNameLabel">Category Name</label>
                                 <input type="text" id="category-name"
                                     class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                                     required>
                             </div>
-                            <div id="category-goal-amount-group" class="hidden">
-                                <label for="category-goal-amount" class="block text-sm font-medium text-gray-700"
-                                    data-i18n="settingsGoalAmount">Total Goal (Optional)</label>
-                                <div class="flex items-center space-x-2 mt-1">
-                                    <span id="category-goal-currency-symbol" class="text-xl font-medium text-gray-500">€</span>
-                                    <input type="number" id="category-goal-amount"
-                                        class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                                        placeholder="1000.00" step="0.01" min="0">
-                                </div>
-                            </div>
-                            <div id="category-goal-date-group" class="hidden">
-                                <label for="category-goal-date" class="block text-sm font-medium text-gray-700"
-                                    data-i18n="settingsGoalDate">Goal Date (Optional)</label>
-                                <input type="date" id="category-goal-date"
-                                    class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
-                            </div>
+                            
                             <div>
                                 <label for="category-amount" class="block text-sm font-medium text-gray-700"
-                                    data-i18n="settingsDefaultAmount">Monthly Payment (Optional)</label>
+                                    data-i18n="categoryMonthlyAmountLabel">Monthly Planned Amount</label>
+                                <p class="text-xs text-gray-500 mb-1" data-i18n="categoryMonthlyAmountDesc">How much you plan to assign this month.</p>
                                 <div class="flex items-center space-x-2 mt-1">
                                     <span id="category-currency-symbol" class="text-xl font-medium text-gray-500">€</span>
                                     <input type="number" id="category-amount"
@@ -613,6 +682,44 @@
                                         placeholder="50.00" step="0.01" min="0">
                                 </div>
                             </div>
+
+                            <button type="button" id="category-optional-toggle-btn" class="hidden w-full flex justify-between items-center text-left p-2 bg-gray-50 hover:bg-gray-100 rounded-lg">
+                                <span class="font-medium text-gray-700" data-i18n="categoryOptionalFields">Optional Details</span>
+                                <svg id="category-optional-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+
+                            <div id="category-optional-details" class="hidden space-y-3 pt-3 border-t">
+                                <div>
+                                    <label for="category-goal-amount" class="block text-sm font-medium text-gray-700"
+                                        data-i18n="categoryTotalGoalLabel">Total Goal / Debt Amount</label>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        <span id="category-goal-currency-symbol" class="text-xl font-medium text-gray-500">€</span>
+                                        <input type="number" id="category-goal-amount"
+                                            class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                            placeholder="1000.00" step="0.01" min="0">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="category-current-balance" class="block text-sm font-medium text-gray-700"
+                                        data-i18n="categoryCurrentBalanceLabel">Current Balance / Already Saved</label>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        <span id="category-current-balance-currency-symbol" class="text-xl font-medium text-gray-500">€</span>
+                                        <input type="number" id="category-current-balance"
+                                            class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                            placeholder="0.00" step="0.01" min="0">
+                                    </div>
+                                </div>
+                                
+                                <div id="category-goal-date-group">
+                                    <label for="category-goal-date" class="block text-sm font-medium text-gray-700"
+                                    data-i18n="settingsGoalDate">Goal Date (Optional)</label>
+                                <input type="date" id="category-goal-date"
+                                    class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                            </div>
+
                             <button type="submit"
                                 class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
                                 data-i18n="settingsAddCategoryButton">Add Category</button>
@@ -773,8 +880,15 @@
 
                 <!-- Card 2: NEW Snapshot Analysis -->
                 <div class="bg-white p-5 rounded-2xl shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-semibold">Monthly Analysis</h2>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-3 sm:space-y-0">
+                        <h2 class="text-xl font-semibold" data-i18n="statsMonthlyAnalysis">Monthly Analysis</h2>
+                        
+                        <div class="flex items-center space-x-1 bg-gray-100 p-1 rounded-lg">
+                            <button id="stats-overview-zoom-out" class="chart-zoom-btn">-</button>
+                            <button id="stats-overview-zoom-in" class="chart-zoom-btn">+</button>
+                            <button id="stats-overview-zoom-reset" class="chart-zoom-btn">Reset</button>
+                        </div>
+                        
                         <div id="stats-filter-buttons" class="flex items-center space-x-1 bg-gray-100 p-1 rounded-lg">
                             <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600" data-months="3">3M</button>
                             <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600" data-months="6">6M</button>
@@ -787,7 +901,7 @@
 
                     <!-- Container for the main overview chart -->
                     <div id="stats-overview-container" class="hidden">
-                        <h3 class="text-lg font-semibold mb-2">Income vs. Spend vs. Savings</h3>
+                        <h3 class="text-lg font-semibold mb-2" data-i18n="statsIncomeVsSpend">Income vs. Spend vs. Savings</h3>
                         <div class="w-full h-64 md:h-80">
                             <canvas id="stats-overview-chart"></canvas>
                         </div>
@@ -795,8 +909,17 @@
 
                     <!-- Container for the category drill-down -->
                     <div id="stats-category-drilldown" class="hidden mt-8 border-t border-gray-200 pt-6">
-                        <label for="stats-category-select" class="block text-lg font-semibold mb-2">Compare a Category</label>
-                        <p class="text-sm text-gray-500 mb-3">Select a category to see its history over time.</p>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 space-y-3 sm:space-y-0">
+                            <div>
+                                <h3 class="text-lg font-semibold" data-i18n="statsCompareCategory">Compare a Category</h3>
+                                <p class="text-sm text-gray-500" data-i18n="statsCompareCategoryDesc">Select a category to see its history.</p>
+                            </div>
+                            <div class="flex items-center space-x-1 bg-gray-100 p-1 rounded-lg">
+                                <button id="stats-category-zoom-out" class="chart-zoom-btn">-</button>
+                                <button id="stats-category-zoom-in" class="chart-zoom-btn">+</button>
+                                <button id="stats-category-zoom-reset" class="chart-zoom-btn">Reset</button>
+                            </div>
+                        </div>
                         <select id="stats-category-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
                             <!-- Options will be populated by JS -->
                         </select>
@@ -1021,7 +1144,7 @@
             <!-- View List -->
             <div id="tx-history-view">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-gray-800" id="tx-history-title">History</h2>
+                    <h2 class="text-2xl font-bold text-gray-800" id="tx-history-title" data-i18n="modalHistoryTitle">History</h2>
                     <button type="button" id="tx-history-close-btn"
                         class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
                 </div>
@@ -1161,67 +1284,141 @@
 
     <div id="app-settings-modal"
         class="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-40 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto p-6 space-y-6">
-            <div class="flex justify-between items-center">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto p-6">
+            <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold text-gray-800" data-i18n="settingsAppSettings">App Settings</h2>
                 <button type="button" id="cancel-settings-button"
                     class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
             </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label for="language-select" class="block text-sm font-medium text-gray-700"
-                        data-i18n="settingsLanguage">Language</label>
-                    <select id="language-select"
-                        class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
-                        <option value="en">English</option>
-                        <option value="de">Deutsch (German)</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="currency-select-settings" class="block text-sm font-medium text-gray-700"
-                        data-i18n="settingsCurrency">Currency</label>
-                    <select id="currency-select-settings"
-                        class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
-                        <option value="€" data-symbol="€ EUR" data-locale="de-DE" data-digits="2">€ EUR (Euro)</option>
-                        <option value="$" data-symbol="$ USD" data-locale="en-US" data-digits="2">$ USD (US Dollar)</option>
-                        <option value="₹" data-symbol="₹ INR" data-locale="en-IN" data-digits="2">₹ INR (Indian Rupee)</option>
-                        <option value="₱" data-symbol="₱ PHP" data-locale="en-PH" data-digits="2">₱ PHP (Philippine Peso)</option>
-                        <option value="£" data-symbol="£ GBP" data-locale="en-GB" data-digits="2">£ GBP (British Pound)</option>
-                        <option value="¥" data-symbol="¥ JPY" data-locale="ja-JP" data-digits="0">¥ JPY (Japanese Yen)</option>
-                        <option value="CHF" data-symbol="CHF" data-locale="de-CH" data-digits="2">CHF (Swiss Franc)</option>
-                        <option value="C$" data-symbol="C$ CAD" data-locale="en-CA" data-digits="2">C$ CAD (Canadian Dollar)</option>
-                        <option value="A$" data-symbol="A$ AUD" data-locale="en-AU" data-digits="2">A$ AUD (Australian Dollar)</option>
-                    </select>
-                </div>
+
+            <div class="border-b border-gray-200">
+                <nav id="settings-tab-nav" class="flex -mb-px" aria-label="Tabs">
+                    <button class="settings-tab-btn active border-pink-500 text-pink-600 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="general" data-i18n="settingsTabGeneral">
+                        General
+                    </button>
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="backup" data-i18n="settingsTabData">
+                        Backup
+                    </button>
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="export" data-i18n="settingsTabExport">
+                        Export
+                    </button>
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="help" data-i18n="settingsTabHelp">
+                        Help
+                    </button>
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="danger" data-i18n="settingsTabDanger">
+                        Danger
+                    </button>
+                </nav>
             </div>
 
-            <div id="install-pwa-section" class="hidden">
-                <button id="install-pwa-button"
+            <div class="py-6" style="min-height: 350px;">
+                <div id="settings-tab-general" class="settings-tab-panel active space-y-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="language-select" class="block text-sm font-medium text-gray-700"
+                                data-i18n="settingsLanguage">Language</label>
+                            <select id="language-select"
+                                class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                                <option value="en">English</option>
+                                <option value="de">Deutsch (German)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="currency-select-settings" class="block text-sm font-medium text-gray-700"
+                                data-i18n="settingsCurrency">Currency</label>
+                            <select id="currency-select-settings"
+                                class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                                <option value="€" data-symbol="€ EUR" data-locale="de-DE" data-digits="2">€ EUR (Euro)</option>
+                                <option value="$" data-symbol="$ USD" data-locale="en-US" data-digits="2">$ USD (US Dollar)</option>
+                                <option value="₹" data-symbol="₹ INR" data-locale="en-IN" data-digits="2">₹ INR (Indian Rupee)</option>
+                                <option value="₱" data-symbol="₱ PHP" data-locale="en-PH" data-digits="2">₱ PHP (Philippine Peso)</option>
+                                <option value="£" data-symbol="£ GBP" data-locale="en-GB" data-digits="2">£ GBP (British Pound)</option>
+                                <option value="¥" data-symbol="¥ JPY" data-locale="ja-JP" data-digits="0">¥ JPY (Japanese Yen)</option>
+                                <option value="CHF" data-symbol="CHF" data-locale="de-CH" data-digits="2">CHF (Swiss Franc)</option>
+                                <option value="C$" data-symbol="C$ CAD" data-locale="en-CA" data-digits="2">C$ CAD (Canadian Dollar)</option>
+                                <option value="A$" data-symbol="A$ AUD" data-locale="en-AU" data-digits="2">A$ AUD (Australian Dollar)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="install-pwa-section" class="hidden pt-4 border-t border-gray-100">
+                        <button id="install-pwa-button"
+                            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all flex items-center justify-center space-x-2">
+                            <svg class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            <span data-i18n="installPwaButton">Install App to Home Screen</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="settings-tab-backup" class="settings-tab-panel hidden space-y-4">
+                    <h3 class="text-xl font-semibold" data-i18n="settingsDataManagement">Data Management</h3>
+                    <p class="text-gray-600 text-sm" data-i18n="settingsBackupDesc">Save all your data to a .json file. Keep this file safe to restore your budget later.</p>
+                    
+                    <button id="backup-data-button"
+                        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all flex items-center justify-center space-x-2">
+                        <svg class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                        </svg>
+                        <span data-i18n="settingsBackupButton">Create Backup</span>
+                    </button>
+                    
+                    <button id="restore-data-button"
+                        class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all flex items-center justify-center space-x-2">
+                        <svg class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        <span data-i18n="settingsRestoreButton">Restore from Backup</span>
+                    </button>
+                    
+                    </div>
+
+                <div id="settings-tab-export" class="settings-tab-panel hidden space-y-4">
+                    <h3 class="text-xl font-semibold">Export Data</h3>
+                    <p class="text-gray-600 text-sm">Download your data in CSV format to analyze in Excel or other spreadsheet software.</p>
+                
+                    <button id="export-csv-button"
+                        class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all flex items-center justify-center space-x-2">
+                        <svg class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                        </svg>
+                        <span data-i18n="settingsExportCSVButton">Export Transactions (.csv)</span>
+                </button>
+                
+                <button id="export-categories-button"
                     class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all flex items-center justify-center space-x-2">
                     <svg class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                     </svg>
-                    <span data-i18n="installPwaButton">Install App to Home Screen</span>
+                    <span data-i18n="settingsExportCategoriesButton">Export Categories & Goals (.csv)</span>
+                </button>
+                
+                <button id="export-summaries-button"
+                    class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all flex items-center justify-center space-x-2">
+                    <svg class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    <span data-i18n="settingsExportSummariesButton">Export Monthly Summaries (.csv)</span>
                 </button>
             </div>
 
-            <div>
-                <h3 class="text-xl font-semibold mb-3" data-i18n="settingsHelpTitle">Get Help</h3>
-                <p class="text-gray-600 mb-4" data-i18n="settingsHelpDesc">Learn how to use the app, what the terms mean, and how to budget.</p>
-                <button id="go-to-help-button"
-                    class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
-                    data-i18n="settingsHelpButton">View Help Guide</button>
+                <div id="settings-tab-help" class="settings-tab-panel hidden space-y-4">
+                    <h3 class="text-xl font-semibold" data-i18n="settingsHelpTitle">Get Help</h3>
+                    <p class="text-gray-600" data-i18n="settingsHelpDesc">Learn how to use the app, what the terms mean, and how to budget.</p>
+                    <button id="go-to-help-button"
+                        class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
+                        data-i18n="settingsHelpButton">View Help Guide</button>
+                </div>
+
+                <div id="settings-tab-danger" class="settings-tab-panel hidden space-y-4">
+                    <h3 class="text-xl font-semibold text-red-600" data-i18n="settingsDangerZone">Danger Zone
+                    </h3>
+                    <p class="text-gray-600" data-i18n="settingsResetSubtitle">This will permanently delete all your
+                        data (salary, categories, transactions) and restart the app.</p>
+                    <button id="reset-app-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all" data-i18n="settingsResetButton" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Reset App</button>
+                </div>
             </div>
 
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-xl font-semibold mb-3 text-red-600" data-i18n="settingsDangerZone">Danger Zone
-                </h3>
-                <p class="text-gray-600 mb-4" data-i18n="settingsResetSubtitle">This will permanently delete all your
-                    data (salary, categories, transactions) and restart the app.</p>
-                <button id="reset-app-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all" data-i18n="settingsResetButton" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Reset App</button>
-            </div>
-            
         </div>
     </div>
 
@@ -1230,12 +1427,12 @@
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto p-6 space-y-4">
             <div id="goal-history-view">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-gray-800" id="goal-history-title">Goal History</h2>
+                    <h2 class="text-2xl font-bold text-gray-800" id="goal-history-title" data-i18n="modalGoalHistoryTitle">Goal History</h2>
                     <button type="button" id="goal-history-close-btn"
                         class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
                 </div>
                 <div class="bg-green-50 p-4 rounded-lg mb-4 text-center">
-                    <p class="text-sm font-medium text-green-700">Current Balance</p>
+                    <p class="text-sm font-medium text-green-700" data-i18n="modalGoalCurrentBalance">Current Balance</p>
                     <p id="goal-history-balance" class="text-3xl font-bold text-green-800">€0.00</p>
                 </div>
                 
@@ -1246,7 +1443,8 @@
                     found for this goal.</p>
                 
                 <button id="goal-history-withdraw-btn"
-                    class="w-full mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all">
+                    class="w-full mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
+                    data-i18n="modalGoalWithdrawButton">
                     Withdraw Funds
                 </button>
             </div>
@@ -1324,7 +1522,7 @@
 
             <div id="goal-spend-form-container" class="tab-panel active">
                 <form id="goal-spend-form" class="space-y-4">
-                    <p class="text-sm text-gray-600">Record an expense paid for <strong>directly</strong> from this savings goal (e.g., buying plane tickets from your "Vacation" fund).</p>
+                    <p class="text-sm text-gray-600" data-i18n="modalGoalSpendDesc">Record an expense paid for <strong>directly</strong> from this savings goal (e.g., buying plane tickets from your "Vacation" fund).</p>
                     <div>
                         <label for="goal-spend-notes" class="block text-sm font-medium text-gray-700"
                             data-i18n="modalAddExpenseNotes">Notes (Optional)</label>
@@ -1353,14 +1551,14 @@
                     <div class="pt-2">
                         <button type="submit"
                             class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg transition-all"
-                            data-i18n="save" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Log Expense</button>
+                            data-i18n="modalGoalLogExpense" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Log Expense</button>
                     </div>
                 </form>
             </div>
 
             <div id="goal-transfer-form-container" class="tab-panel hidden">
                 <form id="goal-transfer-form" class="space-y-4">
-                    <p class="text-sm text-gray-600">Move money <strong>out</strong> of this goal and <strong>into</strong> one of your monthly spending envelopes (like "Groceries" or "Dining Out").</p>
+                    <p class="text-sm text-gray-600" data-i18n="modalGoalTransferDesc">Move money <strong>out</strong> of this goal and <strong>into</strong> one of your monthly spending envelopes (like "Groceries" or "Dining Out").</p>
                     <div>
                         <label for="goal-transfer-category" class="block text-sm font-medium text-gray-700"
                             data-i18n="modalAddExpenseCategory">Transfer to Envelope</label>
@@ -1396,7 +1594,7 @@
                     <div class="pt-2">
                         <button type="submit"
                             class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-all"
-                            data-i18n="save" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Transfer Funds</button>
+                            data-i18n="modalGoalTransferFunds" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Transfer Funds</button>
                     </div>
                 </form>
             </div>
@@ -1426,33 +1624,27 @@
 
             <div class="space-y-4 max-h-80 overflow-y-auto pr-2">
                 <div id="modal-manage-panel-bills" class="tab-panel active space-y-4">
-                    <div id="modal-manage-container-fixed" class="hidden">
-                        <h3 class="text-lg font-medium text-gray-800" data-i18n="settingsTypeFixed">Fixed Costs</h3>
-                        <div id="modal-manage-fixed-list" class="space-y-2 mt-2"></div>
+                    <div id="modal-manage-container-bill" class="hidden">
+                        <h3 class="text-lg font-medium text-gray-800" data-i18n="modalManageTypeBill">Bills</h3>
+                        <div id="modal-manage-bill-list" class="space-y-2 mt-2"></div>
                     </div>
-                    <div id="modal-manage-container-debt-payment" class="hidden">
-                        <h3 class="text-lg font-medium text-gray-800" data-i18n="settingsTypeDebtPayment">Debts (Fixed Payments)</h3>
-                        <div id="modal-manage-debt-payment-list" class="space-y-2 mt-2"></div>
-                    </div>
-                    <div id="modal-manage-container-sinking-bill" class="hidden">
-                        <h3 class="text-lg font-medium text-gray-800" data-i18n="settingsTypeSinkingBill">Sinking Funds (Annual Bills)</h3>
-                        <div id="modal-manage-sinking-bill-list" class="space-y-2 mt-2"></div>
-                    </div>
+                    <p id="modal-manage-bills-empty" class="text-gray-500">No "Bill" categories found.</p>
                 </div>
 
                 <div id="modal-manage-panel-envelopes" class="tab-panel hidden space-y-4">
-                    <div id="modal-manage-container-variable" class="hidden">
-                        <h3 class="text-lg font-medium text-gray-800" data-i18n="settingsTypeVariable">Variable Envelopes</h3>
-                        <div id="modal-manage-variable-list" class="space-y-2 mt-2"></div>
+                    <div id="modal-manage-container-envelope" class="hidden">
+                        <h3 class="text-lg font-medium text-gray-800" data-i18n="modalManageTypeEnvelope">Envelopes</h3>
+                        <div id="modal-manage-envelope-list" class="space-y-2 mt-2"></div>
                     </div>
-                    <div id="modal-manage-container-sinking-goal" class="hidden">
-                        <h3 class="text-lg font-medium text-gray-800" data-i18n="settingsTypeSinkingGoal">Sinking Funds (Goals)</h3>
-                        <div id="modal-manage-sinking-goal-list" class="space-y-2 mt-2"></div>
+                    <div id="modal-manage-container-saving" class="hidden">
+                        <h3 class="text-lg font-medium text-gray-800" data-i18n="modalManageTypeSaving">Savings</h3>
+                        <div id="modal-manage-saving-list" class="space-y-2 mt-2"></div>
                     </div>
-                    <div id="modal-manage-container-debt-goal" class="hidden">
-                        <h3 class="text-lg font-medium text-gray-800" data-i18n="settingsTypeDebtGoal">Debt (Paydown Goals)</h3>
-                        <div id="modal-manage-debt-goal-list" class="space-y-2 mt-2"></div>
+                    <div id="modal-manage-container-debt" class="hidden">
+                        <h3 class="text-lg font-medium text-gray-800" data-i18n="modalManageTypeDebt">Debts</h3>
+                        <div id="modal-manage-debt-list" class="space-y-2 mt-2"></div>
                     </div>
+                    <p id="modal-manage-envelopes-empty" class="text-gray-500">No "Envelope" or "Goal" categories found.</p>
                 </div>
             </div>
             
@@ -1552,17 +1744,20 @@
                 dashboardMoneyToBudget: "Zu Budgetieren",
                 dashboardTotalBudgeted: "Gesamt Budgetiert",
                 dashboardTotalSpent: "Gesamt Ausgegeben (Variabel)",
-                dashboardVariableEnvelopes: "Variable Umschläge",
-                dashboardNoVariable: "Noch keine variablen Umschläge budgetiert. Gehe zur 'Verwalten'-Seite, um welche hinzuzufügen!", // MODIFIED
-                dashboardSinkingFunds: "Spartöpfe (Ziele)",
-                dashboardNoSinking: "Keine Spartöpfe. Gehe zur 'Verwalten'-Seite, um einen zu erstellen!", // MODIFIED
-                dashboardDebtGoals: "Schulden-Tilgungsziele",
+                dashboardVariableEnvelopes: "Ausgaben-Umschläge",
+                dashboardNoVariable: "Noch keine Ausgaben-Umschläge budgetiert. Gehe zur 'Verwalten'-Seite, um welche hinzuzufügen!", // MODIFIED
+                dashboardSinkingFunds: "Sparziele",
+                dashboardNoSinking: "Keine Sparziele. Gehe zur 'Verwalten'-Seite, um einen zu erstellen!", // MODIFIED
+                dashboardDebtGoals: "Schuldenziele",
                 dashboardNoDebtGoals: "Keine Tilgungsziele. Gehe zu 'Verwalten', um eines hinzuzufügen.", // MODIFIED
+                dashboardBillsTitle: "Rechnungen & Fixkosten",
+                dashboardBillsEmpty: "Keine monatlichen Rechnungen oder Fixkosten. Gehe zu 'Verwalten', um eine hinzuzufügen.",
                 dashboardRemaining: "Verfügbar",
                 dashboardBudgeted: "Budgetiert",
                 dashboardSpent: "Ausgegeben",
                 dashboardOf: "von",
-                dashboardTotalSaved: "Gesamt Zugewiesen",
+                dashboardTotalSaved: "Gesamt Gespart", // <-- FIX: Changed from "Assigned" to "Saved"
+                dashboardTotalPaid: "Gesamt Bezahlt", // <-- NEW
                 budgetIncomeTitle: "Einkommen",
                 budgetRollover: "Übertrag Ersparnisse",
                 budgetAddIncome: "+ Hinzuf.",
@@ -1686,6 +1881,7 @@
                 onboardingUseTemplate: "Mit Vorlage Starten",
                 onboardingStartFresh: "Neu Starten",
                 onboardingTryDemo: "Demo Testen", // <-- ADD THIS
+                onboardingRestore: "Aus Backup Wiederherstellen",
                 back: "Zurück",
                 next: "Weiter",
                 thisMonth: "diesen Monat",
@@ -1719,6 +1915,87 @@
                 modalManageTabBills: "Fixkosten & Rechnungen",
                 modalManageTabEnvelopes: "Umschläge & Ziele",
                 // --- End NEW v3.0 Keys ---
+                
+                // --- NEW v3.1 Keys (Hardcode Fix) ---
+                remaining: "Restbetrag",
+                saving: "Speichern...",
+                saved: "Gespeichert!",
+                statsMonthlyAnalysis: "Monatliche Analyse",
+                statsIncomeVsSpend: "Einnahmen vs. Ausgaben vs. Ersparnisse",
+                statsCompareCategory: "Kategorie Vergleichen",
+                statsCompareCategoryDesc: "Wähle eine Kategorie, um ihren Verlauf zu sehen.",
+                statsSelectCategory: "Wähle eine Kategorie...",
+                modalHistoryTitle: "Verlauf",
+                modalGoalHistoryTitle: "Ziel-Verlauf",
+                modalGoalCurrentBalance: "Aktueller Saldo",
+                modalGoalWithdrawButton: "Geld Abheben",
+                modalGoalSpendDesc: "Erfasse eine Ausgabe, die <strong>direkt</strong> von diesem Sparziel bezahlt wurde (z.B. Flugtickets vom 'Urlaub'-Topf).",
+                modalGoalTransferDesc: "Verschiebe Geld <strong>aus</strong> diesem Ziel <strong>in</strong> einen deiner monatlichen Ausgaben-Umschläge (z.B. 'Lebensmittel').",
+                modalGoalLogExpense: "Ausgabe Buchen",
+                modalGoalTransferFunds: "Geld Verschieben",
+                toastInvalidDate: "Ungültiges Datum.",
+                toastInvalidAmountDate: "Ungültiger Betrag oder Datum.",
+                toastInvalidSourceAmount: "Ungültige Quelle oder Betrag.",
+                toastErrorDeleteIncome: "Fehler beim Löschen der Einnahme.",
+                toastErrorDeleteCategory: "Fehler beim Löschen der Kategorie.",
+                toastEnterCategoryName: "Bitte gib einen Kategorienamen ein.",
+                toastResetFailed: "Zurücksetzen fehlgeschlagen. Bitte lade die App neu.",
+                toastWithdrawLimit: "Du kannst nicht mehr abheben als im Topf ist.",
+                toastExpenseLogged: "Ausgabe vom Ziel gebucht!",
+                toastInvalidTransfer: "Ungültiger Betrag, Datum oder Kategorie.",
+                toastFundsTransferred: "Geld zum Umschlag verschoben!",
+                statsChartSpentIn: "Ausgegeben in",
+                statsChartSavedIn: "Gespart in",
+                statsChartPaidFor: "Bezahlt für",
+                // --- NEW v3.2 Keys (Category Simplification) ---
+                addCategoryTitle: "Neue Kategorie Hinzufügen",
+                categoryTypeLabel: "Wähle einen Typ",
+                categoryTypeBill: "Rechnung",
+                categoryTypeBillDesc: "Wiederkehrende Kosten (z.B. Miete, Strom, Auto-Rate)",
+                categoryTypeEnvelope: "Umschlag",
+                categoryTypeEnvelopeDesc: "Flexible Ausgaben (z.B. Lebensmittel, Tanken)",
+                categoryTypeSaving: "Sparen",
+                categoryTypeSavingDesc: "Geld für positive Ziele beiseitelegen (z.B. Urlaub)",
+                categoryTypeDebt: "Schulden",
+                categoryTypeDebtDesc: "Geld zur Abzahlung von Schulden (z.B. Kreditkarte)",
+                categoryNameLabel: "Name der Kategorie",
+                categoryMonthlyAmountLabel: "Geplanter Betrag",
+                categoryMonthlyAmountDesc: "Wieviel planst du, diesen Monat zuzuweisen?",
+                categoryOptionalFields: "Optionale Details",
+                categoryTotalGoalLabel: "Gesamtziel / Schuldenhöhe",
+                categoryCurrentBalanceLabel: "Aktueller Saldo / Bereits Gespart",
+                // --- NEW v4.0 Keys (Backup/Restore) ---
+                settingsDataManagement: "Datenverwaltung",
+                settingsBackupDesc: "Speichere all deine Daten in einer .json-Datei. Bewahre diese Datei sicher auf, um dein Budget später wiederherzustellen.",
+                settingsBackupButton: "Backup Erstellen (.json)",
+                settingsRestoreButton: "Backup Wiederherstellen",
+                toastBackupSuccess: "Backup-Datei wird heruntergeladen!",
+                toastRestoreSuccess: "Daten erfolgreich wiederhergestellt! App wird neu geladen.",
+                toastRestoreError: "Fehler: Ungültige oder beschädigte Backup-Datei.",
+                settingsTabGeneral: "Allgemein",
+                settingsTabData: "Backup",
+                settingsTabExport: "Export",
+                settingsTabHelp: "Hilfe",
+                settingsTabDanger: "Gefahr",
+                settingsExportCSVButton: "Transaktionen Exportieren (.csv)",
+                settingsExportCategoriesButton: "Kategorien & Ziele Exportieren (.csv)",
+                settingsExportSummariesButton: "Monatsübersichten Exportieren (.csv)",
+                toastExportSuccess: "Transaktionen werden als CSV-Datei heruntergeladen!",
+                toastExportCategoriesSuccess: "Kategorien & Ziele werden als CSV-Datei heruntergeladen!",
+                toastExportSummariesSuccess: "Monatsübersichten werden als CSV-Datei heruntergeladen!",
+                toastExportError: "Export fehlgeschlagen.",
+                modalManageTypeBill: "Rechnungen",
+                modalManageTypeEnvelope: "Umschläge",
+                modalManageTypeSaving: "Sparen",
+                modalManageTypeDebt: "Schulden",
+                dashboardThisMonth: "Dieser Monat",
+                // --- END NEW v4.0 Keys ---
+                // --- NEW v3.3 Keys (Collapsible UI) ---
+                assignBills: "Rechnungen Zuweisen",
+                assignEnvelopes: "Umschläge Füllen",
+                assignSavings: "Sparziele Besparen",
+                assignDebts: "Schulden Bezahlen",
+                // --- End NEW v3.3 Keys ---
             },
             en: {
                 penaltyWarning: "Warning: Withdrawing early will cost 5 🪙!",
@@ -1736,17 +2013,20 @@
                 dashboardMoneyToBudget: "Money to Budget",
                 dashboardTotalBudgeted: "Total Budgeted",
                 dashboardTotalSpent: "Total Spent (Variable)",
-                dashboardVariableEnvelopes: "Variable Envelopes",
-                dashboardNoVariable: "No variable envelopes budgeted yet. Go to the 'Manage' page to add some!", // MODIFIED
-                dashboardSinkingFunds: "Sinking Fund Goals",
-                dashboardNoSinking: "No sinking fund goals. Go to the 'Manage' page to create one!", // MODIFIED
-                dashboardDebtGoals: "Debt Paydown Goals",
-                dashboardNoDebtGoals: "No debt paydown goals. Go to 'Manage' to add one.", // MODIFIED
+                dashboardVariableEnvelopes: "Spending Envelopes",
+                dashboardNoVariable: "No spending envelopes budgeted yet. Go to the 'Manage' page to add some!", // MODIFIED
+                dashboardSinkingFunds: "Savings Goals",
+                dashboardNoSinking: "No savings goals. Go to the 'Manage' page to create one!", // MODIFIED
+                dashboardDebtGoals: "Debt Goals",
+                dashboardNoDebtGoals: "No debt goals. Go to 'Manage' to add one.", // MODIFIED
+                dashboardBillsTitle: "Bills & Fixed Debts",
+                dashboardBillsEmpty: "No monthly bills or fixed debts. Go to 'Manage' to add one.",
                 dashboardRemaining: "Available",
                 dashboardBudgeted: "Budgeted",
                 dashboardSpent: "Spent",
                 dashboardOf: "of",
-                dashboardTotalSaved: "Total Assigned",
+                dashboardTotalSaved: "Total Saved", // <-- FIX: Changed from "Assigned" to "Saved"
+                dashboardTotalPaid: "Total Paid", // <-- NEW
                 budgetIncomeTitle: "Income",
                 budgetRollover: "Rollover Savings",
                 budgetAddIncome: "+ Add",
@@ -1870,6 +2150,7 @@
                 onboardingUseTemplate: "Start with Template",
                 onboardingStartFresh: "Start Fresh",
                 onboardingTryDemo: "Try a Demo", // <-- ADD THIS
+                onboardingRestore: "Restore from Backup",
                 back: "Back",
                 next: "Next",
                 thisMonth: "this month",
@@ -1903,6 +2184,87 @@
                 modalManageTabBills: "Income & Bills",
                 modalManageTabEnvelopes: "Envelopes & Goals",
                 // --- End NEW v3.0 Keys ---
+                
+                // --- NEW v3.1 Keys (Hardcode Fix) ---
+                remaining: "Remaining",
+                saving: "Saving...",
+                saved: "Saved!",
+                statsMonthlyAnalysis: "Monthly Analysis",
+                statsIncomeVsSpend: "Income vs. Spend vs. Savings",
+                statsCompareCategory: "Compare a Category",
+                statsCompareCategoryDesc: "Select a category to see its history.",
+                statsSelectCategory: "Select a category...",
+                modalHistoryTitle: "History",
+                modalGoalHistoryTitle: "Goal History",
+                modalGoalCurrentBalance: "Current Balance",
+                modalGoalWithdrawButton: "Withdraw Funds",
+                modalGoalSpendDesc: "Record an expense paid for <strong>directly</strong> from this savings goal (e.g., buying plane tickets from your 'Vacation' fund).",
+                modalGoalTransferDesc: "Move money <strong>out</strong> of this goal and <strong>into</strong> one of your monthly spending envelopes (like 'Groceries' or 'Dining Out').",
+                modalGoalLogExpense: "Log Expense",
+                modalGoalTransferFunds: "Transfer Funds",
+                toastInvalidDate: "Invalid date.",
+                toastInvalidAmountDate: "Invalid amount or date.",
+                toastInvalidSourceAmount: "Invalid source or amount.",
+                toastErrorDeleteIncome: "Error deleting income item.",
+                toastErrorDeleteCategory: "Error deleting category.",
+                toastEnterCategoryName: "Please enter a category name.",
+                toastResetFailed: "Reset failed. Please try reloading the app.",
+                toastWithdrawLimit: "Cannot withdraw more than the goal balance.",
+                toastExpenseLogged: "Expense logged from goal!",
+                toastInvalidTransfer: "Invalid amount, date, or category.",
+                toastFundsTransferred: "Funds transferred to envelope!",
+                statsChartSpentIn: "Spent in",
+                statsChartSavedIn: "Saved in",
+                statsChartPaidFor: "Paid for",
+                // --- NEW v3.2 Keys (Category Simplification) ---
+                addCategoryTitle: "Add New Category",
+                categoryTypeLabel: "Choose a Type",
+                categoryTypeBill: "Bill",
+                categoryTypeBillDesc: "Recurring costs (e.g., Rent, Utilities, Car Payment)",
+                categoryTypeEnvelope: "Envelope",
+                categoryTypeEnvelopeDesc: "Flexible spending (e.g., Groceries, Gas)",
+                categoryTypeSaving: "Saving",
+                categoryTypeSavingDesc: "Set money aside for positive goals (e.g., Vacation)",
+                categoryTypeDebt: "Debt",
+                categoryTypeDebtDesc: "Pay down what you owe (e.g., Credit Card)",
+                categoryNameLabel: "Category Name",
+                categoryMonthlyAmountLabel: "Monthly Planned Amount",
+                categoryMonthlyAmountDesc: "How much you plan to assign this month.",
+                categoryOptionalFields: "Optional Details",
+                categoryTotalGoalLabel: "Total Goal / Debt Amount",
+                categoryCurrentBalanceLabel: "Current Balance / Already Saved",
+                // --- NEW v4.0 Keys (Backup/Restore) ---
+                settingsDataManagement: "Data Management",
+                settingsBackupDesc: "Save all your data to a .json file. Keep this file safe to restore your budget later.",
+                settingsBackupButton: "Create Backup (.json)",
+                settingsRestoreButton: "Restore from Backup",
+                toastBackupSuccess: "Backup file downloading!",
+                toastRestoreSuccess: "Data restored successfully! Reloading app.",
+                toastRestoreError: "Error: Invalid or corrupt backup file.",
+                settingsTabGeneral: "General",
+                settingsTabData: "Backup",
+                settingsTabExport: "Export",
+                settingsTabHelp: "Help",
+                settingsTabDanger: "Danger",
+                settingsExportCSVButton: "Export Transactions (.csv)",
+                settingsExportCategoriesButton: "Export Categories & Goals (.csv)",
+                settingsExportSummariesButton: "Export Monthly Summaries (.csv)",
+                toastExportSuccess: "Transactions downloading as .csv!",
+                toastExportCategoriesSuccess: "Categories & Goals downloading as .csv!",
+                toastExportSummariesSuccess: "Monthly Summaries downloading as .csv!",
+                modalManageTypeBill: "Bills",
+                modalManageTypeEnvelope: "Envelopes",
+                modalManageTypeSaving: "Savings",
+                modalManageTypeDebt: "Debts",
+                toastExportError: "Export failed.",
+                dashboardThisMonth: "This Month",
+                // --- END NEW v4.0 Keys ---
+                // --- NEW v3.3 Keys (Collapsible UI) ---
+                assignBills: "Assign to Bills",
+                assignEnvelopes: "Fill Envelopes",
+                assignSavings: "Contribute to Savings",
+                assignDebts: "Pay Down Debts",
+                // --- End NEW v3.3 Keys ---
             }
         };
 
@@ -2083,27 +2445,29 @@
              * @param {string} lang - 'en' or 'de' (now just 'en')
              */
             async loadTemplateData() {
-                // Today is Nov 5, 2025
+                // Today is Nov 6, 2025
                 const template = {
                     settings: [
-                        { key: 'salary', value: 2500 } // <-- More realistic salary
+                        { key: 'salary', value: 2500 }
                     ],
                     categories: [
-                        // --- Bills (Total: 1010) ---
-                        { type: 'fixed', name: 'Rent', amount: 750 },
-                        { type: 'debt-payment', name: 'Car Loan', amount: 250 },
-                        { type: 'sinking-bill', name: 'Car Insurance (Annual)', amount: 10 }, // 120/yr
+                        // --- NEW Type: "bill" ---
+                        { type: 'bill', name: 'Rent', amount: 750 },
+                        { type: 'bill', name: 'Car Insurance (Annual)', amount: 10 },
+                        
+                        // --- NEW Type: "envelope" ---
+                        { type: 'envelope', name: 'Groceries', amount: 300 },
+                        { type: 'envelope', name: 'Dining Out', amount: 50 },
+                        { type: 'envelope', name: 'Gas/Transport', amount: 50 },
 
-                        // --- Envelopes (Total Assigned: 400) ---
-                        { type: 'variable', name: 'Groceries', amount: 300 },
-                        { type: 'variable', name: 'Dining Out', amount: 50 }, // <-- Give a starting budget
-                        { type: 'variable', name: 'Gas/Transport', amount: 50 },
-
-                        // --- Goals (Total Assigned: 225) ---
-                        { type: 'sinking-goal', name: 'Vacation', amount: 75, goalAmount: 1500, goalDate: '2026-07-01' },
-                        { type: 'sinking-goal', name: 'Emergency Fund', amount: 50 }, // <-- NEW GOAL
-                        { type: 'sinking-goal', name: 'New PC', amount: 50, goalAmount: 1000, goalDate: '2025-10-01' },
-                        { type: 'debt-goal', name: 'Credit Card', amount: 50 }, // <-- Reduced
+                        // --- NEW Type: "saving" ---
+                        { type: 'saving', name: 'Vacation', amount: 75, goalAmount: 1500, goalDate: '2026-07-01' },
+                        { type: 'saving', name: 'Emergency Fund', amount: 50 },
+                        { type: 'saving', name: 'New PC', amount: 50, goalAmount: 1000, goalDate: '2025-10-01' },
+                        
+                        // --- NEW Type: "debt" ---
+                        { type: 'debt', name: 'Car Loan', amount: 250, goalAmount: 17000 }, // Example Total Debt
+                        { type: 'debt', name: 'Credit Card', amount: 50, goalAmount: 800 }, // Example Total Debt
                     ]
                 };
 
@@ -3097,6 +3461,7 @@
                     onboardingGoToHelp: document.getElementById('onboarding-go-to-help'),
                     onboardingStepHelp: document.getElementById('onboarding-step-help'),
                     onboardingHelpBack: document.getElementById('onboarding-help-back'),
+                    onboardingRestore: document.getElementById('onboarding-restore'),
 
                     // Pages
                     pages: document.querySelectorAll('.page'),
@@ -3116,15 +3481,34 @@
                     // Dashboard
                     dashboardMoneyToBudget: document.getElementById('dashboard-money-to-budget'),
                     dashboardTotalBudgeted: document.getElementById('dashboard-total-budgeted'),
-                    dashboardTotalSpent: document.getElementById('dashboard-total-spent'),
+                    dashboardTotalSpent: document.getElementById('dashboard-total-spent'), // <-- This ID is gone, but we'll leave the line
+                    // NEW: Dashboard Toggle
+                    dashboardToggleArea: document.getElementById('dashboard-toggle-area'),
+                    dashboardToggleLabel: document.getElementById('dashboard-toggle-label'),
+                    
+                    // NEW: Bills Card
+                    billsCardContainer: document.getElementById('bills-card-container'),
+                    billsCardToggleBtn: document.getElementById('bills-card-toggle-btn'),
+                    billsCardChevron: document.getElementById('bills-card-chevron'),
+                    billsCardDetails: document.getElementById('bills-card-details'),
+                    billsCardList: document.getElementById('bills-card-list'),
+                    billsCardEmpty: document.getElementById('bills-card-empty'),
+                    billsCardTotal: document.getElementById('bills-card-total'),
+                    dashboardToggleValue: document.getElementById('dashboard-toggle-value'),
+                    dashboardAvailableValue: document.getElementById('dashboard-available-value'),
+                    dashboardSpentValue: document.getElementById('dashboard-spent-value'),
+                    
                     variableEnvelopesList: document.getElementById('variable-envelopes-list'),
                     variableEnvelopesEmpty: document.getElementById('variable-envelopes-empty'),
-                    sinkingFundGoalsList: document.getElementById('sinking-fund-goals-list'),
-                    sinkingFundGoalsEmpty: document.getElementById('sinking-fund-goals-empty'),
-                    debtGoalDashboardList: document.getElementById('debt-goal-dashboard-list'),
-                    debtGoalDashboardEmpty: document.getElementById('debt-goal-dashboard-empty'),
-                    sinkingFundsContainer: document.getElementById('sinking-funds-container'), // NEW
-                    debtGoalsContainer: document.getElementById('debt-goals-container'), // NEW
+                    variableEnvelopesContainer: document.getElementById('variable-envelopes-container'),
+                    
+                    // NEW: Renamed elements
+                    savingGoalsList: document.getElementById('saving-goals-list'),
+                    savingGoalsEmpty: document.getElementById('saving-goals-empty'),
+                    savingGoalsContainer: document.getElementById('saving-goals-container'),
+                    debtGoalsList: document.getElementById('debt-goals-list'),
+                    debtGoalsEmpty: document.getElementById('debt-goals-empty'),
+                    debtGoalsContainer: document.getElementById('debt-goals-container'),
 
                     // Manage Page (Budget elements)
                     budgetMoneyToBudget: document.getElementById('budget-money-to-budget'),
@@ -3136,9 +3520,36 @@
                     budgetSummaryFixedCosts: document.getElementById('budget-summary-fixed-costs'),
                     // addOtherIncomeBtn: (Removed)
                     budgetForm: document.getElementById('budget-form'),
-                    budgetVariableList: document.getElementById('budget-variable-list'),
-                    budgetSinkingFundList: document.getElementById('budget-sinking-fund-list'),
-                    budgetDebtGoalList: document.getElementById('budget-debt-goal-list'),
+                    
+                    // NEW: Collapsible "Assign" sections
+                    assignBillsToggleBtn: document.getElementById('assign-bills-toggle-btn'),
+                    assignBillsChevron: document.getElementById('assign-bills-chevron'),
+                    assignBillsDetails: document.getElementById('assign-bills-details'),
+                    budgetBillList: document.getElementById('budget-bill-list'),
+                    budgetBillEmpty: document.getElementById('budget-bill-empty'),
+
+                    assignEnvelopesToggleBtn: document.getElementById('assign-envelopes-toggle-btn'),
+                    assignEnvelopesChevron: document.getElementById('assign-envelopes-chevron'),
+                    assignEnvelopesDetails: document.getElementById('assign-envelopes-details'),
+                    budgetEnvelopeList: document.getElementById('budget-envelope-list'),
+                    budgetEnvelopeEmpty: document.getElementById('budget-envelope-empty'),
+
+                    assignSavingsToggleBtn: document.getElementById('assign-savings-toggle-btn'),
+                    assignSavingsChevron: document.getElementById('assign-savings-chevron'),
+                    assignSavingsDetails: document.getElementById('assign-savings-details'),
+                    budgetSavingList: document.getElementById('budget-saving-list'),
+                    budgetSavingEmpty: document.getElementById('budget-saving-empty'),
+
+                    assignDebtsToggleBtn: document.getElementById('assign-debts-toggle-btn'),
+                    assignDebtsChevron: document.getElementById('assign-debts-chevron'),
+                    assignDebtsDetails: document.getElementById('assign-debts-details'),
+                    budgetDebtList: document.getElementById('budget-debt-list'),
+                    budgetDebtEmpty: document.getElementById('budget-debt-empty'),
+
+                    // OLD: Rename these for clarity in the next step
+                    budgetVariableList: document.getElementById('budget-variable-list'), // Will be deleted soon
+                    budgetSinkingFundList: document.getElementById('budget-sinking-fund-list'), // Will be deleted soon
+                    budgetDebtGoalList: document.getElementById('budget-debt-goal-list'), // Will be deleted soon
                     // budgetFixedCostsList: (Removed)
                     // budgetFixedCostsEmpty: (Removed)
                     otherIncomeList: document.getElementById('other-income-list'),
@@ -3166,8 +3577,20 @@
                     categoryType: document.getElementById('category-type'),
                     categoryName: document.getElementById('category-name'),
                     categoryAmount: document.getElementById('category-amount'),
-                    categoryGoalAmountGroup: document.getElementById('category-goal-amount-group'),
+                    
+                    // NEW: Category Type Buttons
+                    categoryTypeSelector: document.getElementById('category-type-selector'),
+                    categoryTypeDescription: document.getElementById('category-type-description'),
+                    
+                    // NEW: Optional Fields
+                    categoryOptionalToggleBtn: document.getElementById('category-optional-toggle-btn'),
+                    categoryOptionalChevron: document.getElementById('category-optional-chevron'),
+                    categoryOptionalDetails: document.getElementById('category-optional-details'),
                     categoryGoalAmount: document.getElementById('category-goal-amount'),
+                    categoryCurrentBalance: document.getElementById('category-current-balance'),
+
+                    // OLD (but still used)
+                    categoryGoalAmountGroup: document.getElementById('category-goal-amount-group'),
                     categoryGoalDateGroup: document.getElementById('category-goal-date-group'), // NEW
                     categoryGoalDate: document.getElementById('category-goal-date'), // NEW
                     
@@ -3181,18 +3604,16 @@
                     modalManagePanelEnvelopes: document.getElementById('modal-manage-panel-envelopes'),
                     
                     // Lists inside Manage Categories Modal
-                    modalManageContainerFixed: document.getElementById('modal-manage-container-fixed'),
-                    modalManageFixedList: document.getElementById('modal-manage-fixed-list'),
-                    modalManageContainerDebtPayment: document.getElementById('modal-manage-container-debt-payment'),
-                    modalManageDebtPaymentList: document.getElementById('modal-manage-debt-payment-list'),
-                    modalManageContainerSinkingBill: document.getElementById('modal-manage-container-sinking-bill'),
-                    modalManageSinkingBillList: document.getElementById('modal-manage-sinking-bill-list'),
-                    modalManageContainerVariable: document.getElementById('modal-manage-container-variable'),
-                    modalManageVariableList: document.getElementById('modal-manage-variable-list'),
-                    modalManageContainerSinkingGoal: document.getElementById('modal-manage-container-sinking-goal'),
-                    modalManageSinkingGoalList: document.getElementById('modal-manage-sinking-goal-list'),
-                    modalManageContainerDebtGoal: document.getElementById('modal-manage-container-debt-goal'),
-                    modalManageDebtGoalList: document.getElementById('modal-manage-debt-goal-list'),
+                    modalManageContainerBill: document.getElementById('modal-manage-container-bill'),
+                    modalManageBillList: document.getElementById('modal-manage-bill-list'),
+                    modalManageContainerEnvelope: document.getElementById('modal-manage-container-envelope'),
+                    modalManageEnvelopeList: document.getElementById('modal-manage-envelope-list'),
+                    modalManageContainerSaving: document.getElementById('modal-manage-container-saving'),
+                    modalManageSavingList: document.getElementById('modal-manage-saving-list'),
+                    modalManageContainerDebt: document.getElementById('modal-manage-container-debt'),
+                    modalManageDebtList: document.getElementById('modal-manage-debt-list'),
+                    modalManageBillsEmpty: document.getElementById('modal-manage-bills-empty'),
+                    modalManageEnvelopesEmpty: document.getElementById('modal-manage-envelopes-empty'),
                     
                     currencySelectSettings: document.getElementById('currency-select-settings'),
                     languageSelect: document.getElementById('language-select'),
@@ -3258,6 +3679,14 @@
                     statsCategorySelect: document.getElementById('stats-category-select'),
                     statsCategoryChart: document.getElementById('stats-category-chart'),
                     statsFilterButtons: document.getElementById('stats-filter-buttons'),
+                    
+                    // NEW: Chart Zoom Buttons
+                    statsOverviewZoomIn: document.getElementById('stats-overview-zoom-in'),
+                    statsOverviewZoomOut: document.getElementById('stats-overview-zoom-out'),
+                    statsOverviewZoomReset: document.getElementById('stats-overview-zoom-reset'),
+                    statsCategoryZoomIn: document.getElementById('stats-category-zoom-in'),
+                    statsCategoryZoomOut: document.getElementById('stats-category-zoom-out'),
+                    statsCategoryZoomReset: document.getElementById('stats-category-zoom-reset'),
 
                     // Transaction History Modal
                     txHistoryModal: document.getElementById('transaction-history-modal'),
@@ -3320,9 +3749,21 @@
                     appSettingsModal: document.getElementById('app-settings-modal'),
                     cancelSettingsButton: document.getElementById('cancel-settings-button'),
                     
+                    // NEW: Settings Modal Tabs
+                    settingsTabNav: document.getElementById('settings-tab-nav'),
+                    settingsTabPanels: document.querySelectorAll('.settings-tab-panel'),
+                    settingsTabButtons: document.querySelectorAll('.settings-tab-btn'),
+                    
                     // NEW: PWA Install
                     installPwaSection: document.getElementById('install-pwa-section'),
                     installPwaButton: document.getElementById('install-pwa-button'),
+                    
+                    // NEW: Backup/Restore
+                    backupDataButton: document.getElementById('backup-data-button'),
+                    restoreDataButton: document.getElementById('restore-data-button'),
+                    exportCsvButton: document.getElementById('export-csv-button'),
+                    exportCategoriesButton: document.getElementById('export-categories-button'),
+                    exportSummariesButton: document.getElementById('export-summaries-button'),
                 };
             },
 
@@ -3462,6 +3903,8 @@
                     this.dom.onboardingStep1.classList.add('active');
                 });
 
+                this.dom.onboardingRestore.addEventListener('click', () => this.onOnboardingRestore());
+
                 this.dom.onboardingGoToHelp.addEventListener('click', () => {
                     this.dom.onboardingStep2.classList.remove('active');
                     this.dom.onboardingStepHelp.classList.add('active');
@@ -3510,14 +3953,28 @@
 
                 // Manage Page (Settings)
                 this.dom.salaryInput.addEventListener('input', () => {
-                    this.dom.autoSaveStatus.textContent = "Saving..."; // Show immediate feedback
+                    this.dom.autoSaveStatus.textContent = i18n.t('saving'); // Show immediate feedback
                     this.debouncedAutoSaveSalary();
                 });
                 this.dom.addCategoryForm.addEventListener('submit', (e) => this.onAddCategory(e));
+                
+                // NEW: Listener for our new category type buttons
+                this.dom.categoryTypeSelector.addEventListener('click', (e) => this.handleCategoryTypeClick(e));
+                
+                // NEW: Listener for optional details toggle
+                this.dom.categoryOptionalToggleBtn.addEventListener('click', () => {
+                    this.dom.categoryOptionalDetails.classList.toggle('hidden');
+                    this.dom.categoryOptionalChevron.classList.toggle('rotate-180');
+                });
+                
                 this.dom.languageSelect.addEventListener('change', (e) => this.onChangeLanguage(e));
                 this.dom.currencySelectSettings.addEventListener('change', (e) => this.onChangeCurrency(e));
-                this.dom.categoryType.addEventListener('change', () => this.toggleGoalAmountField('add'));
                 this.dom.resetAppButton.addEventListener('click', () => this.showResetModal());
+
+                // Reset Modal Listeners
+                this.dom.cancelResetButton.addEventListener('click', () => this.hideResetModal());
+                this.dom.confirmResetButton.addEventListener('click', () => this.onConfirmReset());
+                
                 this.dom.goToHelpButton.addEventListener('click', () => {
                     this.hideSettingsModal(); // Close the modal
                     this.navigateTo('help-page'); // Navigate to the help page
@@ -3527,7 +3984,6 @@
                 this.dom.cancelEditCategoryButton.addEventListener('click', () => this.hideEditCategoryModal());
                 this.dom.editCategoryModal.addEventListener('click', (e) => { if (e.target === this.dom.editCategoryModal) this.hideEditCategoryModal(); });
                 this.dom.editCategoryForm.addEventListener('submit', (e) => this.onUpdateCategory(e));
-                this.dom.editCategoryType.addEventListener('change', () => this.toggleGoalAmountField('edit'));
 
                 // NEW: Manage Categories Modal
                 this.dom.manageCategoriesButton.addEventListener('click', () => this.showManageCategoriesModal());
@@ -3537,12 +3993,10 @@
                 this.dom.modalManageTabEnvelopes.addEventListener('click', () => this.handleManageCategoriesTabClick('envelopes'));
 
                 // NEW: Manage Page (Category Lists - Re-pointed to Modal)
-                this.dom.modalManageFixedList.addEventListener('click', (e) => this.handleCategoryListClick(e));
-                this.dom.modalManageDebtPaymentList.addEventListener('click', (e) => this.handleCategoryListClick(e));
-                this.dom.modalManageSinkingBillList.addEventListener('click', (e) => this.handleCategoryListClick(e));
-                this.dom.modalManageVariableList.addEventListener('click', (e) => this.handleCategoryListClick(e));
-                this.dom.modalManageSinkingGoalList.addEventListener('click', (e) => this.handleCategoryListClick(e));
-                this.dom.modalManageDebtGoalList.addEventListener('click', (e) => this.handleCategoryListClick(e));
+                this.dom.modalManageBillList.addEventListener('click', (e) => this.handleCategoryListClick(e));
+                this.dom.modalManageEnvelopeList.addEventListener('click', (e) => this.handleCategoryListClick(e));
+                this.dom.modalManageSavingList.addEventListener('click', (e) => this.handleCategoryListClick(e));
+                this.dom.modalManageDebtList.addEventListener('click', (e) => this.handleCategoryListClick(e));
 
                 // Manage Page (Budget Form)
                 // this.dom.budgetForm.addEventListener('submit', (e) => this.onSaveBudget(e)); // Removed for auto-save
@@ -3552,39 +4006,58 @@
                     this.dom.otherIncomeDetails.classList.toggle('hidden');
                     this.dom.otherIncomeChevron.classList.toggle('rotate-180');
                 });
-                
+
                 this.dom.fixedCostsToggleBtn.addEventListener('click', () => {
                     this.dom.fixedCostsDetails.classList.toggle('hidden');
                     this.dom.fixedCostsChevron.classList.toggle('rotate-180');
                 });
+                
+                // NEW: Accordion listener for "Assign" sections
+                this.dom.budgetForm.addEventListener('click', (e) => this.handleAssignAccordionClick(e));
                 
                 const budgetInputHandler = () => {
                     this.updateBudgetSummary(); // Update UI immediately
                     this.debouncedAutoSaveBudget(); // Trigger debounced save
                 };
 
-                this.dom.budgetVariableList.addEventListener('input', budgetInputHandler);
-                this.dom.budgetSinkingFundList.addEventListener('input', budgetInputHandler);
-                this.dom.budgetDebtGoalList.addEventListener('input', budgetInputHandler);
+                this.dom.budgetBillList.addEventListener('input', budgetInputHandler);
+                this.dom.budgetEnvelopeList.addEventListener('input', budgetInputHandler);
+                this.dom.budgetSavingList.addEventListener('input', budgetInputHandler);
+                this.dom.budgetDebtList.addEventListener('input', budgetInputHandler);
 
-                // Reset Modal
-                this.dom.cancelResetButton.addEventListener('click', () => this.hideResetModal());
-                this.dom.confirmResetButton.addEventListener('click', () => this.onConfirmReset());
+                // NEW: Dashboard Toggle
+                this.dom.dashboardToggleArea.addEventListener('click', () => this.onToggleDashboardSummary());
+
+                // NEW: Bills Card Toggle
+                this.dom.billsCardToggleBtn.addEventListener('click', () => {
+                    this.dom.billsCardDetails.classList.toggle('hidden');
+                    this.dom.billsCardChevron.classList.toggle('rotate-180');
+                });
 
                 // NEW: App Settings Modal
                 this.dom.showSettingsModalBtn.addEventListener('click', () => this.showSettingsModal());
                 this.dom.cancelSettingsButton.addEventListener('click', () => this.hideSettingsModal());
                 this.dom.appSettingsModal.addEventListener('click', (e) => { if (e.target === this.dom.appSettingsModal) this.hideSettingsModal(); });
+                
+                // NEW: Settings Tab Click
+                this.dom.settingsTabNav.addEventListener('click', (e) => this.handleSettingsTabClick(e));
 
                 // NEW: PWA Install Button
                 this.dom.installPwaButton.addEventListener('click', () => this.onInstallPwa());
+                
+                // NEW: Backup/Restore Listeners
+                this.dom.backupDataButton.addEventListener('click', () => this.onBackupData());
+                this.dom.restoreDataButton.addEventListener('click', () => this.onRestoreData());
+                this.dom.exportCsvButton.addEventListener('click', () => this.onExportTransactionsCSV());
+                this.dom.exportCategoriesButton.addEventListener('click', () => this.onExportCategoriesCSV());
+                this.dom.exportSummariesButton.addEventListener('click', () => this.onExportSummariesCSV());
 
                 // Transaction History Modal
                 this.dom.variableEnvelopesList.addEventListener('click', (e) => this.handleEnvelopeClick(e));
                 
                 // NEW: Goal Hub Click Listeners (Task 3)
-                this.dom.sinkingFundGoalsList.addEventListener('click', (e) => this.handleGoalCardClick(e));
-                this.dom.debtGoalDashboardList.addEventListener('click', (e) => this.handleGoalCardClick(e));
+                this.dom.savingGoalsList.addEventListener('click', (e) => this.handleGoalCardClick(e));
+                this.dom.debtGoalsList.addEventListener('click', (e) => this.handleGoalCardClick(e));
                 this.dom.goalHistoryCloseBtn.addEventListener('click', () => this.hideGoalHistoryModal());
                 this.dom.goalHistoryList.addEventListener('click', (e) => this.handleGoalTransactionClick(e)); // <-- ADD THIS
                 this.dom.editGoalTxForm.addEventListener('submit', (e) => this.onUpdateGoalTransaction(e)); // <-- ADD THIS
@@ -3612,6 +4085,14 @@
                 // NEW: Stats Page Listeners
                 this.dom.statsCategorySelect.addEventListener('change', () => this.renderCategoryChart());
                 this.dom.statsFilterButtons.addEventListener('click', (e) => this.onStatsDateRangeChange(e));
+                
+                // NEW: Chart Zoom Listeners
+                this.dom.statsOverviewZoomIn.addEventListener('click', () => this.handleChartZoom(this.overviewChart, 1.1));
+                this.dom.statsOverviewZoomOut.addEventListener('click', () => this.handleChartZoom(this.overviewChart, 0.9));
+                this.dom.statsOverviewZoomReset.addEventListener('click', () => this.handleChartReset(this.overviewChart));
+                this.dom.statsCategoryZoomIn.addEventListener('click', () => this.handleChartZoom(this.categoryChart, 1.1));
+                this.dom.statsCategoryZoomOut.addEventListener('click', () => this.handleChartZoom(this.categoryChart, 0.9));
+                this.dom.statsCategoryZoomReset.addEventListener('click', () => this.handleChartReset(this.categoryChart));
             },
 
             // --- Data Loading & State Management ---
@@ -3856,14 +4337,42 @@
                 this.dom.dashboardMoneyToBudget.textContent = this.formatCurrency(calculations.moneyToBudget);
                 this.dom.dashboardTotalBudgeted.textContent = this.formatCurrency(calculations.totalBudgeted);
 
-                // Render Variable Envelopes
+                // Render NEW: Bills Card
+                this.dom.billsCardList.innerHTML = '';
+                // Get all categories of type 'bill'
+                const billCategories = this.categories.filter(c => c.type === 'bill');
+                
+                let totalBills = 0;
+                let hasBills = false;
+                
+                billCategories.forEach(cat => {
+                    hasBills = true;
+                    const amount = cat.amount || 0;
+                    totalBills += amount;
+                    
+                    const item = `
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                            <span class="font-medium text-gray-700">${cat.name}</span>
+                            <span class="font-medium text-gray-800">${this.formatCurrency(amount)}</span>
+                        </div>
+                    `;
+                    this.dom.billsCardList.insertAdjacentHTML('beforeend', item);
+                });
+
+                // Show/hide the card and empty message
+                this.dom.billsCardContainer.classList.toggle('hidden', !hasBills);
+                this.dom.billsCardEmpty.classList.toggle('hidden', hasBills);
+                this.dom.billsCardTotal.textContent = this.formatCurrency(totalBills);
+
+
+                // Render Spending Envelopes
                 this.dom.variableEnvelopesList.innerHTML = '';
-                const variableCategories = this.categories.filter(c => c.type === 'variable');
-                let totalSpent = 0;
+                const variableCategories = this.categories.filter(c => c.type === 'envelope');
+                // (We can delete the `let totalSpent = 0;` line here, it's a redeclaration bug)
                 let hasVariable = false;
 
                 variableCategories.forEach(cat => {
-                    const budgetItem = this.budget.find(b => b.id === `variable-${cat.id}`);
+                    const budgetItem = this.budget.find(b => b.id === `envelope-${cat.id}`);
                     const budgetedThisMonth = budgetItem ? budgetItem.amount : 0;
                     
                     const inflows = calculations.inflowsPerCategory[cat.id] || 0;
@@ -3908,22 +4417,52 @@
                     this.dom.variableEnvelopesList.insertAdjacentHTML('beforeend', card);
                 });
 
-                this.dom.variableEnvelopesEmpty.classList.toggle('hidden', !(variableCategories.length === 0));
-                if (hasVariable) this.dom.variableEnvelopesEmpty.classList.add('hidden');
+                this.dom.variableEnvelopesEmpty.classList.toggle('hidden', hasVariable);
+                // NEW: Show/hide the entire section container
+                this.dom.variableEnvelopesContainer.classList.toggle('hidden', !hasVariable);
 
                 // Use the new, accurate total from the calculator
-                this.dom.dashboardTotalSpent.textContent = this.formatCurrency(calculations.totalVariableSpent);
+                const totalSpent = calculations.totalVariableSpent;
+                const totalAvailable = calculations.totalBudgeted - totalSpent;
 
-                // Render Sinking Fund Goals
-                this.dom.sinkingFundGoalsList.innerHTML = '';
-                const sinkingGoalCategories = this.categories.filter(c => c.type === 'sinking-goal');
-                let hasSinkingGoals = false;
+                // Store both values in the hidden inputs
+                this.dom.dashboardAvailableValue.value = totalAvailable;
+                this.dom.dashboardSpentValue.value = totalSpent;
 
-                sinkingGoalCategories.forEach(cat => {
-                    hasSinkingGoals = true;
+                // Set the *current* view based on the data-view attribute
+                const currentView = this.dom.dashboardToggleArea.dataset.view;
+                if (currentView === 'spent') {
+                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardTotalSpent');
+                    this.dom.dashboardToggleValue.textContent = this.formatCurrency(totalSpent);
+                    this.dom.dashboardToggleValue.classList.remove('text-green-600');
+                    this.dom.dashboardToggleValue.classList.add('text-gray-800');
+                } else {
+                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardRemaining') || 'Total Available';
+                    this.dom.dashboardToggleValue.textContent = this.formatCurrency(totalAvailable);
+                    this.dom.dashboardToggleValue.classList.remove('text-gray-800');
+                    this.dom.dashboardToggleValue.classList.add('text-green-600');
+                }
+
+                // Render Savings Goals
+                this.dom.savingGoalsList.innerHTML = '';
+                const savingCategories = this.categories.filter(c => c.type === 'saving');
+                let hasSavingGoals = false;
+
+                savingCategories.forEach(cat => {
+                    hasSavingGoals = true;
+                    // This logic is now PERFECT because `envelope.balance`
+                    // contains our "Initial Stock" + any new contributions.
                     const envelope = this.envelopes.find(e => e.categoryId === cat.id);
                     const totalSaved = envelope ? envelope.balance : 0;
                     const goalAmount = cat.goalAmount || 0;
+                    
+                    // NEW: Find this month's contribution
+                    const budgetItem = this.budget.find(b => b.id === `saving-${cat.id}`);
+                    const thisMonthContribution = budgetItem ? budgetItem.amount : 0;
+                    
+                    const thisMonthHTML = thisMonthContribution > 0 ?
+                        `<p class="text-sm text-gray-500">${i18n.t('dashboardThisMonth')}: <span class="font-medium text-green-600">+${this.formatCurrency(thisMonthContribution)}</span></p>` :
+                        '';
 
                     let progressHTML = '';
                     let savedText = this.formatCurrency(totalSaved);
@@ -3940,39 +4479,73 @@
                         <span class="font-semibold text-lg text-gray-800">${cat.name}</span>
                         <span class="font-bold text-green-600 text-right">${savedText}</span>
                     </div>
-                    <p class="text-sm text-gray-500 mt-1">${i18n.t('dashboardTotalSaved')}</p>
+                    <div class="flex justify-between items-center mt-1">
+                        <p class="text-sm text-gray-500">${i18n.t('dashboardTotalSaved')}</p>
+                        ${thisMonthHTML}
+                    </div>
                     ${cat.goalDate ? `<p class="text-sm text-pink-600 mt-1">${i18n.t('goalDateLabel')}: ${this.formatDate(cat.goalDate)}</p>` : ''}
                     ${progressHTML}
                 </div>
             `;
-                    this.dom.sinkingFundGoalsList.insertAdjacentHTML('beforeend', card);
+                    this.dom.savingGoalsList.insertAdjacentHTML('beforeend', card);
                 });
-                this.dom.sinkingFundGoalsEmpty.classList.toggle('hidden', hasSinkingGoals);
+                this.dom.savingGoalsEmpty.classList.toggle('hidden', hasSavingGoals);
                 // NEW: Show/hide the entire section container
-                this.dom.sinkingFundsContainer.classList.toggle('hidden', !hasSinkingGoals);
+                this.dom.savingGoalsContainer.classList.toggle('hidden', !hasSavingGoals);
                 
                 // Render Debt Paydown Goals
-                this.dom.debtGoalDashboardList.innerHTML = '';
-                const debtGoalCategories = this.categories.filter(c => c.type === 'debt-goal');
+                this.dom.debtGoalsList.innerHTML = '';
+                const debtGoalCategories = this.categories.filter(c => c.type === 'debt');
                 let hasDebtGoals = false;
 
                 debtGoalCategories.forEach(cat => {
                     hasDebtGoals = true;
                     const envelope = this.envelopes.find(e => e.categoryId === cat.id);
-                    const totalSaved = envelope ? envelope.balance : 0;
+                    const totalPaid = envelope ? envelope.balance : 0; // This is the total paid *off*
+                    const totalDebt = cat.goalAmount || 0; // This is the "initial stock"
+                    
+                    // NEW: Find this month's contribution
+                    const budgetItem = this.budget.find(b => b.id === `debt-${cat.id}`);
+                    const thisMonthContribution = budgetItem ? budgetItem.amount : 0;
+                    
+                    const thisMonthHTML = thisMonthContribution > 0 ?
+                        `<p class="text-sm text-gray-500">${i18n.t('dashboardThisMonth')}: <span class="font-medium text-green-600">+${this.formatCurrency(thisMonthContribution)}</span></p>` :
+                        '';
+
+                    let progressHTML = '';
+                    let balanceText = this.formatCurrency(totalPaid);
+                    let remainingHTML = '';
+
+                    if (totalDebt > 0) {
+                        const remaining = totalDebt - totalPaid;
+                        const progressValue = Math.min(totalPaid, totalDebt);
+                        
+                        // "Paid / Total"
+                        balanceText = `${this.formatCurrency(totalPaid)} / ${this.formatCurrency(totalDebt)}`;
+                        
+                        // "Remaining" (the user's key request)
+                        remainingHTML = `<p class="text-sm text-gray-500 mt-1">${i18n.t('remaining')}: ${this.formatCurrency(remaining)}</p>`;
+                        
+                        progressHTML = `<progress class="w-full mt-2" value="${progressValue}" max="${totalDebt}"></progress>`;
+                    }
 
                     const card = `
                 <div class="bg-white p-4 rounded-2xl shadow hover:shadow-md transition-shadow cursor-pointer goal-card-clickable" data-category-id="${cat.id}" data-category-name="${cat.name}">
                     <div class="flex justify-between items-center">
                         <span class="font-semibold text-lg text-gray-800">${cat.name}</span>
-                        <span class="font-bold text-green-600">${this.formatCurrency(totalSaved)}</span>
+                        <span class="font-bold text-green-600 text-right">${balanceText}</span>
                     </div>
-                    <p class="text-sm text-gray-500 mt-1">${i18n.t('dashboardTotalSaved')}</p>
+                    <div class="flex justify-between items-center mt-1">
+                        <p class="text-sm text-gray-500">${i18n.t('dashboardTotalPaid')}</p>
+                        ${thisMonthHTML}
+                    </div>
+                    ${remainingHTML}
+                    ${progressHTML}
                 </div>
             `;
-                    this.dom.debtGoalDashboardList.insertAdjacentHTML('beforeend', card);
+                    this.dom.debtGoalsList.insertAdjacentHTML('beforeend', card);
                 });
-                this.dom.debtGoalDashboardEmpty.classList.toggle('hidden', hasDebtGoals);
+                this.dom.debtGoalsEmpty.classList.toggle('hidden', hasDebtGoals);
                 // NEW: Show/hide the entire section container
                 this.dom.debtGoalsContainer.classList.toggle('hidden', !hasDebtGoals);
             },
@@ -4050,9 +4623,8 @@
 
                 // --- Part 3: Render the Fixed Costs list (Expandable) ---
                 this.dom.fixedCostsList.innerHTML = '';
-                const fixedCategories = this.categories.filter(c => 
-                    c.type === 'fixed' || c.type === 'debt-payment' || c.type === 'sinking-bill'
-                );
+                // NEW: Use the correct 'bill' type
+                const fixedCategories = this.categories.filter(c => c.type === 'bill');
 
                 // Conditionally show the whole container
                 this.dom.fixedCostsContainer.classList.toggle('hidden', fixedCategories.length === 0);
@@ -4068,103 +4640,69 @@
                 });
 
 
-                // --- Part 4: Render the Assign Money Card (No Change) ---
-                this.dom.budgetVariableList.innerHTML = '';
-                const variableCategories = this.categories.filter(c => c.type === 'variable');
-                this.dom.budgetVariableEmpty.classList.toggle('hidden', variableCategories.length > 0);
+                // --- Part 4: Render the Assign Money Card (NEW v4 Logic) ---
+                
+                // Clear all lists
+                this.dom.budgetBillList.innerHTML = '';
+                this.dom.budgetEnvelopeList.innerHTML = '';
+                this.dom.budgetSavingList.innerHTML = '';
+                this.dom.budgetDebtList.innerHTML = '';
 
-                variableCategories.forEach(cat => {
-                    const budgetItem = this.budget.find(b => b.id === `variable-${cat.id}`);
+                // Get categories by new types
+                const billCategories = this.categories.filter(c => c.type === 'bill');
+                const envelopeCategories = this.categories.filter(c => c.type === 'envelope');
+                const savingCategories = this.categories.filter(c => c.type === 'saving');
+                const debtCategories = this.categories.filter(c => c.type === 'debt');
+
+                // Toggle "empty" messages
+                this.dom.budgetBillEmpty.classList.toggle('hidden', billCategories.length > 0);
+                this.dom.budgetEnvelopeEmpty.classList.toggle('hidden', envelopeCategories.length > 0);
+                this.dom.budgetSavingEmpty.classList.toggle('hidden', savingCategories.length > 0);
+                this.dom.budgetDebtEmpty.classList.toggle('hidden', debtCategories.length > 0);
+
+                // Re-usable function to build the input card
+                const createBudgetInputCard = (cat) => {
+                    const budgetItem = this.budget.find(b => b.id === `${cat.type}-${cat.id}`);
                     const amount = budgetItem ? budgetItem.amount : (cat.amount || '');
                     const placeholder = cat.amount || '0.00';
-                    const lastMonthAmount = lastMonthBudgetMap.get(`variable-${cat.id}`) || 0;
+                    const lastMonthAmount = lastMonthBudgetMap.get(`${cat.type}-${cat.id}`) || 0;
                     const lastMonthHTML = lastMonthAmount > 0 ?
                         `<p class="text-sm text-gray-500">${i18n.t('budgetLastMonth')}: ${this.formatCurrency(lastMonthAmount)}</p>` :
                         '';
+                    
+                    // Only show "suggested" for Savings goals, not debts
+                    const suggestedHTML = (cat.type === 'saving') ? this.calculateSuggestedContribution(cat) : '';
 
-                    const card = `
-                <div class="bg-white p-4 rounded-2xl shadow flex items-center space-x-3">
-                    <div class="flex-1">
-                        <label for="budget-variable-${cat.id}" class="font-medium text-gray-700">${cat.name}</label>
-                        ${lastMonthHTML}
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xl font-medium text-gray-500">${i18n.currency}</span>
-                        <input type="number" id="budget-variable-${cat.id}"
-                               data-id="${cat.id}" data-type="variable"
-                               class="budget-input w-32 p-2 border border-gray-300 rounded-lg text-right text-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                               placeholder="${placeholder}" step="0.01" min="0" value="${amount}">
-                    </div>
-                </div>
-            `;
-                    this.dom.budgetVariableList.insertAdjacentHTML('beforeend', card);
+                    return `
+                        <div class="bg-white p-4 rounded-2xl shadow flex items-center space-x-3">
+                            <div class="flex-1">
+                                <label for="budget-${cat.type}-${cat.id}" class="font-medium text-gray-700">${cat.name}</label>
+                                ${lastMonthHTML}
+                                ${suggestedHTML}
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xl font-medium text-gray-500">${i18n.currency}</span>
+                                <input type="number" id="budget-${cat.type}-${cat.id}"
+                                       data-id="${cat.id}" data-type="${cat.type}"
+                                       class="budget-input w-32 p-2 border border-gray-300 rounded-lg text-right text-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                                       placeholder="${placeholder}" step="0.01" min="0" value="${amount}">
+                            </div>
+                        </div>
+                    `;
+                };
+
+                // Render all 4 lists
+                billCategories.forEach(cat => {
+                    this.dom.budgetBillList.insertAdjacentHTML('beforeend', createBudgetInputCard(cat));
                 });
-
-                // Render Sinking Fund Goal Inputs
-                this.dom.budgetSinkingFundList.innerHTML = '';
-                const sinkingGoalCategories = this.categories.filter(c => c.type === 'sinking-goal');
-                this.dom.budgetSinkingFundEmpty.classList.toggle('hidden', sinkingGoalCategories.length > 0);
-
-                sinkingGoalCategories.forEach(cat => {
-                    const budgetItem = this.budget.find(b => b.id === `sinking-goal-${cat.id}`);
-                    const amount = budgetItem ? budgetItem.amount : (cat.amount || '');
-                    const placeholder = cat.amount || '0.00';
-                    const lastMonthAmount = lastMonthBudgetMap.get(`sinking-goal-${cat.id}`) || 0;
-                    const lastMonthHTML = lastMonthAmount > 0 ?
-                        `<p class="text-sm text-gray-500">${i18n.t('budgetLastMonth')}: ${this.formatCurrency(lastMonthAmount)}</p>` :
-                        '';
-
-                    const suggestedHTML = this.calculateSuggestedContribution(cat); // <-- ADD THIS
-
-                    const card = `
-                <div class="bg-white p-4 rounded-2xl shadow flex items-center space-x-3">
-                    <div class="flex-1">
-                        <label for="budget-sinking-goal-${cat.id}" class="font-medium text-gray-700">${cat.name}</label>
-                        ${lastMonthHTML}
-                        ${suggestedHTML} 
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xl font-medium text-gray-500">${i18n.currency}</span>
-                        <input type="number" id="budget-sinking-goal-${cat.id}"
-                               data-id="${cat.id}" data-type="sinking-goal"
-                               class="budget-input w-32 p-2 border border-gray-300 rounded-lg text-right text-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                               placeholder="${placeholder}" step="0.01" min="0" value="${amount}">
-                    </div>
-                </div>
-            `;
-                    this.dom.budgetSinkingFundList.insertAdjacentHTML('beforeend', card);
+                envelopeCategories.forEach(cat => {
+                    this.dom.budgetEnvelopeList.insertAdjacentHTML('beforeend', createBudgetInputCard(cat));
                 });
-
-                // Render Debt Paydown Goal Inputs
-                this.dom.budgetDebtGoalList.innerHTML = '';
-                const debtGoalCategories = this.categories.filter(c => c.type === 'debt-goal');
-                this.dom.budgetDebtGoalEmpty.classList.toggle('hidden', debtGoalCategories.length > 0);
-
-                debtGoalCategories.forEach(cat => {
-                    const budgetItem = this.budget.find(b => b.id === `debt-goal-${cat.id}`);
-                    const amount = budgetItem ? budgetItem.amount : (cat.amount || '');
-                    const placeholder = cat.amount || '0.00';
-                    const lastMonthAmount = lastMonthBudgetMap.get(`debt-goal-${cat.id}`) || 0;
-                    const lastMonthHTML = lastMonthAmount > 0 ?
-                        `<p class="text-sm text-gray-500">${i18n.t('budgetLastMonth')}: ${this.formatCurrency(lastMonthAmount)}</p>` :
-                        '';
-
-                    const card = `
-                <div class="bg-white p-4 rounded-2xl shadow flex items-center space-x-3">
-                    <div class="flex-1">
-                        <label for="budget-debt-goal-${cat.id}" class="font-medium text-gray-700">${cat.name}</label>
-                        ${lastMonthHTML}
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xl font-medium text-gray-500">${i18n.currency}</span>
-                        <input type="number" id="budget-debt-goal-${cat.id}"
-                               data-id="${cat.id}" data-type="debt-goal"
-                               class="budget-input w-32 p-2 border border-gray-300 rounded-lg text-right text-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                               placeholder="${placeholder}" step="0.01" min="0" value="${amount}">
-                    </div>
-                </div>
-            `;
-                    this.dom.budgetDebtGoalList.insertAdjacentHTML('beforeend', card);
+                savingCategories.forEach(cat => {
+                    this.dom.budgetSavingList.insertAdjacentHTML('beforeend', createBudgetInputCard(cat));
+                });
+                debtCategories.forEach(cat => {
+                    this.dom.budgetDebtList.insertAdjacentHTML('beforeend', createBudgetInputCard(cat));
                 });
 
                 this.updateBudgetSummary();
@@ -4198,59 +4736,49 @@
              */
             renderManageCategoriesModal() {
                 // Clear all lists
-                this.dom.modalManageFixedList.innerHTML = '';
-                this.dom.modalManageDebtPaymentList.innerHTML = '';
-                this.dom.modalManageSinkingBillList.innerHTML = '';
-                this.dom.modalManageVariableList.innerHTML = '';
-                this.dom.modalManageSinkingGoalList.innerHTML = '';
-                this.dom.modalManageDebtGoalList.innerHTML = '';
+                this.dom.modalManageBillList.innerHTML = '';
+                this.dom.modalManageEnvelopeList.innerHTML = '';
+                this.dom.modalManageSavingList.innerHTML = '';
+                this.dom.modalManageDebtList.innerHTML = '';
 
                 // Get icon SVGs
                 const iconDelete = document.getElementById('icon-delete').outerHTML;
                 const iconEdit = document.getElementById('icon-edit').outerHTML;
-                const iconFixed = document.getElementById('icon-fixed').outerHTML;
-                const iconDebtPayment = document.getElementById('icon-debt-payment').outerHTML;
-                const iconSinkingBill = document.getElementById('icon-sinking-bill').outerHTML;
-                const iconVariable = document.getElementById('icon-variable').outerHTML;
-                const iconSinkingGoal = document.getElementById('icon-sinking-goal').outerHTML;
-                const iconDebtGoal = document.getElementById('icon-debt-goal').outerHTML;
+                
+                // --- Re-map icons to our 4 types ---
+                const icons = {
+                    bill: document.getElementById('icon-fixed').outerHTML,
+                    envelope: document.getElementById('icon-variable').outerHTML,
+                    saving: document.getElementById('icon-sinking-goal').outerHTML,
+                    debt: document.getElementById('icon-debt-goal').outerHTML
+                };
 
                 // Loop through categories and render
-                let hasFixed = false, hasDebtPayment = false, hasSinkingBill = false, hasVariable = false, hasSinkingGoal = false, hasDebtGoal = false;
+                let hasBill = false, hasEnvelope = false, hasSaving = false, hasDebt = false;
 
                 this.categories.forEach(cat => {
                     let listElement, icon;
 
                     switch (cat.type) {
-                        case 'fixed':
-                            listElement = this.dom.modalManageFixedList;
-                            icon = iconFixed;
-                            hasFixed = true;
+                        case 'bill':
+                            listElement = this.dom.modalManageBillList;
+                            icon = icons.bill;
+                            hasBill = true;
                             break;
-                        case 'debt-payment':
-                            listElement = this.dom.modalManageDebtPaymentList;
-                            icon = iconDebtPayment;
-                            hasDebtPayment = true;
+                        case 'envelope':
+                            listElement = this.dom.modalManageEnvelopeList;
+                            icon = icons.envelope;
+                            hasEnvelope = true;
                             break;
-                        case 'sinking-bill':
-                            listElement = this.dom.modalManageSinkingBillList;
-                            icon = iconSinkingBill;
-                            hasSinkingBill = true;
+                        case 'saving':
+                            listElement = this.dom.modalManageSavingList;
+                            icon = icons.saving;
+                            hasSaving = true;
                             break;
-                        case 'variable':
-                            listElement = this.dom.modalManageVariableList;
-                            icon = iconVariable;
-                            hasVariable = true;
-                            break;
-                        case 'sinking-goal':
-                            listElement = this.dom.modalManageSinkingGoalList;
-                            icon = iconSinkingGoal;
-                            hasSinkingGoal = true;
-                            break;
-                        case 'debt-goal':
-                            listElement = this.dom.modalManageDebtGoalList;
-                            icon = iconDebtGoal;
-                            hasDebtGoal = true;
+                        case 'debt':
+                            listElement = this.dom.modalManageDebtList;
+                            icon = icons.debt;
+                            hasDebt = true;
                             break;
                         default:
                             return;
@@ -4279,14 +4807,15 @@
                     listElement.insertAdjacentHTML('beforeend', item);
                 });
 
-                // --- NEW: Conditional UI ---
                 // Show/hide sections based on if they have items
-                this.dom.modalManageContainerFixed.classList.toggle('hidden', !hasFixed);
-                this.dom.modalManageContainerDebtPayment.classList.toggle('hidden', !hasDebtPayment);
-                this.dom.modalManageContainerSinkingBill.classList.toggle('hidden', !hasSinkingBill);
-                this.dom.modalManageContainerVariable.classList.toggle('hidden', !hasVariable);
-                this.dom.modalManageContainerSinkingGoal.classList.toggle('hidden', !hasSinkingGoal);
-                this.dom.modalManageContainerDebtGoal.classList.toggle('hidden', !hasDebtGoal);
+                this.dom.modalManageContainerBill.classList.toggle('hidden', !hasBill);
+                this.dom.modalManageContainerEnvelope.classList.toggle('hidden', !hasEnvelope);
+                this.dom.modalManageContainerSaving.classList.toggle('hidden', !hasSaving);
+                this.dom.modalManageContainerDebt.classList.toggle('hidden', !hasDebt);
+                
+                // Show/hide the "empty" messages for each tab
+                this.dom.modalManageBillsEmpty.classList.toggle('hidden', hasBill);
+                this.dom.modalManageEnvelopesEmpty.classList.toggle('hidden', hasEnvelope || hasSaving || hasDebt);
             },
 
             /**
@@ -4416,8 +4945,56 @@
              * NEW: Show the App Settings modal
              */
             showSettingsModal() {
+                // Reset to the first tab every time it's opened
+                this.switchSettingsTab('general');
                 this.dom.appSettingsModal.classList.remove('hidden');
                 this.dom.appSettingsModal.classList.add('flex');
+            },
+
+            /**
+             * NEW: Handle clicks on the settings modal tabs
+             */
+            handleSettingsTabClick(e) {
+                const button = e.target.closest('.settings-tab-btn');
+                if (!button) return;
+                
+                const tabName = button.dataset.tab;
+                this.switchSettingsTab(tabName);
+            },
+
+            /**
+             * NEW: Switch the active tab in the settings modal
+             */
+            switchSettingsTab(tabName) {
+                // 1. Hide all panels
+                this.dom.settingsTabPanels.forEach(panel => {
+                    panel.classList.add('hidden');
+                    panel.classList.remove('active');
+                });
+                
+                // 2. Deactivate all tab buttons
+                this.dom.settingsTabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'border-pink-500', 'text-pink-600');
+                    btn.classList.add('border-transparent', 'text-gray-500', 'hover:border-gray-300');
+                });
+                
+                // 3. Show the target panel
+                // REMAP "data" to "backup" for our logic
+                const panelId = (tabName === 'data') ? 'backup' : tabName;
+                const targetPanel = document.getElementById(`settings-tab-${panelId}`);
+                if (targetPanel) {
+                    targetPanel.classList.remove('hidden');
+                    targetPanel.classList.add('active');
+                }
+                
+                // 4. Activate the target tab button
+                // REMAP "data" to "backup" for our logic
+                const buttonSelector = (tabName === 'data') ? 'backup' : tabName;
+                const targetButton = this.dom.settingsTabNav.querySelector(`[data-tab="${buttonSelector}"]`);
+                if (targetButton) {
+                    targetButton.classList.add('active', 'border-pink-500', 'text-pink-600');
+                    targetButton.classList.remove('border-transparent', 'text-gray-500', 'hover:border-gray-300');
+                }
             },
 
             /**
@@ -4444,6 +5021,63 @@
             /**
              * NEW: Shows the PWA install prompt when our button is clicked
              */
+            /**
+             * NEW: Initiates restore from the onboarding screen.
+             */
+            onOnboardingRestore() {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.json,application/json';
+                fileInput.style.display = 'none';
+                
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = async (fileEvent) => {
+                        try {
+                            const json = fileEvent.target.result;
+                            // This is the same function used by the main settings
+                            await this.processRestoreData(json);
+                            
+                            // Now, instead of reloading, we complete the onboarding
+                            // This will load the restored data and show the app
+                            await this.completeOnboarding('dashboard-page');
+                            
+                            // We can't use showToast here, but we can after
+                            // completeOnboarding finishes and the app is rendered
+                            setTimeout(() => {
+                                this.showToast(i18n.t('toastRestoreSuccess'));
+                            }, 500); // Give app time to fade in
+                            
+                        } catch (err) {
+                            console.error("Restore failed:", err);
+                            // We don't have the toast manager, so alert is a safe fallback
+                            // We use the English key as a fallback for the i18n key
+                            const errorKey = i18n.t('toastRestoreError') || 'Error: Invalid or corrupt backup file.';
+                            alert(errorKey + ' ' + err.message);
+                        } finally {
+                            // Clean up the file input
+                            if (fileInput.parentNode) {
+                                fileInput.parentNode.removeChild(fileInput);
+                            }
+                        }
+                    };
+                    reader.onerror = () => {
+                        const errorKey = i18n.t('toastRestoreError') || 'Error: Invalid or corrupt backup file.';
+                        alert(errorKey);
+                        if (fileInput.parentNode) {
+                            fileInput.parentNode.removeChild(fileInput);
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+                
+                document.body.appendChild(fileInput);
+                fileInput.click();
+            },
+
             async onInstallPwa() {
                 if (!this.deferredPwaPrompt) {
                     return;
@@ -4471,7 +5105,7 @@
                 const notes = this.dom.expenseNotes.value;
 
                 if (!categoryId || isNaN(amount) || amount <= 0 || !date) {
-                    this.showToast("Invalid amount or date.");
+                    this.showToast(i18n.t('toastInvalidAmountDate'));
                     return;
                 }
 
@@ -4500,7 +5134,7 @@
                 const month = this.getCurrentMonthString();
 
                 if (!source || isNaN(amount) || amount <= 0) {
-                    this.showToast("Invalid source or amount.");
+                    this.showToast(i18n.t('toastInvalidSourceAmount'));
                     return;
                 }
                 
@@ -4553,7 +5187,7 @@
                 const month = this.getCurrentMonthString();
 
                 if (!id || !source || isNaN(amount) || amount <= 0) {
-                    this.showToast("Invalid source or amount.");
+                    this.showToast(i18n.t('toastInvalidSourceAmount'));
                     return;
                 }
                 
@@ -4600,7 +5234,7 @@
                         }
                     } catch (err) {
                         console.error("Error deleting income:", err);
-                        this.showToast("Error deleting income item.");
+                        this.showToast(i18n.t('toastErrorDeleteIncome'));
                     }
                 }
             },
@@ -4617,7 +5251,7 @@
                     localStorage.setItem('bunnyBudgetSalary', newSalary);
                 } catch (e) { }
 
-                this.dom.autoSaveStatus.textContent = "Saved!"; // Update feedback
+                this.dom.autoSaveStatus.textContent = i18n.t('saved'); // Update feedback
 
                 // Re-render the manage page to update summaries
                 this.renderManagePage();
@@ -4628,78 +5262,128 @@
             },
 
             /**
-             * Show/hide the 'Total Goal' field based on category type
-             * @param {string} modalType - 'add' or 'edit'
+             * NEW: Handles clicking on the new category type buttons
              */
-            toggleGoalAmountField(modalType = 'add') {
-                let type, amountGroup, dateGroup;
-                if (modalType === 'add') {
-                    type = this.dom.categoryType.value;
-                    amountGroup = this.dom.categoryGoalAmountGroup;
-                    dateGroup = this.dom.categoryGoalDateGroup; // NEW
-                } else {
-                    type = this.dom.editCategoryType.value;
-                    amountGroup = this.dom.editCategoryGoalAmountGroup;
-                    dateGroup = this.dom.editCategoryGoalDateGroup; // NEW
-                }
+            handleCategoryTypeClick(e) {
+                const button = e.target.closest('.category-type-btn');
+                if (!button) return;
+
+                const newType = button.dataset.type;
                 
-                if (type === 'sinking-goal') {
-                    amountGroup.classList.remove('hidden');
-                    dateGroup.classList.remove('hidden'); // NEW
+                // 1. Update the hidden input
+                document.getElementById('category-type').value = newType;
+
+                // 2. Update button UI
+                this.dom.categoryTypeSelector.querySelectorAll('.category-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+                
+                // 3. Update description box
+                const descKey = 'categoryType' + newType.charAt(0).toUpperCase() + newType.slice(1) + 'Desc';
+                this.dom.categoryTypeDescription.textContent = i18n.t(descKey);
+                this.dom.categoryTypeDescription.setAttribute('data-i18n', descKey);
+
+                // 4. Show/Hide Optional Fields
+                if (newType === 'saving' || newType === 'debt') {
+                    this.dom.categoryOptionalToggleBtn.classList.remove('hidden'); // Show the button
                 } else {
-                    amountGroup.classList.add('hidden');
-                    dateGroup.classList.add('hidden'); // NEW
+                    this.dom.categoryOptionalToggleBtn.classList.add('hidden'); // Hide the button
+                    // Also hide the details if they were open
+                    this.dom.categoryOptionalDetails.classList.add('hidden');
+                    this.dom.categoryOptionalChevron.classList.remove('rotate-180');
                 }
             },
 
             /**
-             * Handle Add Category form submission
+             * Handle Add Category form submission (NEW v4 LOGIC)
              * @param {Event} e - The form event
              */
             async onAddCategory(e) {
                 e.preventDefault();
+                
+                // 1. Get values from the new form
                 const name = this.dom.categoryName.value;
-                const type = this.dom.categoryType.value;
-                const amount = parseFloat(this.dom.categoryAmount.value) || 0;
-                const goalAmount = parseFloat(this.dom.categoryGoalAmount.value) || 0;
-                const goalDate = this.dom.categoryGoalDate.value || null; // NEW
+                const type = document.getElementById('category-type').value; // Read from hidden input
+                const amount = parseFloat(this.dom.categoryAmount.value) || 0; // This is the 'Monthly Planned Amount'
+                
+                // 2. Get "Initial Stock" / Optional values
+                let goalAmount = 0;
+                let currentBalance = 0;
+                let goalDate = null;
+
+                if (type === 'saving' || type === 'debt') {
+                    goalAmount = parseFloat(this.dom.categoryGoalAmount.value) || 0;
+                    currentBalance = parseFloat(this.dom.categoryCurrentBalance.value) || 0;
+                    goalDate = this.dom.categoryGoalDate.value || null;
+                }
 
                 if (!name) {
-                    this.showToast("Please enter a category name.");
+                    this.showToast(i18n.t('toastEnterCategoryName'));
                     return;
                 }
 
-                const newCategory = { name, type, amount, goalAmount, goalDate }; // NEW
+                // 3. Create the new category object
+                const newCategory = { 
+                    name, 
+                    type, // Our new types: 'bill', 'envelope', 'saving', 'debt'
+                    amount, // This is now just the *default* planned amount
+                    goalAmount, 
+                    goalDate
+                    // We don't save 'currentBalance' to the category, we save it to the envelope
+                };
+                
                 const newId = await dbStore.addCategory(newCategory);
                 this.categories.push({ id: newId, ...newCategory });
 
-                if (type === 'variable' || type === 'sinking-goal' || type === 'debt-goal') {
-                    const newEnvelope = { categoryId: newId, type: type, balance: 0 };
-                    await dbStore.saveEnvelope(newEnvelope);
-                    this.envelopes.push(newEnvelope);
-                }
+                // 4. Create its associated envelope with the correct "Initial Stock"
+                // ALL types (even Bills) get an envelope now. This simplifies logic.
+                const newEnvelope = { 
+                    categoryId: newId, 
+                    type: type, 
+                    balance: currentBalance // <-- THIS IS THE "INITIAL STOCK" FIX
+                };
+                await dbStore.saveEnvelope(newEnvelope);
+                this.envelopes.push(newEnvelope);
 
                 this.showToast(i18n.t('toastCategoryAdded'));
-                this.dom.addCategoryForm.reset();
-                this.dom.categoryType.value = type;
+                
+                // --- FIX: Only reset the input fields, not the type ---
+                this.dom.categoryName.value = '';
+                this.dom.categoryAmount.value = '';
+                this.dom.categoryGoalAmount.value = '';
+                this.dom.categoryCurrentBalance.value = '';
+                // --- End Fix ---
 
-                // --- Add new category to budget state if it has a default amount ---
-                if (newCategory.amount > 0 && (type === 'variable' || type === 'sinking-goal' || type === 'debt-goal')) {
-                    // Create the new budget item
+                // 5. Add to this month's budget if a planned amount was set
+                // NEW: Define which types are "budgettable" (i.e., not 'bill')
+                const budgettableTypes = ['envelope', 'saving', 'debt'];
+                
+                // This 'if' block now ONLY runs for envelope, saving, and debt.
+                // This fixes the "Ghost Bill" bug.
+                if (amount > 0 && budgettableTypes.includes(type)) {
+                    
+                    // Add the item to the budget
                     const newBudgetItem = {
                         id: `${type}-${newId}`,
                         categoryId: newId,
                         type: type,
-                        amount: newCategory.amount
+                        amount: amount
                     };
-                    // Add it to the local state.
-                    // DO NOT SAVE. renderAllPages() will update the DOM,
-                    // and the next onAutoSaveBudget() will save it correctly.
                     this.budget.push(newBudgetItem);
+                    await dbStore.saveBudget(this.budget);
+                    
+                    // --- THIS IS YOUR "AUTO-UPDATE" FEATURE ---
+                    // We add the first month's budgeted amount ('amount')
+                    // on top of the 'currentBalance' already in the envelope.
+                    newEnvelope.balance += amount; // e.g., 1000 + 50 = 1050
+                    await dbStore.saveEnvelope(newEnvelope);
+                    
+                    // Update the local state
+                    this.envelopes = this.envelopes.map(e => e.categoryId === newId ? newEnvelope : e);
                 }
-                // --- End Fix ---
-
-                this.renderAllPages(); // Use renderAllPages to update both dashboard and manage page
+                
+                this.renderAllPages(); // Re-render everything with the new category
             },
 
             /**
@@ -4843,7 +5527,7 @@
                     this.renderAllPages();
                 } catch (err) {
                     console.error("Error deleting category:", err);
-                    this.showToast("Error deleting category.");
+                    this.showToast(i18n.t('toastErrorDeleteCategory'));
                 }
             },
 
@@ -5010,7 +5694,7 @@
 
                 } catch (error) {
                     console.error("Reset failed:", error.message);
-                    this.showToast("Reset failed. Please try reloading the app.");
+                    this.showToast(i18n.t('toastResetFailed'));
                 }
             },
 
@@ -5026,6 +5710,71 @@
                 const categoryId = parseInt(card.dataset.categoryId);
                 const categoryName = card.dataset.categoryName;
                 this.showTransactionHistory(categoryId, categoryName);
+            },
+
+            /**
+             * NEW: Toggles the main dashboard summary between Spent and Available
+             */
+            onToggleDashboardSummary() {
+                const currentView = this.dom.dashboardToggleArea.dataset.view;
+                
+                const spent = parseFloat(this.dom.dashboardSpentValue.value);
+                const available = parseFloat(this.dom.dashboardAvailableValue.value);
+
+                if (currentView === 'spent') {
+                    // Switch to "Available" view
+                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardRemaining') || 'Total Available';
+                    this.dom.dashboardToggleValue.textContent = this.formatCurrency(available);
+                    this.dom.dashboardToggleValue.classList.remove('text-gray-800');
+                    this.dom.dashboardToggleValue.classList.add('text-green-600');
+                    this.dom.dashboardToggleArea.dataset.view = 'available';
+                } else {
+                    // Switch back to "Spent" view
+                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardTotalSpent');
+                    this.dom.dashboardToggleValue.textContent = this.formatCurrency(spent);
+                    this.dom.dashboardToggleValue.classList.remove('text-green-600');
+                    this.dom.dashboardToggleValue.classList.add('text-gray-800');
+                    this.dom.dashboardToggleArea.dataset.view = 'spent';
+                }
+            },
+
+            /**
+             * NEW: Handles the "Accordion" logic for the assign money lists
+             */
+            handleAssignAccordionClick(e) {
+                const button = e.target.closest('.assign-toggle-btn');
+                if (!button) return;
+
+                // We are already inside a form, so no page refresh.
+                // e.preventDefault() is not needed since we set type="button".
+
+                const targetDetailsId = button.dataset.targetDetails;
+                const targetChevronId = button.dataset.targetChevron;
+                
+                const targetDetailsEl = this.dom[targetDetailsId];
+                const targetChevronEl = this.dom[targetChevronId];
+                
+                // Check if the one we clicked is *already* open
+                const isAlreadyOpen = !targetDetailsEl.classList.contains('hidden');
+
+                // 1. Close all sections
+                this.dom.assignBillsDetails.classList.add('hidden');
+                this.dom.assignEnvelopesDetails.classList.add('hidden');
+                this.dom.assignSavingsDetails.classList.add('hidden');
+                this.dom.assignDebtsDetails.classList.add('hidden');
+                
+                // 2. Reset all chevrons
+                this.dom.assignBillsChevron.classList.remove('rotate-180');
+                this.dom.assignEnvelopesChevron.classList.remove('rotate-180');
+                this.dom.assignSavingsChevron.classList.remove('rotate-180');
+                this.dom.assignDebtsChevron.classList.remove('rotate-180');
+
+                // 3. If it was NOT already open, open it.
+                // (If it was open, it will just close, which is what we want)
+                if (!isAlreadyOpen) {
+                    targetDetailsEl.classList.remove('hidden');
+                    targetChevronEl.classList.add('rotate-180');
+                }
             },
 
             /**
@@ -5148,7 +5897,7 @@
                 
                 // Allow saving if it's an inflow (amount < 0), but not if it's a 0 amount expense
                 if (!id || isNaN(amount) || (amount === 0) || !date) {
-                    this.showToast("Invalid amount or date.");
+                    this.showToast(i18n.t('toastInvalidAmountDate'));
                     return;
                 }
                 // --- END FIX ---
@@ -5228,7 +5977,7 @@
                 if (!originalTx) return;
 
                 if (!date) {
-                    this.showToast("Invalid date.");
+                    this.showToast(i18n.t('toastInvalidDate'));
                     return;
                 }
 
@@ -5504,12 +6253,12 @@
                 const envelope = this.envelopes.find(e => e.categoryId === categoryId);
                 
                 if (!envelope || isNaN(amount) || amount <= 0 || !date) {
-                    this.showToast("Invalid amount or date.");
+                    this.showToast(i18n.t('toastInvalidAmountDate'));
                     return;
                 }
                 
                 if (amount > envelope.balance) {
-                    this.showToast("Cannot withdraw more than the goal balance.");
+                    this.showToast(i18n.t('toastWithdrawLimit'));
                     return;
                 }
                 
@@ -5532,7 +6281,7 @@
                 }
                 
                 this.hideWithdrawGoalModal();
-                this.showToast("Expense logged from goal!");
+                this.showToast(i18n.t('toastExpenseLogged'));
                 this.renderDashboard();
             },
             
@@ -5573,12 +6322,12 @@
                 const goalEnvelope = this.envelopes.find(e => e.categoryId === categoryId);
                 
                 if (!goalEnvelope || !targetCategoryId || isNaN(amount) || amount <= 0 || !date) {
-                    this.showToast("Invalid amount, date, or category.");
+                    this.showToast(i18n.t('toastInvalidTransfer'));
                     return;
                 }
                 
                 if (amount > goalEnvelope.balance) {
-                    this.showToast("Cannot transfer more than the goal balance.");
+                    this.showToast(i18n.t('toastWithdrawLimit'));
                     return;
                 }
                 
@@ -5610,7 +6359,7 @@
                 }
                 
                 this.hideWithdrawGoalModal();
-                this.showToast("Funds transferred to envelope!");
+                this.showToast(i18n.t('toastFundsTransferred'));
                 this.renderDashboard();
             },
 
@@ -5642,19 +6391,9 @@
              */
             calculateBudget() {
                 // 1. Calculate total fixed costs
-                const fixedCosts = this.categories
-                    .filter(c => c.type === 'fixed')
+                const totalFixed = this.categories
+                    .filter(c => c.type === 'bill') // NEW: Simplified to one type
                     .reduce((sum, c) => sum + (c.amount || 0), 0);
-
-                const sinkingFundBills = this.categories
-                    .filter(c => c.type === 'sinking-bill')
-                    .reduce((sum, c) => sum + (c.amount || 0), 0);
-
-                const debtPayments = this.categories
-                    .filter(c => c.type === 'debt-payment')
-                    .reduce((sum, c) => sum + (c.amount || 0), 0);
-
-                const totalFixed = fixedCosts + sinkingFundBills + debtPayments;
 
                 // 2. Calculate total income
                 const otherIncomeTotal = this.otherIncome.reduce((sum, income) => sum + income.amount, 0);
@@ -5929,7 +6668,9 @@
                                 backgroundColor: 'rgba(236, 72, 153, 0.1)',
                                 fill: true,
                                 tension: 0.1,
-                                order: 1
+                                order: 1,
+                                pointRadius: 4, // <-- Make dot visible
+                                pointHitRadius: 15 // <-- Make dot easy to tap
                             },
                             {
                                 type: 'bar',
@@ -5957,22 +6698,21 @@
                                     padding: 20 
                                 }
                             },
-                            // --- NEW ZOOM OPTIONS ---
+                            // --- FIX: Mobile-friendly Zoom Options ---
                             zoom: {
                                 pan: {
-                                    enabled: true,
-                                    mode: 'x', // Allow panning left/right
+                                    enabled: true, // Allow panning (drag)
+                                    mode: 'x',
                                     threshold: 5,
                                 },
                                 zoom: {
                                     wheel: {
-                                        enabled: true,
+                                        enabled: false, // <-- Disable wheel zoom
                                     },
                                     pinch: {
-                                        enabled: true, // Allow pinch-to-zoom
-                                        mode: 'x',
+                                        enabled: false // <-- Disable pinch zoom
                                     },
-                                    mode: 'x', // Zoom the X-axis (time)
+                                    mode: 'x',
                                 }
                             }
                             // --- END NEW ZOOM OPTIONS ---
@@ -6029,7 +6769,7 @@
                     }
                 }
 
-                this.dom.statsCategorySelect.innerHTML = `<option value="none">Select a category...</option>`;
+                this.dom.statsCategorySelect.innerHTML = `<option value="none">${i18n.t('statsSelectCategory')}</option>`;
 
                 // Helper to create optgroups
                 const createOptgroup = (label, categories) => {
@@ -6096,9 +6836,9 @@
                                   .categories.find(c => c.name === selectedCategoryName);
                 
                 let chartLabel = selectedCategoryName;
-                if (catInfo.type === 'variable') chartLabel = `Spent in ${selectedCategoryName}`;
-                else if (catInfo.type.includes('goal')) chartLabel = `Saved in ${selectedCategoryName}`;
-                else chartLabel = `Paid for ${selectedCategoryName}`;
+                if (catInfo.type === 'variable') chartLabel = `${i18n.t('statsChartSpentIn')} ${selectedCategoryName}`;
+                else if (catInfo.type.includes('goal')) chartLabel = `${i18n.t('statsChartSavedIn')} ${selectedCategoryName}`;
+                else chartLabel = `${i18n.t('statsChartPaidFor')} ${selectedCategoryName}`;
 
 
                 this.categoryChart = new Chart(this.dom.statsCategoryChart.getContext('2d'), {
@@ -6112,7 +6852,9 @@
                                 borderColor: 'rgba(236, 72, 153, 1)', 
                                 backgroundColor: 'rgba(236, 72, 153, 0.1)',
                                 fill: true,
-                                tension: 0.1
+                                tension: 0.1,
+                                pointRadius: 4, // <-- Make dot visible
+                                pointHitRadius: 15 // <-- Make dot easy to tap
                             }
                         ]
                     },
@@ -6126,20 +6868,19 @@
                                     padding: 20
                                 }
                             },
-                            // --- NEW ZOOM OPTIONS ---
+                            // --- FIX: Mobile-friendly Zoom Options ---
                             zoom: {
                                 pan: {
-                                    enabled: true,
+                                    enabled: true, // Allow panning (drag)
                                     mode: 'x',
                                     threshold: 5,
                                 },
                                 zoom: {
                                     wheel: {
-                                        enabled: true,
+                                        enabled: false, // <-- Disable wheel zoom
                                     },
                                     pinch: {
-                                        enabled: true,
-                                        mode: 'x',
+                                        enabled: false // <-- Disable pinch zoom
                                     },
                                     mode: 'x',
                                 }
@@ -6160,6 +6901,478 @@
                     }
                 });
             },
+            /**
+             * NEW: Handle clicks on the +/- zoom buttons
+             */
+            handleChartZoom(chart, zoomLevel) {
+                if (chart) {
+                    chart.zoom(zoomLevel);
+                }
+            },
+            
+            /**
+             * NEW: Handle clicks on the Reset zoom button
+             */
+            handleChartReset(chart) {
+                if (chart) {
+                    chart.resetZoom();
+                }
+            },
+
+            /**
+             * NEW: Creates a backup of all user data.
+             */
+            async onBackupData() {
+                try {
+                    const backupObject = await this.createBackupObject();
+                    const jsonString = JSON.stringify(backupObject, null, 2);
+                    
+                    const now = new Date();
+                    const dateString = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+                    const filename = `bunny_budget_backup_${dateString}.json`;
+                    
+                    this.triggerDownload(jsonString, filename);
+                    this.showToast(i18n.t('toastBackupSuccess'));
+                } catch (e) {
+                    console.error("Backup failed:", e);
+                    this.showToast("Backup failed. See console for details.");
+                }
+            },
+
+            /**
+             * NEW: Gathers all data from IndexedDB stores into a single object.
+             */
+            async createBackupObject() {
+                // List of ALL stores to back up
+                const storesToBackup = [
+                    'categories', 'transactions', 'settings', 'budget',
+                    'otherIncome', 'envelopes', 'bunnyCoins', 'goalTransactions',
+                    'monthlySnapshots'
+                ];
+                
+                const backupData = {
+                    version: dbStore.version, // Store the DB version
+                    exportDate: new Date().toISOString(),
+                    data: {}
+                };
+
+                // Use a single transaction to read all stores
+                return new Promise((resolve, reject) => {
+                    const transaction = dbStore.db.transaction(storesToBackup, 'readonly');
+                    transaction.onerror = (event) => reject(transaction.error);
+
+                    let storesCompleted = 0;
+                    
+                    storesToBackup.forEach(storeName => {
+                        const store = transaction.objectStore(storeName);
+                        const request = store.getAll();
+                        
+                        request.onsuccess = () => {
+                            backupData.data[storeName] = request.result;
+                            storesCompleted++;
+                            
+                            if (storesCompleted === storesToBackup.length) {
+                                resolve(backupData);
+                            }
+                        };
+                        request.onerror = (event) => reject(event.target.error);
+                    });
+                });
+            },
+
+            /**
+             * MODIFIED: Triggers a file download in the browser.
+             * Now accepts a MIME type for CSV or JSON.
+             */
+            triggerDownload(content, filename, mimeType = 'application/json') {
+                const a = document.createElement('a');
+                const blob = new Blob([content], { type: mimeType });
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+            },
+
+            /**
+             * NEW: Initiates the restore process by creating a file input.
+             */
+            onRestoreData() {
+                // Create a hidden file input
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.json,application/json';
+                fileInput.style.display = 'none';
+                
+                // Add listener for when a file is selected
+                fileInput.addEventListener('change', (e) => this.onRestoreFileSelected(e));
+                
+                document.body.appendChild(fileInput);
+                fileInput.click(); // Trigger the file picker
+                document.body.removeChild(fileInput); // Clean up
+            },
+            
+            /**
+             * NEW: Handles the selected file for restore.
+             */
+            onRestoreFileSelected(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const json = e.target.result;
+                        await this.processRestoreData(json);
+                        
+                        this.showToast(i18n.t('toastRestoreSuccess'));
+                        // Reload the app to apply all restored data
+                        setTimeout(() => window.location.reload(), 1500);
+                        
+                    } catch (err) {
+                        console.error("Restore failed:", err);
+                        this.showToast(i1Errors.t('toastRestoreError'));
+                    }
+                };
+                reader.onerror = () => {
+                    console.error("Failed to read file");
+                    this.showToast(i18n.t('toastRestoreError'));
+                };
+                reader.readAsText(file);
+            },
+            
+            /**
+             * NEW: Migrates a backup object (in memory) from an older version
+             * to the current database version.
+             */
+            migrateBackupData(backupObject, backupVersion, currentVersion) {
+                let data = backupObject.data;
+
+                // This is a "fall-through" switch. It runs all required
+                // migration steps in order.
+                // e.g., A v7 backup needs to run case 7, case 8, case 9, etc.
+                
+                switch (backupVersion) {
+                    // case 1:
+                    //    // M_igrations from v1 to v2
+                    //    break;
+                    // case 2:
+                    //    // M_igrations from v2 to v3
+                    //    break;
+                    
+                    // --- HYPOTHETICAL EXAMPLE ---
+                    // Let's say in v8, we renamed 'bunnyCoins' to 'coinLedger'
+                    // and added a 'reason' field.
+                    /*
+                    case 7:
+                        console.log("Applying v7 -> v8 migration...");
+                        // 1. Rename the store
+                        data.coinLedger = data.bunnyCoins.map(coinEntry => {
+                            // 2. Add the new 'reason' field with a default
+                            return {
+                                ...coinEntry,
+                                reason: coinEntry.rollover > 0 ? "Monthly rollover" : "Unknown"
+                            };
+                        });
+                        // 3. Delete the old store data
+                        delete data.bunnyCoins;
+                        
+                        // We fall through to the next case...
+                    
+                    case 8:
+                        console.log("Applying v8 -> v9 migration...");
+                        // e.g., Maybe we split 'transactions' into 'inflows' and 'outflows'
+                        // data.inflows = data.transactions.filter(t => t.amount < 0);
+                        // data.outflows = data.transactions.filter(t => t.amount >= 0);
+                        // delete data.transactions;
+                        break; // This was the last migration
+                    */
+                    
+                    default:
+                        // This case (e.g., v7) has no migrations *yet*,
+                        // but the structure is here for when we need it.
+                        console.log("No migration path defined... proceeding.");
+                }
+
+                // Return the modified object
+                backupObject.data = data;
+                backupObject.version = currentVersion; // Mark it as migrated
+                return backupObject;
+            },
+
+            /**
+             * NEW: Wipes the DB and repopulates it from the backup object.
+             */
+            async processRestoreData(jsonString) {
+                let backupObject = JSON.parse(jsonString); // Use 'let'
+
+                // Basic validation
+                if (!backupObject.data || !backupObject.version) {
+                    throw new Error("Invalid backup file format.");
+                }
+                
+                const backupVersion = backupObject.version;
+                const currentVersion = dbStore.version;
+
+                // --- NEW MIGRATION LOGIC ---
+                if (backupVersion > currentVersion) {
+                    // This is an error. The user can't restore a "future" backup.
+                    throw new Error(`Backup version (${backupVersion}) is newer than app version (${currentVersion}). Please update your app.`);
+                
+                } else if (backupVersion < currentVersion) {
+                    // We need to migrate the backup data *in memory*
+                    console.log(`Migrating backup from v${backupVersion} to v${currentVersion}...`);
+                    try {
+                        backupObject = this.migrateBackupData(backupObject, backupVersion, currentVersion);
+                    } catch (e) {
+                        console.error("Migration failed:", e);
+                        throw new Error(`Failed to migrate backup data: ${e.message}`);
+                    }
+                }
+                // --- END MIGRATION LOGIC ---
+
+                // 1. Clear all existing data
+                await dbStore.clearAllData();
+
+                // 2. Get list of stores from the backup
+                const storesToRestore = Object.keys(backupObject.data);
+
+                // 3. Create a single write transaction
+                return new Promise((resolve, reject) => {
+                    // Ensure we're targeting all stores, even if backup is partial
+                    const allStoreNames = [
+                        'categories', 'transactions', 'settings', 'budget',
+                        'otherIncome', 'envelopes', 'bunnyCoins', 'goalTransactions',
+                        'monthlySnapshots'
+                    ];
+                    
+                    const transaction = dbStore.db.transaction(allStoreNames, 'readwrite');
+                    transaction.oncomplete = () => resolve();
+                    transaction.onerror = (event) => reject(transaction.error);
+
+                    storesToRestore.forEach(storeName => {
+                        if (backupObject.data[storeName]) {
+                            const store = transaction.objectStore(storeName);
+                            const items = backupObject.data[storeName];
+                            
+                            // Add each item back to the store
+                            items.forEach(item => {
+                                // Use 'put' to handle objects with or without keys
+                                store.put(item); 
+                            });
+                        }
+                    });
+                });
+            },
+
+            /**
+             * NEW: Handles the "Export Monthly Summaries" button click.
+             */
+            async onExportSummariesCSV() {
+                try {
+                    const csvContent = await this.createSummariesCSV();
+                    
+                    const now = new Date();
+                    const dateString = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+                    const filename = `bunny_budget_summaries_${dateString}.csv`;
+                    
+                    this.triggerDownload(csvContent, filename, 'text/csv;charset=utf-8;');
+                    this.showToast(i18n.t('toastExportSummariesSuccess'));
+                } catch (e) {
+                    console.error("CSV Export failed:", e);
+                    this.showToast(i18n.t('toastExportError'));
+                }
+            },
+
+            /**
+             * NEW: Fetches all monthly snapshots and formats them as a CSV string.
+             */
+            async createSummariesCSV() {
+                // We can just use the in-memory state 'this.snapshots'
+                // which is loaded on the Stats page.
+                const snapshots = this.snapshots.sort((a, b) => a.month.localeCompare(b.month));
+                
+                // Define CSV Header
+                const header = [
+                    "Month",
+                    "Total Income",
+                    "Total Spending",
+                    "Total Savings (Rollover)"
+                ];
+                let csvRows = [header.join(',')]; // Add header row
+
+                snapshots.forEach(s => {
+                    const month = s.month;
+                    const income = s.calculations.totalIncome || 0;
+                    const spending = (s.calculations.totalFixed || 0) + (s.calculations.totalVariableSpent || 0);
+                    const savings = s.totalRollover || 0;
+                    
+                    const row = [
+                        this.escapeCSV(month),
+                        this.escapeCSV(income),
+                        this.escapeCSV(spending),
+                        this.escapeCSV(savings)
+                    ];
+                    
+                    csvRows.push(row.join(','));
+                });
+                
+                return csvRows.join('\n');
+            },
+
+            /**
+             * NEW: Handles the "Export Categories & Goals" button click.
+             */
+            async onExportCategoriesCSV() {
+                try {
+                    const csvContent = await this.createCategoriesCSV();
+                    
+                    const now = new Date();
+                    const dateString = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+                    const filename = `bunny_budget_categories_${dateString}.csv`;
+                    
+                    this.triggerDownload(csvContent, filename, 'text/csv;charset=utf-8;');
+                    this.showToast(i18n.t('toastExportCategoriesSuccess'));
+                } catch (e) {
+                    console.error("CSV Export failed:", e);
+                    this.showToast(i18n.t('toastExportError'));
+                }
+            },
+
+            /**
+             * NEW: Fetches all categories and formats them as a CSV string.
+             */
+            async createCategoriesCSV() {
+                // Fetch the data we need
+                const categories = await dbStore.getCategories();
+                const envelopes = await dbStore.getEnvelopes();
+                
+                // Create a Map for quick balance lookup
+                const envelopeMap = new Map(envelopes.map(env => [env.categoryId, env.balance]));
+                
+                // Define CSV Header
+                const header = [
+                    "Category Name", 
+                    "Type", 
+                    "Monthly Planned Amount", 
+                    "Total Goal Amount", 
+                    "Current Balance (Saved/Paid)",
+                    "Goal Date"
+                ];
+                let csvRows = [header.join(',')]; // Add header row
+
+                // Sort categories by type, then name for a clean sheet
+                categories.sort((a, b) => {
+                    if (a.type !== b.type) {
+                        return a.type.localeCompare(b.type);
+                    }
+                    return a.name.localeCompare(b.name);
+                });
+
+                categories.forEach(cat => {
+                    const balance = envelopeMap.get(cat.id) || 0;
+                    
+                    const row = [
+                        this.escapeCSV(cat.name),
+                        this.escapeCSV(cat.type),
+                        this.escapeCSV(cat.amount || 0),
+                        this.escapeCSV(cat.goalAmount || 0),
+                        this.escapeCSV(balance),
+                        this.escapeCSV(cat.goalDate || "")
+                    ];
+                    
+                    csvRows.push(row.join(','));
+                });
+                
+                return csvRows.join('\n');
+            },
+
+
+            /**
+             * NEW: Handles the "Export to CSV" button click.
+             */
+            async onExportTransactionsCSV() {
+                try {
+                    const csvContent = await this.createTransactionsCSV();
+                    
+                    const now = new Date();
+                    const dateString = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+                    const filename = `bunny_budget_transactions_${dateString}.csv`;
+                    
+                    // We can re-use the triggerDownload function, just with a different MIME type
+                    this.triggerDownload(csvContent, filename, 'text/csv;charset=utf-8;');
+                    this.showToast(i18n.t('toastExportSuccess'));
+                } catch (e) {
+                    console.error("CSV Export failed:", e);
+                    this.showToast(i18n.t('toastExportError'));
+                }
+            },
+
+            /**
+             * NEW: Fetches all transactions and formats them as a CSV string.
+             */
+            async createTransactionsCSV() {
+                const categories = await dbStore.getCategories();
+                const transactions = await dbStore.getTransactions();
+                
+                // Create a Map for quick category name lookup
+                const categoryMap = new Map(categories.map(cat => [cat.id, cat.name]));
+                
+                // Define CSV Header
+                const header = ["Date", "Category", "Amount", "Notes"];
+                let csvRows = [header.join(',')]; // Add header row
+
+                // Loop through transactions and create rows
+                transactions.forEach(tx => {
+                    const date = tx.date;
+                    // Find the category name, default to "Unknown" if not found
+                    const category = categoryMap.get(tx.categoryId) || "Unknown";
+                    const amount = tx.amount;
+                    const notes = tx.notes || "";
+                    
+                    // Create an array of values, escaping each one
+                    const row = [
+                        this.escapeCSV(date),
+                        this.escapeCSV(category),
+                        this.escapeCSV(amount),
+                        this.escapeCSV(notes)
+                    ];
+                    
+                    csvRows.push(row.join(','));
+                });
+                
+                return csvRows.join('\n');
+            },
+
+            /**
+             * NEW: Helper function to correctly escape values for CSV.
+             * This wraps the value in quotes and doubles any internal quotes.
+             */
+            escapeCSV(value) {
+                if (value == null) {
+                    return '""'; // Handle null or undefined
+                }
+                const stringValue = String(value);
+                // Replace any quote (") with a double-quote ("")
+                const escapedValue = stringValue.replace(/"/g, '""');
+                return `"${escapedValue}"`; // Wrap the entire string in quotes
+            },
+            
+            /**
+             * MODIFIED: Update triggerDownload to accept a MIME type
+             */
+            triggerDownload(content, filename, mimeType = 'application/json') {
+                const a = document.createElement('a');
+                const blob = new Blob([content], { type: mimeType });
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+            },
+
             /**
              * NEW: Handle clicks on the 3M/6M/12M filter buttons
              */
