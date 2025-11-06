@@ -7532,6 +7532,39 @@
     }
     })();
     </script>
+    <script>
+    // Ask the active SW for its current version/note on load
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+        // If there’s an active SW, ask for its status (covers the “app was closed” case)
+        reg.active?.postMessage({ type: 'PING' });
+    });
+
+    // If a new SW takes control while the app is open, ask again
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        navigator.serviceWorker.ready.then(reg => {
+        reg.active?.postMessage({ type: 'PING' });
+        });
+    });
+
+    // Handle SW_STATUS replies (show toast once per version)
+    navigator.serviceWorker.addEventListener('message', (e) => {
+        const { type, version, note } = e.data || {};
+        if (type !== 'SW_STATUS') return;
+        const key = 'bb-announced-' + version;
+        if (!localStorage.getItem(key) && note) {
+        if (window.app && app.showToast) { app.showToast(note); }
+        else {
+            const n = document.createElement('div');
+            n.textContent = note;
+            n.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:14px 18px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:2147483647;max-width:min(92vw,720px);';
+            document.body.appendChild(n); setTimeout(()=>n.remove(),8000);
+        }
+        localStorage.setItem(key, '1');
+        }
+    });
+    }
+    </script>
 
 </body>
 

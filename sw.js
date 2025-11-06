@@ -1,8 +1,8 @@
 // Bunny Budget PWA service worker – with activation toast
 // Bump VERSION and CACHE_NAME on each deploy
-const VERSION = 'v1.0.4';
-const CACHE_NAME = 'bb-shell-v3';
-const RELEASE_NOTE = 'Bunny Budget updated: icon refresh';
+const VERSION = 'v1.0.5';
+const CACHE_NAME = 'bb-announcement-v4';
+const RELEASE_NOTE = 'Bunny Budget updated, test toast message';
 
 const APP_SHELL = ['./index.html']; // repo-relative for GitHub Pages
 
@@ -36,6 +36,16 @@ self.addEventListener('activate', (event) => {
 // Network strategy:
 // - Navigations: network-first, fallback to cached index.html (offline SPA)
 // - Same-origin static GETs: stale-while-revalidate
+self.addEventListener('message', (event) => {
+  const data = event.data || {};
+  if (data.type === 'SKIP_WAITING') self.skipWaiting();
+
+  // NEW: reply with current version/note when asked
+  if (data.type === 'PING') {
+    event.source?.postMessage({ type: 'SW_STATUS', version: VERSION, note: RELEASE_NOTE });
+  }
+});
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
