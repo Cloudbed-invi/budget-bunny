@@ -7465,12 +7465,67 @@
             if (window.app && app.showToast) {
             app.showToast(note);
             } else {
-            const n = document.createElement('div');
-            n.textContent = note;
-            n.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:999px;z-index:99999';
-            document.body.appendChild(n);
-            setTimeout(() => n.remove(), 5000);
+            // Accessible, multiline toast with close button and smart duration
+            const id = 'bb-toast-container';
+            let container = document.getElementById(id);
+            if (!container) {
+                container = document.createElement('div');
+                container.id = id;
+                container.style.cssText = `
+                position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+                display: flex; flex-direction: column; gap: 10px;
+                z-index: 2147483647; pointer-events: none; width: min(92vw, 720px);
+                `;
+                document.body.appendChild(container);
             }
+
+            const wrap = document.createElement('div');
+            wrap.setAttribute('role', 'status');
+            wrap.setAttribute('aria-live', 'polite');
+            wrap.style.cssText = `
+                pointer-events: auto;
+                background: rgba(17,17,17,0.96);
+                color: #fff;
+                padding: 14px 18px 14px 16px;
+                border-radius: 14px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+                font-size: 15px; line-height: 1.5; letter-spacing: .2px;
+                max-width: 100%; word-wrap: break-word; overflow-wrap: anywhere;
+                display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start;
+                opacity: 0; transition: opacity 180ms ease;
+            `;
+
+            const text = document.createElement('div');
+            text.textContent = note;
+            wrap.appendChild(text);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.ariaLabel = 'Dismiss';
+            btn.textContent = '×';
+            btn.style.cssText = `
+                appearance: none; border: 0; background: transparent; color: #fff;
+                font-size: 22px; line-height: 1; cursor: pointer; margin-left: 8px;
+                opacity: .9;
+            `;
+            btn.addEventListener('click', () => {
+                wrap.style.opacity = '0';
+                setTimeout(() => wrap.remove(), 180);
+            });
+            wrap.appendChild(btn);
+
+            container.appendChild(wrap);
+            // Fade in
+            requestAnimationFrame(() => { wrap.style.opacity = '1'; });
+
+            // Auto-duration scales with message length (min 6s, max 20s)
+            const dur = Math.max(6000, Math.min(20000, String(note).length * 70));
+            const timer = setTimeout(() => btn.click(), dur);
+
+            // Pause on hover for readability
+            wrap.addEventListener('mouseenter', () => clearTimeout(timer), { once: true });
+            }
+
             localStorage.setItem(key, '1');
         }
         });

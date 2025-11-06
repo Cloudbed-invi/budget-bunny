@@ -1,7 +1,10 @@
-// Bunny Budget PWA service worker – GitHub Pages friendly
-// v1: bump this string on each deploy to force an update
-const CACHE_NAME = 'bb-app-v1';
-const APP_SHELL = ['./index.html']; // keep repo-relative paths
+// Bunny Budget PWA service worker – with activation toast
+// Bump VERSION and CACHE_NAME on each deploy
+const VERSION = 'v1.0.4';
+const CACHE_NAME = 'bb-shell-v3';
+const RELEASE_NOTE = 'Bunny Budget updated: icon refresh';
+
+const APP_SHELL = ['./index.html']; // repo-relative for GitHub Pages
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -12,23 +15,39 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
+    // Purge old caches
     const keys = await caches.keys();
-    await Promise.all(keys.map(k => (k === CACHE_NAME ? null : caches.delete(k))));
+    await Promise.all(keys.map((k) => (k === CACHE_NAME ? null : caches.delete(k))));
     await self.clients.claim();
+
+    // Announce the new version to all open pages (your page shows a toast)
+    const clientsArr = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of clientsArr) {
+      client.postMessage({
+        type: 'SW_ACTIVATED',
+        version: VERSION,
+        note: RELEASE_NOTE,
+        ts: Date.now()
+      });
+    }
   })());
 });
 
-// Heuristics:
-// - Navigations: network-first, fallback to cached index.html (for offline SPA)
-// - Static same-origin GETs: stale-while-revalidate
+// Network strategy:
+// - Navigations: network-first, fallback to cached index.html (offline SPA)
+// - Same-origin static GETs: stale-while-revalidate
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Only handle same-origin
+  // Always fetch the latest manifest so icon changes propagate
+  if (req.url.endsWith('manifest.json')) {
+    return; // let the browser handle it with normal HTTP caching
+  }
+  // Only handle same-origin requests
   if (url.origin !== self.location.origin) return;
 
-  // Handle navigations (address bar, internal links)
+  // Navigations (address bar / internal links)
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       try {
@@ -37,7 +56,6 @@ self.addEventListener('fetch', (event) => {
         cache.put('./index.html', fresh.clone());
         return fresh;
       } catch {
-        // offline fallback
         const cached = await caches.match('./index.html');
         return cached || Response.error();
       }
@@ -45,19 +63,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets: css/js/images/fonts/json/etc. – GET only
+  // Static GET assets
   if (req.method === 'GET') {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
       const cached = await cache.match(req);
       const network = fetch(req).then((resp) => {
-        // update cache in background when successful
-        if (resp && resp.status === 200) cache.put(req, resp.clone());
+        if (resp && resp.status === 200) {
+          cache.put(req, resp.clone());
+        }
         return resp;
       }).catch(() => cached);
 
-      // stale-while-revalidate: serve cached fast, refresh in background
+      // Serve cached fast, refresh in background
       return cached || network;
     })());
+  }
+});
+
+// Support an optional "update now" button in your UI
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });
