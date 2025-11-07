@@ -4955,7 +4955,8 @@
 
                 // Populate categories (logic from old showAddExpenseModal)
                 this.dom.expenseCategory.innerHTML = '';
-                const variableCategories = this.categories.filter(c => c.type === 'variable');
+                const spendableTypes = ['envelope', 'variable'];
+                const variableCategories = this.categories.filter(c => spendableTypes.includes(c.type));
 
                 if (variableCategories.length === 0) {
                     // NEW: If no categories, open modal but switch to 'income' tab
@@ -6242,7 +6243,8 @@
                 
                 // Populate transfer category dropdown
                 this.dom.goalTransferCategory.innerHTML = '';
-                const variableCategories = this.categories.filter(c => c.type === 'variable');
+                const spendableTypes = ['envelope', 'variable'];
+                const variableCategories = this.categories.filter(c => spendableTypes.includes(c.type));
                 variableCategories.forEach(cat => {
                     const option = document.createElement('option');
                     option.value = cat.id;
@@ -6880,14 +6882,18 @@
                             return 0;
                     }
                 });
-
-                const catInfo = this.snapshots.find(s => s.categories.some(c => c.name === selectedCategoryName))
-                                  .categories.find(c => c.name === selectedCategoryName);
+                const snapshotWithCat = this.snapshots.find(s => s.categories.some(c => c.name === selectedCategoryName));
+                const catInfo = snapshotWithCat ? snapshotWithCat.categories.find(c => c.name === selectedCategoryName) : null;
                 
                 let chartLabel = selectedCategoryName;
-                if (catInfo.type === 'variable') chartLabel = `${i18n.t('statsChartSpentIn')} ${selectedCategoryName}`;
-                else if (catInfo.type.includes('goal')) chartLabel = `${i18n.t('statsChartSavedIn')} ${selectedCategoryName}`;
-                else chartLabel = `${i18n.t('statsChartPaidFor')} ${selectedCategoryName}`;
+                if (catInfo && catInfo.type === 'envelope') {
+                    chartLabel = `${i18n.t('statsChartSpentIn')} ${selectedCategoryName}`;
+                } else if (catInfo && (catInfo.type === 'saving' || catInfo.type === 'debt')) {
+                    chartLabel = `${i18n.t('statsChartSavedIn')} ${selectedCategoryName}`;
+                } else {
+                    chartLabel = `${i18n.t('statsChartPaidFor')} ${selectedCategoryName}`;
+                }
+
 
 
                 this.categoryChart = new Chart(this.dom.statsCategoryChart.getContext('2d'), {
