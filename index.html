@@ -451,7 +451,10 @@
 
         </div>
     </div>
-
+    
+    <div id="demo-mode-banner" class="hidden fixed top-0 left-0 right-0 z-[999] bg-yellow-400 text-yellow-900 font-bold text-center p-2 shadow">
+        <span data-i18n="demoMode">Demo Mode</span> - <span data-i18n="demoModeResets">Resets in</span>: <span id="demo-mode-timer">10:00</span>
+    </div>
 
     <!-- Main App Container -->
     <div id="app-container" class="max-w-4xl mx-auto p-4 md:p-6 opacity-0">
@@ -2063,7 +2066,10 @@
                 navStore: "Store", // NEW
                 dashboardMoneyToBudget: "Money to Budget",
                 dashboardTotalBudgeted: "Total Budgeted",
-                dashboardTotalSpent: "Total Spent (Variable)",
+                dashboardTotalSpent: "Total Spent On Envelopes",
+                dashboardTotalSpentAll: "Total Monthly Spending", // <-- ADD THIS
+                demoMode: "Demo Mode", // <-- ADD THIS
+                demoModeResets: "Resets in", // <-- ADD THIS
                 dashboardVariableEnvelopes: "Spending Envelopes",
                 dashboardNoVariable: "No spending envelopes budgeted yet. Go to the 'Manage' page to add some!", // MODIFIED
                 dashboardSinkingFunds: "Savings Goals",
@@ -2249,8 +2255,8 @@
                 modalGoalHistoryTitle: "Goal History",
                 modalGoalCurrentBalance: "Current Balance",
                 modalGoalWithdrawButton: "Withdraw Funds",
-                modalGoalSpendDesc: "Record an expense paid for <strong>directly</strong> from this savings goal (e.g., buying plane tickets from your 'Vacation' fund).",
-                modalGoalTransferDesc: "Move money <strong>out</strong> of this goal and <strong>into</strong> one of your monthly spending envelopes (like 'Groceries' or 'Dining Out').",
+                modalGoalSpendDesc: "Record an expense paid for directly from this savings goal (e.g., buying plane tickets from your 'Vacation' fund).",
+                modalGoalTransferDesc: "Move money out of this goal and into one of your monthly spending envelopes (like 'Groceries' or 'Dining Out').",
                 modalGoalLogExpense: "Log Expense",
                 modalGoalTransferFunds: "Transfer Funds",
                 toastInvalidDate: "Invalid date.",
@@ -3382,7 +3388,58 @@
             
             // Cached DOM Elements
             dom: {},
+            /**
+             * NEW: Handles Demo Mode
+             */
+            startDemoMode() {
+                const banner = document.getElementById('demo-mode-banner');
+                const timerSpan = document.getElementById('demo-mode-timer');
+                if (!banner || !timerSpan) return;
 
+                banner.classList.remove('hidden');
+                // Move the app container down to make space for the banner
+                this.dom.appContainer.style.paddingTop = '60px';
+                
+                let startTime;
+                try {
+                    startTime = parseInt(sessionStorage.getItem('bunnyBudgetDemoStart'), 10);
+                } catch (e) {
+                    startTime = Date.now();
+                    sessionStorage.setItem('bunnyBudgetDemoStart', startTime);
+                }
+                
+                const tenMinutes = 10 * 60 * 1000;
+                
+                const updateTimer = () => {
+                    const elapsed = Date.now() - startTime;
+                    const remaining = tenMinutes - elapsed;
+
+                    if (remaining <= 0) {
+                        // Time's up!
+                        clearInterval(this.demoTimerInterval);
+                        timerSpan.textContent = "0:00";
+                        this.showToast("Demo time is over. Resetting app...");
+                        // Call reset *after* toast shows
+                        setTimeout(() => {
+                            this.onConfirmReset();
+                        }, 1000);
+                    } else {
+                        // Update timer
+                        const minutes = Math.floor(remaining / 60000);
+                        const seconds = Math.floor((remaining % 60000) / 1000);
+                        timerSpan.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                };
+
+                // Clear any old timer
+                if (this.demoTimerInterval) {
+                    clearInterval(this.demoTimerInterval);
+                }
+                
+                // Run immediately and then every second
+                updateTimer();
+                this.demoTimerInterval = setInterval(updateTimer, 1000);
+            },
             // --- Initialization ---
 
             /**
@@ -3406,6 +3463,13 @@
 
                 // 3. Check if it's the first run
                 const setupDone = await dbStore.getSetting('setupDone');
+                // --- NEW: Check for Demo Mode ---
+                try {
+                    if (sessionStorage.getItem('bunnyBudgetDemo') === 'true') {
+                        this.startDemoMode();
+                    }
+                } catch (e) { }
+                // --- End New ---
 
                 if (!setupDone) {
                     // Show onboarding modal
@@ -3532,7 +3596,7 @@
                     // Dashboard
                     dashboardMoneyToBudget: document.getElementById('dashboard-money-to-budget'),
                     dashboardTotalBudgeted: document.getElementById('dashboard-total-budgeted'),
-                    dashboardTotalSpent: document.getElementById('dashboard-total-spent'), // <-- This ID is gone, but we'll leave the line
+                    //dashboardTotalSpent: document.getElementById('dashboard-total-spent'), // <-- This ID is gone, but we'll leave the line
                     // NEW: Dashboard Toggle
                     dashboardToggleArea: document.getElementById('dashboard-toggle-area'),
                     dashboardToggleLabel: document.getElementById('dashboard-toggle-label'),
@@ -3935,6 +3999,16 @@
                 
                 // --- NEW: Demo Button Listener ---
                 this.dom.onboardingTryDemo.addEventListener('click', async () => {
+                    // --- NEW: Set Demo Mode Flags ---
+                    try {
+                        sessionStorage.setItem('bunnyBudgetDemo', 'true');
+                        sessionStorage.setItem('bunnyBudgetDemoStart', Date.now());
+                        this.showToast("Demo Mode Started! App will reset in 10 minutes.");
+                    } catch (e) {
+                        console.warn("Could not set demo flags in sessionStorage.");
+                    }
+                    // --- End New ---
+
                     // 1. Load the *same template* as "Start with Template" to get categories
                     await dbStore.loadTemplateData();
                     
@@ -3946,6 +4020,10 @@
 
                     // 4. Complete onboarding and go to Dashboard to see the result
                     await this.completeOnboarding('dashboard-page');
+                    
+                    // 5. --- THIS IS THE FIX ---
+                    // Manually start the timer now that the app is loaded
+                    this.startDemoMode();
                 });
                 // --- End NEW ---
 
@@ -4076,8 +4154,13 @@
                 this.dom.budgetSavingList.addEventListener('input', budgetInputHandler);
                 this.dom.budgetDebtList.addEventListener('input', budgetInputHandler);
 
-                // NEW: Dashboard Toggle
-                this.dom.dashboardToggleArea.addEventListener('click', () => this.onToggleDashboardSummary());
+                // NEW: Envelope Summary Card Toggle
+                // We use the list itself since the card is dynamic
+                this.dom.variableEnvelopesList.addEventListener('click', (e) => {
+                    if (e.target.closest('#envelope-summary-card')) {
+                        this.onToggleEnvelopeSummary();
+                    }
+                });
 
                 // NEW: Bills Card Toggle
                 this.dom.billsCardToggleBtn.addEventListener('click', () => {
@@ -4419,8 +4502,47 @@
                 // Render Spending Envelopes
                 this.dom.variableEnvelopesList.innerHTML = '';
                 const variableCategories = this.categories.filter(c => c.type === 'envelope');
-                // (We can delete the `let totalSpent = 0;` line here, it's a redeclaration bug)
                 let hasVariable = false;
+                
+                // --- NEW: Calculate Envelope Totals ---
+                const envelopeBudgeted = this.budget
+                    .filter(b => b.type === 'envelope')
+                    .reduce((sum, b) => sum + b.amount, 0);
+                
+                const envelopeSpent = calculations.outflowsPerCategory; // This is our map
+                let envelopeSpentTotal = 0;
+                let envelopeInflowsTotal = 0;
+                
+                variableCategories.forEach(cat => {
+                    envelopeSpentTotal += (envelopeSpent[cat.id] || 0);
+                    envelopeInflowsTotal += (calculations.inflowsPerCategory[cat.id] || 0);
+                });
+
+                const envelopeAvailable = (envelopeBudgeted + envelopeInflowsTotal) - envelopeSpentTotal;
+                
+                // --- NEW: Add Summary Card ---
+                // Only show the summary card if there is anything budgeted
+                if (envelopeBudgeted > 0) {
+                    hasVariable = true; // Show the section
+                    const summaryCard = `
+                        <div id="envelope-summary-card" class="bg-pink-50 border-2 border-pink-200 p-4 rounded-2xl shadow-inner cursor-pointer" data-view="spent">
+                            <input type="hidden" id="env-summary-spent" value="${envelopeSpentTotal}">
+                            <input type="hidden" id="env-summary-available" value="${envelopeAvailable}">
+                            
+                            <div class="flex justify-between items-center mb-2">
+                                <span id="env-summary-label" class="font-semibold text-lg text-pink-800">${i18n.t('dashboardTotalSpent') || 'Total Spent'}</span>
+                                <span id="env-summary-value" class="font-bold text-lg text-pink-900">${this.formatCurrency(envelopeSpentTotal)}</span>
+                            </div>
+                            <progress class="w-full" value="${envelopeSpentTotal}" max="${envelopeBudgeted + envelopeInflowsTotal}"></progress>
+                            <div class="flex justify-between items-center text-sm text-pink-700 mt-2">
+                                <span>${i18n.t('dashboardBudgeted')}: ${this.formatCurrency(envelopeBudgeted)}</span>
+                                ${envelopeInflowsTotal > 0 ? `<span>${i18n.t('dashboardInflows')}: ${this.formatCurrency(envelopeInflowsTotal)}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    this.dom.variableEnvelopesList.insertAdjacentHTML('beforeend', summaryCard);
+                }
+                // --- End New Summary Card ---
 
                 variableCategories.forEach(cat => {
                     const budgetItem = this.budget.find(b => b.id === `envelope-${cat.id}`);
@@ -4472,19 +4594,23 @@
                 // NEW: Show/hide the entire section container
                 this.dom.variableEnvelopesContainer.classList.toggle('hidden', !hasVariable);
 
-                // Use the new, accurate total from the calculator
-                const totalSpent = calculations.totalVariableSpent;
-                const totalAvailable = calculations.totalBudgeted - totalSpent;
+                // Use the new, accurate totals from the calculator
+                const totalSpentAll = calculations.totalSpent; // Our new TRUE total
+                const totalSpentOnEnvelopes = calculations.totalVariableSpent; // Just envelopes
+                
+                // Available = Total Budgeted for Envelopes - Spent on Envelopes
+                const totalAvailable = calculations.totalBudgeted - totalSpentOnEnvelopes;
 
                 // Store both values in the hidden inputs
                 this.dom.dashboardAvailableValue.value = totalAvailable;
-                this.dom.dashboardSpentValue.value = totalSpent;
+                this.dom.dashboardSpentValue.value = totalSpentAll; // Store the NEW true total
 
                 // Set the *current* view based on the data-view attribute
                 const currentView = this.dom.dashboardToggleArea.dataset.view;
                 if (currentView === 'spent') {
-                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardTotalSpent');
-                    this.dom.dashboardToggleValue.textContent = this.formatCurrency(totalSpent);
+                    // --- MODIFIED: Use the new total and a new i18n key ---
+                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardTotalSpentAll') || 'Total Monthly Spending';
+                    this.dom.dashboardToggleValue.textContent = this.formatCurrency(totalSpentAll);
                     this.dom.dashboardToggleValue.classList.remove('text-green-600');
                     this.dom.dashboardToggleValue.classList.add('text-gray-800');
                 } else {
@@ -5351,17 +5477,21 @@
              * Handle Add Category form submission (NEW v4 LOGIC)
              * @param {Event} e - The form event
              */
+                
             async onAddCategory(e) {
                 e.preventDefault();
                 
-                // 1. Get values from the new form
+                // 1. Get all values from the form
                 const name = this.dom.categoryName.value;
-                const type = document.getElementById('category-type').value; // Read from hidden input
-                const amount = parseFloat(this.dom.categoryAmount.value) || 0; // This is the 'Monthly Planned Amount'
+                const type = document.getElementById('category-type').value;
                 
-                // 2. Get "Initial Stock" / Optional values
+                // This one form field has two meanings:
+                // For "Bill" -> It's the fixed monthly cost (e.g., 250)
+                // For "Envelope", "Saving", "Debt" -> It's the *planned* budget amount (e.g., 75)
+                const amount = parseFloat(this.dom.categoryAmount.value) || 0;
+                
                 let goalAmount = 0;
-                let currentBalance = 0;
+                let currentBalance = 0; // This is the "Initial Stock"
                 let goalDate = null;
 
                 if (type === 'saving' || type === 'debt') {
@@ -5375,69 +5505,72 @@
                     return;
                 }
 
-                // 3. Create the new category object
+                // 2. Create the category object
                 const newCategory = { 
                     name, 
-                    type, // Our new types: 'bill', 'envelope', 'saving', 'debt'
-                    amount, // This is now just the *default* planned amount
+                    type,
+                    // --- THIS IS THE FIX ---
+                    // If it's a BILL, the 'amount' (250) is its fixed cost.
+                    // If it's a GOAL, the 'amount' (75) is its *default planned* amount.
+                    amount: amount, 
                     goalAmount, 
                     goalDate
-                    // We don't save 'currentBalance' to the category, we save it to the envelope
                 };
                 
                 const newId = await dbStore.addCategory(newCategory);
                 this.categories.push({ id: newId, ...newCategory });
 
-                // 4. Create its associated envelope with the correct "Initial Stock"
-                // *** BUG FIX IS HERE ***
-                // This logic is now OUTSIDE the 'if' block, so it runs for ALL types.
+                // 3. --- THIS IS THE NEW, CORRECT LOGIC ---
+                
+                let finalInitialBalance = currentBalance; // Start with the "Initial Stock"
+                
+                // A "Bill" (like Rent or Car Loan *as a fixed cost*)
+                // does NOT get added to the budget. It's a fixed cost.
+                // Its envelope balance is 0. This is correct.
+                
+                // An "Envelope", "Saving", or "Debt" (Goal) IS budgettable.
+                const budgettableTypes = ['envelope', 'saving', 'debt'];
+                
+                if (budgettableTypes.includes(type)) {
+                    // This is a budgettable item.
+                    // Its starting balance is its "Initial Stock" + its first "Monthly Planned Amount".
+                    finalInitialBalance += amount;
+                    
+                    // If a "Monthly Planned" amount was entered, add it to this month's budget
+                    if (amount > 0) {
+                        const newBudgetItem = {
+                            id: `${type}-${newId}`,
+                            categoryId: newId,
+                            type: type,
+                            amount: amount
+                        };
+                        this.budget.push(newBudgetItem);
+                        await dbStore.saveBudget(this.budget);
+                    }
+                }
+                
+                // 4. Create and save the envelope ONCE with the correct final balance
+                // For a "Bill", finalInitialBalance will be 0 (correct).
+                // For a "Goal", finalInitialBalance will be "Initial Stock + Planned" (correct).
                 const newEnvelope = { 
                     categoryId: newId, 
                     type: type, 
-                    balance: currentBalance // <-- This saves the "Initial Stock"
+                    balance: finalInitialBalance 
                 };
                 await dbStore.saveEnvelope(newEnvelope);
                 this.envelopes.push(newEnvelope);
-                // *** END BUG FIX ***
+                // --- END FIX ---
 
                 this.showToast(i18n.t('toastCategoryAdded'));
                 
-                // --- FIX: Only reset the input fields, not the type ---
+                // 5. Reset form
                 this.dom.categoryName.value = '';
                 this.dom.categoryAmount.value = '';
                 this.dom.categoryGoalAmount.value = '';
                 this.dom.categoryCurrentBalance.value = '';
-                // --- End Fix ---
-
-                // 5. Add to this month's budget if a planned amount was set
-                // NEW: Define which types are "budgettable" (i.e., not 'bill')
-                const budgettableTypes = ['envelope', 'saving', 'debt'];
                 
-                // This 'if' block now ONLY runs for envelope, saving, and debt.
-                // This fixes the "Ghost Bill" bug.
-                if (amount > 0 && budgettableTypes.includes(type)) {
-                    
-                    // Add the item to the budget
-                    const newBudgetItem = {
-                        id: `${type}-${newId}`,
-                        categoryId: newId,
-                        type: type,
-                        amount: amount
-                    };
-                    this.budget.push(newBudgetItem);
-                    await dbStore.saveBudget(this.budget);
-                    
-                    // --- THIS IS YOUR "AUTO-UPDATE" FEATURE ---
-                    // We add the first month's budgeted amount ('amount')
-                    // on top of the 'currentBalance' already in the envelope.
-                    newEnvelope.balance += amount; // e.g., 0 + 50 = 50
-                    await dbStore.saveEnvelope(newEnvelope);
-                    
-                    // Update the local state
-                    this.envelopes = this.envelopes.map(e => e.categoryId === newId ? newEnvelope : e);
-                }
-                
-                this.renderAllPages(); // Re-render everything with the new category
+                // 6. Re-render
+                this.renderAllPages();
             },
 
             /**
@@ -5615,12 +5748,26 @@
                     }
 
                     if (type === 'saving' || type === 'debt') {
-                        const envelope = envelopeMap.get(id);
+                        let envelope = envelopeMap.get(id); // Use 'let'
+                        const diff = newAmount - oldAmount;
+                        
                         if (envelope) {
-                            const diff = newAmount - oldAmount;
+                            // Envelope exists, update its balance
                             envelope.balance = (envelope.balance || 0) + diff;
-                            envelopesToUpdate.push(envelope);
+                        } else {
+                            // --- THIS IS THE FIX ---
+                            // Envelope does NOT exist, create it
+                            envelope = {
+                                categoryId: id,
+                                type: type, 
+                                balance: diff // Balance is just the new amount
+                            };
+                            // Also update our local map for this loop
+                            envelopeMap.set(id, envelope);
                         }
+                        
+                        // Push the (either updated or new) envelope to be saved
+                        envelopesToUpdate.push(envelope);
                     }
                 });
 
@@ -5723,11 +5870,12 @@
                     console.log("Clearing all data from DB stores...");
                     await dbStore.clearAllData();
 
-                    // --- Step 2: Clear localStorage ---
+                    // --- Step 2: Clear localStorage & sessionStorage ---
                     // This will make the app show onboarding on next load.
                     console.log("Clearing localStorage...");
                     try {
                         localStorage.clear();
+                        sessionStorage.clear(); // <-- ADD THIS
                     } catch (e) { }
 
                     // --- Step 3: Unregister service workers ---
@@ -5765,7 +5913,36 @@
                 const categoryName = card.dataset.categoryName;
                 this.showTransactionHistory(categoryId, categoryName);
             },
+            /**
+             * NEW: Toggles the envelope summary card between Spent and Available
+             */
+            onToggleEnvelopeSummary() {
+                const card = document.getElementById('envelope-summary-card');
+                if (!card) return; // Should not happen
 
+                const currentView = card.dataset.view;
+                const spent = parseFloat(document.getElementById('env-summary-spent').value);
+                const available = parseFloat(document.getElementById('env-summary-available').value);
+                
+                const label = document.getElementById('env-summary-label');
+                const value = document.getElementById('env-summary-value');
+
+                if (currentView === 'spent') {
+                    // Switch to "Available" view
+                    label.textContent = i18n.t('dashboardRemaining') || 'Total Available';
+                    value.textContent = this.formatCurrency(available);
+                    value.classList.remove('text-pink-900');
+                    value.classList.add('text-green-600'); // Use green for available
+                    card.dataset.view = 'available';
+                } else {
+                    // Switch back to "Spent" view
+                    label.textContent = i18n.t('dashboardTotalSpent');
+                    value.textContent = this.formatCurrency(spent);
+                    value.classList.remove('text-green-600');
+                    value.classList.add('text-pink-900'); // Back to pink
+                    card.dataset.view = 'spent';
+                }
+            },
             /**
              * NEW: Toggles the main dashboard summary between Spent and Available
              */
@@ -6457,8 +6634,10 @@
                 // 3. Calculate money to budget
                 const moneyToBudget = totalIncome - totalFixed;
 
-                // 4. Calculate total budgeted (assigned to variable/goals)
-                const totalBudgeted = this.budget.filter(b => b.type === 'envelope' || b.type === 'saving' || b.type === 'debt')
+                // 4. Calculate total budgeted (assigned this month to envelopes/goals/debt)
+                const totalBudgeted = this.budget
+                .filter(b => ['envelope', 'saving', 'debt'].includes(b.type))
+                .reduce((sum, b) => sum + (b.amount || 0), 0);
 
                 // 5. Calculate spending per category
                 const outflowsPerCategory = {};
@@ -6476,15 +6655,19 @@
                     }
                 });
 
+                // --- NEW: Calculate a true total spent ---
+                const totalSpent = totalFixed + totalVariableSpent;
+
                 return {
                     totalIncome,
                     otherIncomeTotal,
                     moneyToBudget,
                     totalFixed,
                     totalBudgeted,
-                    totalVariableSpent, // NEW
-                    outflowsPerCategory, // NEW
-                    inflowsPerCategory // NEW
+                    totalVariableSpent,
+                    totalSpent, // <-- ADD THIS
+                    outflowsPerCategory,
+                    inflowsPerCategory
                 };
             },
 
