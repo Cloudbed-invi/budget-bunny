@@ -5722,13 +5722,12 @@
              * Handle Auto-Save Budget on input
              */
             async onAutoSaveBudget() {
-                // e.preventDefault(); // No longer needed
                 const inputs = this.dom.budgetForm.querySelectorAll('.budget-input');
                 const newBudgetItems = [];
-                const envelopesToUpdate = [];
+                const envelopesToSave = []; // Renamed from envelopesToUpdate
 
+                // Get a map of the *old* budget to calculate differences
                 const oldBudgetMap = new Map(this.budget.map(b => [b.id, b.amount]));
-                const envelopeMap = new Map(this.envelopes.map(e => [e.categoryId, e]));
 
                 inputs.forEach(input => {
                     const id = parseInt(input.dataset.id);
@@ -5736,8 +5735,7 @@
                     const newAmount = parseFloat(input.value) || 0;
                     const budgetId = `${type}-${id}`;
 
-                    const oldAmount = oldBudgetMap.get(budgetId) || 0;
-
+                    // 1. Add to this month's budget if it has an amount
                     if (newAmount > 0) {
                         newBudgetItems.push({
                             id: budgetId,
@@ -5747,41 +5745,52 @@
                         });
                     }
 
+                    // 2. --- THIS IS THE NEW, CORRECT LOGIC ---
+                    // If it's a goal, find and update its envelope balance
                     if (type === 'saving' || type === 'debt') {
-                        let envelope = envelopeMap.get(id); // Use 'let'
+                        const oldAmount = oldBudgetMap.get(budgetId) || 0;
                         const diff = newAmount - oldAmount;
-                        
+
+                        // Find the envelope in our *local state*
+                        let envelope = this.envelopes.find(e => e.categoryId === id);
+
                         if (envelope) {
                             // Envelope exists, update its balance
                             envelope.balance = (envelope.balance || 0) + diff;
                         } else {
-                            // --- THIS IS THE FIX ---
-                            // Envelope does NOT exist, create it
+                            // Envelope does NOT exist (the 0/x bug!)
+                            // Create it locally
                             envelope = {
                                 categoryId: id,
-                                type: type, 
-                                balance: diff // Balance is just the new amount
+                                type: type,
+                                balance: diff // The balance is just the new amount
                             };
-                            // Also update our local map for this loop
-                            envelopeMap.set(id, envelope);
+                            // Add it to our local state array
+                            this.envelopes.push(envelope);
                         }
                         
-                        // Push the (either updated or new) envelope to be saved
-                        envelopesToUpdate.push(envelope);
+                        // Add this (new or updated) envelope to the list to be saved to the DB
+                        envelopesToSave.push(envelope);
                     }
+                    // --- END OF NEW LOGIC ---
                 });
 
-                if (envelopesToUpdate.length > 0) {
-                    await dbStore.saveEnvelopes(envelopesToUpdate);
-                    this.envelopes = await dbStore.getEnvelopes();
+                // 3. Save the changes to the DB
+                if (envelopesToSave.length > 0) {
+                    await dbStore.saveEnvelopes(envelopesToSave);
+                    // We NO LONGER re-fetch, since we updated this.envelopes manually
                 }
 
                 await dbStore.saveBudget(newBudgetItems);
-                this.budget = newBudgetItems;
+                
+                // 4. Update local state
+                this.budget = newBudgetItems; 
+                // this.envelopes is already up-to-date from step 2
 
-                console.log("Budget auto-saved."); // No toast, no navigation
+                console.log("Budget auto-saved.");
 
-                // Re-render all pages, as this data affects both dashboard and manage page
+                // 5. Re-render everything
+                // renderAllPages() will now use the *correct* this.envelopes array
                 this.renderAllPages();
             },
 

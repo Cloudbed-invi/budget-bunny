@@ -2,7 +2,7 @@
 // Bump VERSION and CACHE_NAME on each deploy
 const VERSION = 'v1.0.8';
 const CACHE_NAME = 'bb-shell-v7';
-const RELEASE_NOTE = 'Note : Fixed Some bugs! Let me know if any are left';
+const RELEASE_NOTE = 'Note : Fixed more bugs';
 
 const APP_SHELL = ['./index.html']; // repo-relative for GitHub Pages
 
