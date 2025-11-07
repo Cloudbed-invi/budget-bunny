@@ -57,20 +57,10 @@
         }
         /* --- END OFFLINE FONT DEFINITIONS --- */
 
-        /* Base styles */
-        body,
-        html {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f7f3f8;
-            /* Lighter bunny pink-white */
-            color: #3f3c47;
-            /* Bunny dark gray */
-            overscroll-behavior: none;
-            /* NEW: Global fix for text-selection bleed */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+        /* 1. Page Background */
+        body, html {
+            background-color: var(--bunny-gray-light) !important;
+            color: var(--bunny-gray-dark) !important;
         }
 
         /* Our Bunny Theme */
@@ -93,6 +83,7 @@
             --bunny-red: #ef4444;
             /* Red for danger */
             --bunny-red-dark: #dc2626;
+
         }
 
         /* Helper class to hide elements */
@@ -111,6 +102,109 @@
             display: block;
             /* Active page is shown */
         }
+
+        /* --- NEW: COMPREHENSIVE THEME FIX (v3 - !important) --- */
+        
+        /* 1. Page Background */
+        body, html {
+            background-color: var(--bunny-gray-light) !important;
+            color: var(--bunny-gray-dark) !important;
+        }
+
+        /* 2. Main Card Backgrounds */
+        .bg-white {
+            background-color: var(--bunny-white) !important;
+        }
+        
+        /* 3. Lighter / Secondary Backgrounds (buttons, inputs, etc.) */
+        .bg-gray-50, .bg-gray-100, .bg-gray-200,
+        .chart-zoom-btn, .category-type-btn {
+            background-color: var(--bunny-gray-medium) !important;
+        }
+        
+        /* 4. Highlighted Card Backgrounds (Pink/Yellow cards) */
+        .bg-pink-50, .bg-pink-100 {
+            background-color: var(--bunny-pink-light) !important;
+        }
+        
+        /* 5. Dropdown (select) & Date Styling */
+        select, input[type="date"] {
+            background-color: var(--bunny-gray-medium) !important;
+            color: var(--bunny-gray-dark) !important;
+            border-color: var(--bunny-gray-medium) !important;
+        }
+        
+        /* 6. Text Overrides (Inside ALL Cards & Buttons) */
+        /* This forces all text to obey the theme */
+        .bg-white .text-gray-900, .bg-white .text-gray-800, 
+        .bg-white .text-gray-700, .bg-white .font-semibold, 
+        .bg-white .font-medium, .bg-white h2, .bg-white h3,
+        .bg-gray-50 .text-gray-900, .bg-gray-50 .text-gray-800,
+        .bg-gray-50 .text-gray-700, .bg-gray-50 .text-gray-600,
+        .bg-gray-50 .font-semibold, .bg-gray-50 h3, .bg-gray-50 p,
+        .bg-gray-100 .text-gray-600, .bg-gray-200 .text-gray-800,
+        .chart-zoom-btn, .category-type-btn {
+            color: var(--bunny-gray-dark) !important;
+            opacity: 0.9 !important;
+        }
+        
+        /* 7. Lighter Helper Text */
+        .bg-white .text-gray-600, .bg-white .text-gray-500, 
+        .bg-white .text-gray-400, .bg-white .text-sm, 
+        .bg-white p, .bg-white label, .bg-white span,
+        .bg-gray-50 .text-gray-500, .bg-gray-50 .text-sm,
+        .bg-white .text-pink-700 {
+            color: var(--bunny-gray-dark) !important;
+            opacity: 0.75 !important;
+        }
+        
+        /* 8. Text Overrides (Inside Highlighted Cards) */
+        .bg-pink-50 .text-pink-700, .bg-pink-50 .text-pink-900,
+        .bg-pink-100 .text-pink-700 {
+            color: var(--bunny-pink-dark) !important;
+            opacity: 1.0 !important;
+        }
+        
+        .bg-pink-50 .text-green-600 {
+            color: var(--bunny-green) !important;
+        }
+        .bg-pink-100 .text-pink-700 {
+             color: var(--bunny-pink) !important;
+        }
+
+        /* 9. Button Color Overrides */
+        .bg-pink-500 { background-color: var(--bunny-pink) !important; }
+        .bg-pink-500:hover { background-color: var(--bunny-pink-dark) !important; }
+        .text-pink-500 { color: var(--bunny-pink) !important; }
+        .text-pink-600 { color: var(--bunny-pink) !important; }
+        .hover\:text-pink-500:hover { color: var(--bunny-pink) !important; }
+        .border-pink-500 { border-color: var(--bunny-pink) !important; }
+        
+        .bg-green-500 { background-color: var(--bunny-green) !important; }
+        .text-green-600 { color: var(--bunny-green) !important; }
+        
+        .bg-red-500 { background-color: var(--bunny-red) !important; }
+        .bg-red-500:hover { background-color: var(--bunny-red-dark) !imporant; }
+        .text-red-500 { color: var(--bunny-red) !important; }
+        .text-red-600 { color: var(--bunny-red) !important; }
+
+        /* 10. Active/Hover states for button groups */
+        .stats-filter-btn.active, .category-type-btn.active {
+            background-color: var(--bunny-white) !important;
+            color: var(--bunny-pink) !important;
+        }
+        .chart-zoom-btn:hover, .category-type-btn:hover,
+        .stats-filter-btn:hover {
+            background-color: var(--bunny-white) !important;
+            color: var(--bunny-pink) !important;
+        }
+
+        /* 11. Header Icon Fix */
+        #show-settings-modal-btn.text-gray-500 {
+             color: var(--bunny-gray-dark) !important;
+             opacity: 0.8 !important;
+        }
+        /* --- END COMPREHENSIVE THEME FIX --- */
 
         @keyframes fadeIn {
             from {
@@ -991,11 +1085,9 @@
             <section id="store-page" class="page space-y-6">
                 <div class="bg-white p-5 rounded-2xl shadow-lg">
                     <h2 class="text-xl font-semibold mb-3" data-i18n="storeTitle">Bunny Store</h2>
-                    <div class="text-center py-10">
-                        <span class="text-6xl">🛍️</span>
-                        <p class="text-gray-600 mt-4" data-i18n="storeComingSoon">The Bunny Store is coming soon! Spend your 🪙 on fun new themes and icons.</p>
+                    <div id="store-item-list" class="space-y-4">
+                        </div>
                     </div>
-                </div>
             </section>
 
 
@@ -1428,8 +1520,8 @@
                     </div>
 
                 <div id="settings-tab-export" class="settings-tab-panel hidden space-y-4">
-                    <h3 class="text-xl font-semibold">Export Data</h3>
-                    <p class="text-gray-600 text-sm">Download your data in CSV format to analyze in Excel or other spreadsheet software.</p>
+                    <h3 class="text-xl font-semibold" data-i18n="settingsExportTitle">Export Data</h3>
+                    <p class="text-gray-600 text-sm" data-i18n="settingsExportDesc">Download your data in CSV format to analyze in Excel or other spreadsheet software.</p>
                 
                     <button id="export-csv-button"
                         class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all flex items-center justify-center space-x-2">
@@ -2034,6 +2126,8 @@
                 settingsExportCSVButton: "Transaktionen Exportieren (.csv)",
                 settingsExportCategoriesButton: "Kategorien & Ziele Exportieren (.csv)",
                 settingsExportSummariesButton: "Monatsübersichten Exportieren (.csv)",
+                settingsExportTitle: "Daten Exportieren",
+                settingsExportDesc: "Lade deine Daten im CSV-Format herunter, um sie in Excel oder anderer Tabellenkalkulationssoftware zu analysieren.",
                 toastExportSuccess: "Transaktionen werden als CSV-Datei heruntergeladen!",
                 toastExportCategoriesSuccess: "Kategorien & Ziele werden als CSV-Datei heruntergeladen!",
                 toastExportSummariesSuccess: "Monatsübersichten werden als CSV-Datei heruntergeladen!",
@@ -2068,9 +2162,15 @@
                 dashboardTotalBudgeted: "Total Budgeted",
                 dashboardTotalSpent: "Total Spent On Envelopes",
                 dashboardTotalSpentAll: "Total Monthly Spending", // <-- ADD THIS
-                demoMode: "Demo Mode", // <-- ADD THIS
                 demoModeResets: "Resets in", // <-- ADD THIS
-                dashboardVariableEnvelopes: "Spending Envelopes",
+                // --- NEW: PHASE 4 ---
+                storeBuy: "Buy for",
+                storeEquip: "Equip",
+                storeEquipped: "Equipped",
+                storeToastEquipped: "equipped",
+                storeToastNoCoins: "Not enough coins!",
+                storeToastPurchased: "Purchase successful!",
+                // --- END PHASE 4 ---
                 dashboardNoVariable: "No spending envelopes budgeted yet. Go to the 'Manage' page to add some!", // MODIFIED
                 dashboardSinkingFunds: "Savings Goals",
                 dashboardNoSinking: "No savings goals. Go to the 'Manage' page to create one!", // MODIFIED
@@ -2307,6 +2407,8 @@
                 settingsExportCategoriesButton: "Export Categories & Goals (.csv)",
                 settingsExportSummariesButton: "Export Monthly Summaries (.csv)",
                 toastExportSuccess: "Transactions downloading as .csv!",
+                settingsExportTitle: "Export Data",
+                settingsExportDesc: "Download your data in CSV format to analyze in Excel or other spreadsheet software.",
                 toastExportCategoriesSuccess: "Categories & Goals downloading as .csv!",
                 toastExportSummariesSuccess: "Monthly Summaries downloading as .csv!",
                 modalManageTypeBill: "Bills",
@@ -2424,7 +2526,7 @@
         const dbStore = {
             db: null,
             dbName: "BunnyBudgetDB",
-            version: 7, // NEW: Add goalTransactions store
+            version: 8, // NEW: Add userInventory store
 
             /**
              * Initialize the database
@@ -2488,6 +2590,14 @@
                             // Version 7: Add monthlySnapshots store
                             this.db.createObjectStore('monthlySnapshots', { keyPath: 'month' });
                         }
+                        
+                        // --- NEW: PHASE 3 ---
+                        if (oldVersion < 8) {
+                            // Version 8: Add userInventory store
+                            // This will store the 'id' of themes the user owns
+                            this.db.createObjectStore('userInventory', { keyPath: 'id' });
+                        }
+                        // --- END PHASE 3 ---
                     };
 
                     request.onsuccess = (event) => {
@@ -3349,8 +3459,113 @@
                     request.onsuccess = () => resolve(request.result);
                     request.onerror = (event) => reject(event.target.error);
                 });
+            },
+            /**
+             * Get all items from the user's inventory (owned themes)
+             */
+            async getInventory() {
+                return new Promise((resolve, reject) => {
+                    if (!this.db) return reject("DB not initialized");
+                    const transaction = this.db.transaction('userInventory', 'readonly');
+                    const store = transaction.objectStore('userInventory');
+                    const request = store.getAll();
+
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            /**
+             * Save an item to the user's inventory
+             * @param {object} item - The item to save (e.g., { id: 'default' })
+             */
+            async saveToInventory(item) {
+                return new Promise((resolve, reject) => {
+                    if (!this.db) return reject("DB not initialized");
+                    const transaction = this.db.transaction('userInventory', 'readwrite');
+                    const store = transaction.objectStore('userInventory');
+                    const request = store.put(item); // 'put' will add or overwrite
+
+                    request.onsuccess = () => resolve();
+                    request.onerror = (event) => reject(event.target.error);
+                });
             }
         };
+
+        // --- NEW: PHASE 3 (THEME_STORE) ---
+        const THEME_STORE = {
+            'default': {
+                id: 'default',
+                name: 'Bunny Pink',
+                price: 0,
+                colors: {
+                    primaryLight: 'rgb(253, 242, 248)',    // --bunny-pink-light
+                    primary: 'rgb(244, 114, 182)',         // --bunny-pink
+                    primaryDark: 'rgb(219, 39, 119)',    // --bunny-pink-dark
+                    pageBackground: 'rgb(247, 243, 248)',  // --bunny-gray-light
+                    uiElements: 'rgb(229, 224, 231)',      // --bunny-gray-medium
+                    textColor: 'rgb(63, 60, 71)',       // --bunny-gray-dark
+                    accentGreen: 'rgb(52, 211, 153)',     // --bunny-green
+                    cardBackground: 'rgb(255, 255, 255)',  // --bunny-white
+                    accentRed: 'rgb(239, 68, 68)',       // --bunny-red
+                    accentRedDark: 'rgb(220, 38, 38)',   // --bunny-red-dark
+                    browserTheme: 'rgb(244, 114, 182)'     // theme-color-meta
+                }
+            },
+            'halloween': {
+                id: 'halloween',
+                name: 'Spooky Pumpkin',
+                price: 100,
+                colors: {
+                    primaryLight: 'rgb(28, 20, 17)',   // --bunny-pink-light
+                    primary: 'rgb(217, 72, 15)',         // --bunny-pink
+                    primaryDark: 'rgb(180, 52, 3)',    // --bunny-pink-dark
+                    pageBackground: 'rgb(10, 10, 10)',  // --bunny-gray-light
+                    uiElements: 'rgb(34, 34, 34)',      // --bunny-gray-medium
+                    textColor: 'rgb(224, 224, 224)',       // --bunny-gray-dark
+                    accentGreen: 'rgb(132, 204, 22)',     // --bunny-green
+                    cardBackground: 'rgb(28, 28, 28)',  // --bunny-white
+                    accentRed: 'rgb(244, 63, 94)',       // --bunny-red
+                    accentRedDark: 'rgb(190, 18, 60)',   // --bunny-red-dark
+                    browserTheme: 'rgb(217, 72, 15)'     // theme-color-meta
+                }
+            },
+            'panda': {
+                id: 'panda',
+                name: 'Panda Purple',
+                price: 0,
+                colors: {
+                    primaryLight: 'rgb(237, 231, 246)',    // --bunny-pink-light (A very light, elegant lilac for cards)
+                    primary: 'rgb(103, 58, 183)',         // --bunny-pink (A strong, deep "Material" purple)
+                    primaryDark: 'rgb(81, 45, 168)',    // --bunny-pink-dark (A darker shade for hovers)
+                    pageBackground: 'rgb(250, 250, 250)',  // --bunny-gray-light (Clean, minimal off-white)
+                    uiElements: 'rgb(238, 238, 238)',      // --bunny-gray-medium (Light neutral gray for borders/inputs)
+                    textColor: 'rgb(33, 33, 33)',       // --bunny-gray-dark (A strong, dark gray for text)
+                    accentGreen: 'rgb(52, 211, 153)',     // --bunny-green (Standard Green)
+                    cardBackground: 'rgb(255, 255, 255)',  // --bunny-white (Pure white cards)
+                    accentRed: 'rgb(239, 68, 68)',       // --bunny-red (Standard Red)
+                    accentRedDark: 'rgb(220, 38, 38)',   // --bunny-red-dark (Standard Dark Red)
+                    browserTheme: 'rgb(103, 58, 183)'     // theme-color-meta (The main purple)
+                }
+            }
+        };
+        // --- END PHASE 3 ---
+
+        // --- NEW: Map for readable theme keys to CSS variables ---
+        const themeKeyMap = {
+            primaryLight: '--bunny-pink-light',
+            primary: '--bunny-pink',
+            primaryDark: '--bunny-pink-dark',
+            pageBackground: '--bunny-gray-light',
+            uiElements: '--bunny-gray-medium',
+            textColor: '--bunny-gray-dark',
+            accentGreen: '--bunny-green',
+            cardBackground: '--bunny-white',
+            accentRed: '--bunny-red',
+            accentRedDark: '--bunny-red-dark',
+            browserTheme: 'theme-color-meta' // Special case
+        };
+        // --- END NEW MAP ---
 
         // --- MAIN APP ---
         const app = {
@@ -3374,6 +3589,11 @@
             otherIncome: [],
             envelopes: [], // NEW: For persistent balances
             bunnyCoins: [], // NEW: For gamification
+            // --- NEW: PHASE 3 ---
+            inventory: [], // Owned themes
+            activeThemeId: 'default',
+            isDemoMode: false, // <-- ADD THIS
+            // --- END PHASE 3 ---
             snapshots: [],
             overviewChart: null,
             categoryChart: null,
@@ -3397,6 +3617,7 @@
                 if (!banner || !timerSpan) return;
 
                 banner.classList.remove('hidden');
+                this.isDemoMode = true; // <-- ADD THIS
                 // Move the app container down to make space for the banner
                 this.dom.appContainer.style.paddingTop = '60px';
                 
@@ -3535,6 +3756,13 @@
                 await dbStore.saveSetting('setupDone', true);
                 await dbStore.saveSetting('lastMonth', new Date().getMonth()); // Set initial month
 
+                // --- NEW: PHASE 3 ---
+                // Give the user the default theme
+                await dbStore.saveToInventory({ id: 'default' });
+                // Set the default theme as active
+                await dbStore.saveSetting('activeThemeId', 'default');
+                // --- END PHASE 3 ---
+
                 this.dom.onboardingModal.classList.add('hidden');
                 this.dom.onboardingModal.classList.remove('flex');
                 this.dom.appContainer.classList.remove('opacity-0');
@@ -3557,6 +3785,7 @@
              */
             cacheDOMElements() {
                 this.dom = {
+                    themeColorMeta: document.querySelector('meta[name="theme-color"]'), // <-- ADD THIS
                     appContainer: document.getElementById('app-container'),
                     // Onboarding
                     bunnyCoinTotal: document.getElementById('bunny-coin-total'),
@@ -4155,12 +4384,24 @@
                 this.dom.budgetDebtList.addEventListener('input', budgetInputHandler);
 
                 // NEW: Envelope Summary Card Toggle
-                // We use the list itself since the card is dynamic
-                this.dom.variableEnvelopesList.addEventListener('click', (e) => {
-                    if (e.target.closest('#envelope-summary-card')) {
-                        this.onToggleEnvelopeSummary();
-                    }
-                });
+                // --- NEW: PHASE 4 ---
+                // Store Page Listeners
+                const storeList = document.getElementById('store-item-list');
+                if (storeList) {
+                    storeList.addEventListener('click', (e) => {
+                        const buyBtn = e.target.closest('.store-buy-btn');
+                        if (buyBtn) {
+                            this.onBuyTheme(buyBtn.dataset.themeId);
+                            return;
+                        }
+                        const equipBtn = e.target.closest('.store-equip-btn');
+                        if (equipBtn) {
+                            this.onEquipTheme(equipBtn.dataset.themeId);
+                            return;
+                        }
+                    });
+                }
+                // --- END PHASE 4 ---
 
                 // NEW: Bills Card Toggle
                 this.dom.billsCardToggleBtn.addEventListener('click', () => {
@@ -4239,7 +4480,9 @@
                 const currentMonth = this.getCurrentMonthString();
 
                 // Load settings (lang, currency) from DB
-                const [salary, lastMonthRollover, lastMonthBudget, categories, budget, transactions, otherIncome, envelopes, bunnyCoins, snapshots, allGoalTransactions] = await Promise.all([
+                // --- MODIFIED: PHASE 3 ---
+                const [salary, lastMonthRollover, lastMonthBudget, categories, budget, transactions, otherIncome, envelopes, bunnyCoins, snapshots, allGoalTransactions, activeThemeId, inventory] = await Promise.all([
+                // --- END MODIFIED ---
                     dbStore.getSetting('salary'),
                     dbStore.getSetting('lastMonthRollover'),
                     dbStore.getSetting('lastMonthBudget'),
@@ -4249,8 +4492,21 @@
                     dbStore.getOtherIncome(currentMonth),
                     dbStore.getEnvelopes(),
                     dbStore.getBunnyCoins(),
-                    dbStore.getMonthlySnapshots() // NEW
+                    dbStore.getMonthlySnapshots(),
+                    dbStore.getAllGoalTransactions(),
+                    // --- NEW: PHASE 3 ---
+                    dbStore.getSetting('activeThemeId'),
+                    dbStore.getInventory()
+                    // --- END PHASE 3 ---
                 ]);
+
+                // --- NEW: PHASE 3 ---
+                // Load and apply the active theme
+                this.inventory = inventory || [];
+                this.activeThemeId = activeThemeId || 'default';
+                const activeTheme = THEME_STORE[this.activeThemeId] || THEME_STORE['default'];
+                this.applyTheme(activeTheme);
+                // --- END PHASE 3 ---
 
                 // Apply settings
                 i18n.setCurrency(
@@ -4434,6 +4690,7 @@
                 this.renderManagePage(); // MODIFIED
                 this.renderBunnyCoins();
                 this.renderStatsPage(); // ADDED
+                this.renderStorePage(); // <-- ADD THIS
             },
 
             /**
@@ -5003,9 +5260,43 @@
                 this.renderStatsBunnyCoins();
                 
                 // 2. Render the new Snapshot charts
+                // Re-render the charts with the new date range
                 this.renderStatsSnapshots();
             },
 
+            /**
+             * NEW: Admin function to manually give/take coins
+             * @param {number} amount - The number of coins to give (positive) or take (negative)
+             * @param {string} reason - A note for why this was done
+             */
+            async giveCoins(amount, reason = "Admin adjustment") {
+                if (typeof amount !== 'number' || amount === 0) {
+                    console.error("Invalid amount. Use a non-zero number.");
+                    this.showToast("Invalid coin amount.");
+                    return;
+                }
+
+                const month = this.getCurrentMonthString();
+                const coinEntry = {
+                    month: month,
+                    coins: amount,
+                    rollover: 0, // Not a rollover
+                    reason: reason 
+                };
+
+                try {
+                    const newId = await dbStore.saveBunnyCoins(coinEntry);
+                    this.bunnyCoins.push({ id: newId, ...coinEntry });
+                    this.renderBunnyCoins(); // Update header
+                    
+                    const message = amount > 0 ? `You gave ${amount} 🪙!` : `You took ${Math.abs(amount)} 🪙!`;
+                    this.showToast(message);
+                    console.log(message, coinEntry); // Log to console for your records
+                } catch (e) {
+                    console.error("Failed to give coins:", e);
+                    this.showToast("Error giving coins.");
+                }
+            },
 
             // --- Event Handlers ---
 
@@ -5125,6 +5416,23 @@
             showSettingsModal() {
                 // Reset to the first tab every time it's opened
                 this.switchSettingsTab('general');
+                
+                // --- NEW: Demo Mode Check ---
+                // Find the tab buttons
+                const backupTab = this.dom.settingsTabNav.querySelector('[data-tab="backup"]');
+                const exportTab = this.dom.settingsTabNav.querySelector('[data-tab="export"]');
+
+                if (this.isDemoMode) {
+                    // Hide backup/export tabs if in demo
+                    if (backupTab) backupTab.classList.add('hidden');
+                    if (exportTab) exportTab.classList.add('hidden');
+                } else {
+                    // Show them if not in demo
+                    if (backupTab) backupTab.classList.remove('hidden');
+                    if (exportTab) exportTab.classList.remove('hidden');
+                }
+                // --- END Demo Mode Check ---
+                
                 this.dom.appSettingsModal.classList.remove('hidden');
                 this.dom.appSettingsModal.classList.add('flex');
             },
@@ -6851,7 +7159,69 @@
                     return monthString;
                 }
             },
+            /**
+             * NEW: PHASE 4
+             * Renders the items in the Bunny Store
+             */
+            renderStorePage() {
+                const listEl = document.getElementById('store-item-list');
+                if (!listEl) return; // Not on the store page
 
+                listEl.innerHTML = ''; // Clear the list
+                
+                // Get a simple list of owned theme IDs
+                const ownedThemeIds = new Set(this.inventory.map(item => item.id));
+
+                // Loop through every theme in our catalog
+                for (const theme of Object.values(THEME_STORE)) {
+                    // Check user's status for this theme
+                    const isOwned = ownedThemeIds.has(theme.id);
+                    const isEquipped = (this.activeThemeId === theme.id);
+                    
+                    let buttonHTML = '';
+                    if (isEquipped) {
+                        buttonHTML = `
+                            <button class="w-full bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed" disabled>
+                                ${i18n.t('storeEquipped') || 'Equipped'}
+                            </button>`;
+                    } else if (isOwned) {
+                        buttonHTML = `
+                            <button class="store-equip-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg" data-theme-id="${theme.id}">
+                                ${i18n.t('storeEquip') || 'Equip'}
+                            </button>`;
+                    } else {
+                        // Not owned, show buy button
+                        const canAfford = this.bunnyCoins.reduce((sum, c) => sum + c.coins, 0) >= theme.price;
+                        const disabled = canAfford ? '' : 'disabled';
+                        const classes = canAfford ? 'bg-pink-500 hover:bg-pink-600' : 'bg-pink-200 cursor-not-allowed';
+                        
+                        buttonHTML = `
+                            <button class="store-buy-btn w-full ${classes} text-white font-bold py-2 px-4 rounded-lg" data-theme-id="${theme.id}" ${disabled}>
+                                <span>${i18n.t('storeBuy') || 'Buy for'}</span>
+                                <span class="ml-1">🪙 ${theme.price}</span>
+                            </button>`;
+                    }
+
+                    // Create the theme card
+                    const card = `
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-lg border">
+                            <h3 class="text-lg font-semibold text-gray-900">${theme.name}</h3>
+                            <div class="flex space-x-2 my-3">
+                                <div class="w-1/2 h-10 rounded border" style="background-color: ${theme.colors.pageBackground}"></div>
+                                <div class="w-1/2 h-10 rounded border" style="background-color: ${theme.colors.cardBackground}"></div>
+                            </div>
+                            <div class="flex space-x-2 my-3">
+                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.primary}"></div>
+                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.textColor}"></div>
+                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.accentGreen}"></div>
+                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.accentRed}"></div>
+                            </div>
+                            ${buttonHTML}
+                        </div>
+                    `;
+                    listEl.insertAdjacentHTML('beforeend', card);
+                }
+            },
             /**
              * Renders the snapshot analysis charts
              */
@@ -6896,6 +7266,19 @@
                     this.overviewChart.destroy();
                 }
 
+                // --- NEW: Get colors from the active theme ---
+                const theme = THEME_STORE[this.activeThemeId] || THEME_STORE['default'];
+                const themeColors = theme.colors;
+                
+                // Helper to add transparency to our 'rgb(...)' strings
+                const addAlpha = (color, alpha) => color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+                
+                const primaryColor = themeColors.primary;
+                const primaryColorBG = addAlpha(primaryColor, 0.1);
+                const accentGreen = addAlpha(themeColors.accentGreen, 0.7);
+                const textColor = addAlpha(themeColors.textColor, 0.7);
+                // --- END NEW ---
+
                 const incomeData = sortedSnaps.map(s => s.calculations.totalIncome);
                 const spendingData = sortedSnaps.map(s => s.calculations.totalFixed + s.calculations.totalVariableSpent);
                 const savingsData = sortedSnaps.map(s => s.totalRollover);
@@ -6909,8 +7292,8 @@
                                 type: 'line',
                                 label: 'Total Income',
                                 data: incomeData,
-                                borderColor: 'rgba(236, 72, 153, 1)', // Pink
-                                backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                                borderColor: primaryColor, // <-- UPDATED
+                                backgroundColor: primaryColorBG, // <-- UPDATED
                                 fill: true,
                                 tension: 0.1,
                                 order: 1,
@@ -6921,14 +7304,14 @@
                                 type: 'bar',
                                 label: 'Total Spending',
                                 data: spendingData,
-                                backgroundColor: 'rgba(107, 114, 128, 0.7)', // Gray
+                                backgroundColor: textColor, // <-- UPDATED
                                 order: 2
                             },
                             {
                                 type: 'bar',
                                 label: 'Savings (Rollover)',
                                 data: savingsData,
-                                backgroundColor: 'rgba(16, 185, 129, 0.7)', // Green
+                                backgroundColor: accentGreen, // <-- UPDATED
                                 order: 3
                             }
                         ]
@@ -7039,6 +7422,15 @@
                     this.categoryChart.destroy();
                 }
 
+                // --- NEW: Get colors from the active theme ---
+                const theme = THEME_STORE[this.activeThemeId] || THEME_STORE['default'];
+                const themeColors = theme.colors;
+                const addAlpha = (color, alpha) => color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+                
+                const primaryColor = themeColors.primary;
+                const primaryColorBG = addAlpha(primaryColor, 0.1);
+                // --- END NEW ---
+
                 const selectedCategoryName = this.dom.statsCategorySelect.value;
                 if (selectedCategoryName === 'none') {
                     this.dom.statsCategoryChart.classList.add('hidden');
@@ -7096,8 +7488,8 @@
                             {
                                 label: chartLabel,
                                 data: categoryData,
-                                borderColor: 'rgba(236, 72, 153, 1)', 
-                                backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                                borderColor: primaryColor, // <-- UPDATED
+                                backgroundColor: primaryColorBG, // <-- UPDATED
                                 fill: true,
                                 tension: 0.1,
                                 pointRadius: 4, // <-- Make dot visible
@@ -7640,6 +8032,110 @@
 
                 // Re-render the charts with the new date range
                 this.renderStatsSnapshots();
+
+                this.showToast("Error giving coins.");
+            },
+            
+            // --- NEW: PHASE 3 (THEME ENGINE) ---
+            /**
+             * Applies a theme object's colors to the app
+             * @param {object} theme - A theme object from THEME_STORE
+             */
+            applyTheme(theme) {
+                if (!theme || !theme.colors) {
+                    console.error("Invalid theme object", theme);
+                    return;
+                }
+                
+                const root = document.documentElement;
+                
+                // --- MODIFIED: Use the themeKeyMap to set CSS variables ---
+                for (const [key, value] of Object.entries(theme.colors)) {
+                    const cssVar = themeKeyMap[key];
+                    if (!cssVar) continue; // Skip if key isn't in our map
+
+                    if (cssVar === 'theme-color-meta') {
+                        // Set the browser's top bar color
+                        if (this.dom.themeColorMeta) {
+                            this.dom.themeColorMeta.setAttribute('content', value);
+                        }
+                    } else {
+                        // Set the CSS variable
+                        root.style.setProperty(cssVar, value);
+                    }
+                }
+                // --- END MODIFICATION ---
+                
+                // Save this as the active theme, *unless* in demo mode
+                if (!this.isDemoMode) {
+                    dbStore.saveSetting('activeThemeId', theme.id);
+                }
+                this.activeThemeId = theme.id;
+            },
+
+            /**
+             * NEW: PHASE 4
+             * Handles "Equip" button click
+             */
+            onEquipTheme(themeId) {
+                const theme = THEME_STORE[themeId];
+                if (!theme) return;
+                
+                this.applyTheme(theme);
+                this.showToast(`${theme.name} ${i18n.t('storeToastEquipped') || 'equipped'}!`);
+                
+                // Re-render store to update buttons
+                this.renderStorePage();
+            },
+
+            /**
+             * NEW: PHASE 4
+             * Handles "Buy" button click
+             */
+            async onBuyTheme(themeId) {
+                const theme = THEME_STORE[themeId];
+                if (!theme) return;
+                
+                const totalCoins = this.bunnyCoins.reduce((sum, c) => sum + c.coins, 0);
+                
+                if (totalCoins < theme.price) {
+                    this.showToast(i18n.t('storeToastNoCoins') || 'Not enough coins!');
+                    return;
+                }
+
+                // --- NEW: Demo Mode Check ---
+                if (this.isDemoMode) {
+                    // This is a "fake" purchase. Do not save to DB.
+                    
+                    // 1. Don't spend real coins
+                    console.log("DEMO: Pretending to spend " + theme.price + " coins.");
+                    
+                    // 2. Add to *local* inventory only for this session
+                    this.inventory.push({ id: theme.id });
+                    
+                    // 3. Equip the new theme
+                    this.onEquipTheme(themeId);
+                    
+                    // 4. Show success
+                    this.showToast(i18n.t('storeToastPurchased') || 'Purchase successful!');
+                    return; // Stop here, do not save
+                }
+                // --- End Demo Mode Check ---
+
+                // This is a REAL purchase
+                
+                // 1. Spend the coins
+                await this.giveCoins(-theme.price, `Purchased theme: ${theme.name}`);
+                
+                // 2. Add theme to inventory (for real)
+                await dbStore.saveToInventory({ id: theme.id });
+                this.inventory.push({ id: theme.id });
+                
+                // 3. Equip the new theme
+                this.onEquipTheme(themeId);
+                
+                // 4. Show success
+                this.showToast(i18n.t('storeToastPurchased') || 'Purchase successful!');
             }
         };
 
