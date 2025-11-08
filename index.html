@@ -57,33 +57,142 @@
         }
         /* --- END OFFLINE FONT DEFINITIONS --- */
 
-        /* 1. Page Background */
-        body, html {
-            background-color: var(--bunny-gray-light) !important;
-            color: var(--bunny-gray-dark) !important;
+        /* --- NEW: MODERN UI (v5.2) --- */
+        
+        /* 1. The "Smart Section" Card */
+        .smart-section {
+            background-color: var(--theme-card) !important;
+            border-radius: 1.5rem; /* 24px */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            overflow: hidden; /* Clips the inner cards */
+            opacity: 0; /* For fade-in animation */
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
-        /* Our Bunny Theme */
-        :root {
-            --bunny-pink-light: #fdf2f8;
-            /* Light pink for backgrounds */
-            --bunny-pink: #f472b6;
-            /* Main pink for buttons */
-            --bunny-pink-dark: #db2777;
-            /* Pink for hover */
-            --bunny-gray-light: #f7f3f8;
-            /* Page background */
-            --bunny-gray-medium: #e5e0e7;
-            /* Borders */
-            --bunny-gray-dark: #3f3c47;
-            /* Text */
-            --bunny-green: #34d399;
-            /* Green for progress */
-            --bunny-white: #ffffff;
-            --bunny-red: #ef4444;
-            /* Red for danger */
-            --bunny-red-dark: #dc2626;
+        /* 2. The Section Header */
+        .smart-section-header {
+            padding: 1.25rem 1.5rem; /* 20px 24px */
+            border-bottom: 1px solid var(--theme-ui);
+        }
+        
+        .smart-section-header h2 {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 700;
+            color: var(--theme-text);
+        }
 
+        .smart-section-header p {
+            font-size: 0.875rem; /* 14px */
+            color: var(--theme-text);
+            opacity: 0.7;
+        }
+
+        /* 3. The Body (for inner cards) */
+        .smart-section-body {
+            padding: 1rem; /* 16px */
+            display: grid;
+            gap: 0.75rem; /* 12px */
+            background-color: rgba(0, 0, 0, 0.02); /* Slight tint for depth */
+        }
+
+        /* 4. The "Glassmorphism" Inner Card (FIXED FOR DARK MODE) */
+        .glass-card {
+            background-color: var(--theme-glass-bg); /* <-- USES THEME VARIABLE */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--theme-glass-border); /* <-- USES THEME VARIABLE */
+            border-radius: 1rem; /* 16px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+            padding: 1rem; /* 16px */
+            transition: all 0.2s ease-out;
+        }
+        
+        /* 5. The "Lift" Microinteraction */
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 6. Fix for existing dashboard cards (FIXED FOR DARK MODE) */
+        #dashboard-page .bg-white {
+            background-color: var(--theme-glass-bg) !important; /* <-- USES THEME VARIABLE */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--theme-glass-border) !important; /* <-- USES THEME VARIABLE */
+            border-radius: 1rem; /* 16px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease-out;
+        }
+        
+        #dashboard-page .bg-white:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 7. Override the main hero card to be a special gradient */
+        #dashboard-hero-card {
+            background: linear-gradient(135deg, var(--theme-hero-start) 0%, var(--theme-hero-end) 100%);
+            color: var(--theme-card);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border: 0;
+            border-radius: 1.5rem; /* 24px */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            transform: translateY(0); /* Fix for an animation bug */
+        }
+        
+        /* Force text inside hero card to be light */
+        #dashboard-hero-card p,
+        #dashboard-hero-card span,
+        #dashboard-hero-card h2,
+        #dashboard-hero-card h3 {
+            color: rgba(255, 255, 255, 0.9) !important;
+            opacity: 1 !important; /* Override any opacity rules */
+        }
+        #dashboard-hero-card #dashboard-money-to-budget,
+        #dashboard-hero-card #dashboard-toggle-value {
+            color: var(--theme-card) !important;
+        }
+        #dashboard-hero-card #dashboard-total-budgeted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* --- END MODERN UI (v5.2) --- */
+
+
+        /* 1. Page Background */
+        body, html {
+            background-color: var(--theme-page) !important;
+            color: var(--theme-text) !important;
+        }
+
+        /* Our New Theme System (v5.2) */
+        :root {
+            /* Primary Colors */
+            --theme-primary-light: #fdf2f8;
+            --theme-primary: #f472b6;
+            --theme-primary-dark: #db2777;
+
+            /* Backgrounds */
+            --theme-page: #f7f3f8;
+            --theme-card: #ffffff;
+            --theme-ui: #e5e0e7; /* Borders, inputs */
+            
+            /* Text */
+            --theme-text: #3f3c47;
+
+            /* Accents */
+            --theme-green: #34d399;
+            --theme-red: #ef4444;
+            --theme-red-dark: #dc2626;
+            
+            /* Hero Card Gradient */
+            --theme-hero-start: #db2777;
+            --theme-hero-end: #f472b6;
+
+            /* NEW: Glass Effect */
+            --theme-glass-bg: rgba(255, 255, 255, 0.7);
+            --theme-glass-border: rgba(255, 255, 255, 0.2);
         }
 
         /* Helper class to hide elements */
@@ -103,35 +212,35 @@
             /* Active page is shown */
         }
 
-        /* --- NEW: COMPREHENSIVE THEME FIX (v3 - !important) --- */
+        /* --- NEW: COMPREHENSIVE THEME FIX (v5.2 - !important) --- */
         
         /* 1. Page Background */
         body, html {
-            background-color: var(--bunny-gray-light) !important;
-            color: var(--bunny-gray-dark) !important;
+            background-color: var(--theme-page) !important;
+            color: var(--theme-text) !important;
         }
 
         /* 2. Main Card Backgrounds */
         .bg-white {
-            background-color: var(--bunny-white) !important;
+            background-color: var(--theme-card) !important;
         }
         
         /* 3. Lighter / Secondary Backgrounds (buttons, inputs, etc.) */
         .bg-gray-50, .bg-gray-100, .bg-gray-200,
         .chart-zoom-btn, .category-type-btn {
-            background-color: var(--bunny-gray-medium) !important;
+            background-color: var(--theme-ui) !important;
         }
         
         /* 4. Highlighted Card Backgrounds (Pink/Yellow cards) */
         .bg-pink-50, .bg-pink-100 {
-            background-color: var(--bunny-pink-light) !important;
+            background-color: var(--theme-primary-light) !important;
         }
         
         /* 5. Dropdown (select) & Date Styling */
         select, input[type="date"] {
-            background-color: var(--bunny-gray-medium) !important;
-            color: var(--bunny-gray-dark) !important;
-            border-color: var(--bunny-gray-medium) !important;
+            background-color: var(--theme-ui) !important;
+            color: var(--theme-text) !important;
+            border-color: var(--theme-ui) !important;
         }
         
         /* 6. Text Overrides (Inside ALL Cards & Buttons) */
@@ -144,7 +253,7 @@
         .bg-gray-50 .font-semibold, .bg-gray-50 h3, .bg-gray-50 p,
         .bg-gray-100 .text-gray-600, .bg-gray-200 .text-gray-800,
         .chart-zoom-btn, .category-type-btn {
-            color: var(--bunny-gray-dark) !important;
+            color: var(--theme-text) !important;
             opacity: 0.9 !important;
         }
         
@@ -154,55 +263,72 @@
         .bg-white p, .bg-white label, .bg-white span,
         .bg-gray-50 .text-gray-500, .bg-gray-50 .text-sm,
         .bg-white .text-pink-700 {
-            color: var(--bunny-gray-dark) !important;
+            color: var(--theme-text) !important;
             opacity: 0.75 !important;
         }
         
         /* 8. Text Overrides (Inside Highlighted Cards) */
         .bg-pink-50 .text-pink-700, .bg-pink-50 .text-pink-900,
         .bg-pink-100 .text-pink-700 {
-            color: var(--bunny-pink-dark) !important;
+            color: var(--theme-primary-dark) !important;
             opacity: 1.0 !important;
         }
         
         .bg-pink-50 .text-green-600 {
-            color: var(--bunny-green) !important;
+            color: var(--theme-green) !important;
         }
         .bg-pink-100 .text-pink-700 {
-             color: var(--bunny-pink) !important;
+             color: var(--theme-primary) !important;
         }
 
         /* 9. Button Color Overrides */
-        .bg-pink-500 { background-color: var(--bunny-pink) !important; }
-        .bg-pink-500:hover { background-color: var(--bunny-pink-dark) !important; }
-        .text-pink-500 { color: var(--bunny-pink) !important; }
-        .text-pink-600 { color: var(--bunny-pink) !important; }
-        .hover\:text-pink-500:hover { color: var(--bunny-pink) !important; }
-        .border-pink-500 { border-color: var(--bunny-pink) !important; }
+        .bg-pink-500 { background-color: var(--theme-primary) !important; }
+        .bg-pink-500:hover { background-color: var(--theme-primary-dark) !important; }
+        .text-pink-500 { color: var(--theme-primary) !important; }
+        .text-pink-600 { color: var(--theme-primary) !important; }
+        .hover\:text-pink-500:hover { color: var(--theme-primary) !important; }
+        .border-pink-500 { border-color: var(--theme-primary) !important; }
         
-        .bg-green-500 { background-color: var(--bunny-green) !important; }
-        .text-green-600 { color: var(--bunny-green) !important; }
+        .bg-green-500 { background-color: var(--theme-green) !important; }
+        .text-green-600 { color: var(--theme-green) !important; }
         
-        .bg-red-500 { background-color: var(--bunny-red) !important; }
-        .bg-red-500:hover { background-color: var(--bunny-red-dark) !imporant; }
-        .text-red-500 { color: var(--bunny-red) !important; }
-        .text-red-600 { color: var(--bunny-red) !important; }
+        .bg-red-500 { background-color: var(--theme-red) !important; }
+        .bg-red-500:hover { background-color: var(--theme-red-dark) !important; }
+        .text-red-500 { color: var(--theme-red) !important; }
+        .text-red-600 { color: var(--theme-red) !important; }
 
         /* 10. Active/Hover states for button groups */
         .stats-filter-btn.active, .category-type-btn.active {
-            background-color: var(--bunny-white) !important;
-            color: var(--bunny-pink) !important;
+            background-color: var(--theme-card) !important;
+            color: var(--theme-primary) !important;
         }
         .chart-zoom-btn:hover, .category-type-btn:hover,
         .stats-filter-btn:hover {
-            background-color: var(--bunny-white) !important;
-            color: var(--bunny-pink) !important;
+            background-color: var(--theme-card) !important;
+            color: var(--theme-primary) !important;
         }
 
         /* 11. Header Icon Fix */
-        #show-settings-modal-btn.text-gray-500 {
-             color: var(--bunny-gray-dark) !important;
+        .header-logo-icon {
+            color: var(--theme-primary) !important;
+        }
+        .coin-display {
+            background-color: var(--theme-primary-light) !important;
+            color: var(--theme-primary-dark) !important;
+        }
+        .coin-display svg {
+             color: var(--theme-primary-dark) !important;
+             opacity: 0.8;
+        }
+        
+        #show-settings-modal-btn.text-gray-500,
+        #dark-theme-toggle.text-gray-500 {
+             color: var(--theme-text) !important;
              opacity: 0.8 !important;
+        }
+        #show-settings-modal-btn:hover,
+        #dark-theme-toggle:hover {
+            color: var(--theme-primary) !important;
         }
         /* --- END COMPREHENSIVE THEME FIX --- */
 
@@ -218,7 +344,7 @@
 
         /* Active nav button style */
         .nav-button.active {
-            color: var(--bunny-pink);
+            color: var(--theme-primary);
         }
 
         .nav-button {
@@ -256,11 +382,11 @@
         }
 
         progress[value]::-webkit-progress-bar {
-            background-color: var(--bunny-gray-medium);
+            background-color: var(--theme-ui);
         }
 
         progress[value]::-webkit-progress-value {
-            background-color: var(--bunny-green);
+            background-color: var(--theme-green);
             transition: all 0.3s ease;
         }
 
@@ -328,13 +454,12 @@
         }
         /* Transaction History List */
         #tx-history-list li:nth-child(even) {
-            background-color: #fdf2f8;
-            /* --bunny-pink-light */
+            background-color: var(--theme-primary-light);
         }
         /* NEW: Active state for stats filter button */
         .stats-filter-btn.active {
-            background-color: var(--bunny-white);
-            color: var(--bunny-pink);
+            background-color: var(--theme-card);
+            color: var(--theme-primary);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         /* NEW: Zoom Button Styles */
@@ -348,8 +473,8 @@
             transition: all 0.15s ease-in-out;
         }
         .chart-zoom-btn:hover {
-            background-color: var(--bunny-white);
-            color: var(--bunny-pink);
+            background-color: var(--theme-card);
+            color: var(--theme-primary);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .chart-zoom-btn:active {
@@ -369,8 +494,8 @@
             transition: all 0.15s ease-in-out;
         }
         .category-type-btn.active {
-            background-color: var(--bunny-white);
-            color: var(--bunny-pink);
+            background-color: var(--theme-card);
+            color: var(--theme-primary);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
     </style>
@@ -397,12 +522,40 @@
         }
     })();
     </script>
+    <style>
+    .store-tab-btn {
+    background: transparent;
+    border: 1px solid rgba(100,100,110,0.12);
+    transition: all .12s;
+    }
+    .store-tab-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .store-tab-btn.active {
+    background: linear-gradient(90deg, rgba(244,114,182,0.12), rgba(219,39,119,0.06));
+    border-color: transparent;
+    }
+    #store-grid { margin-top: 8px; }
+    @media (min-width: 769px) {
+    #store-light-col, #store-dark-col { display: block; }
+    }
+    @media (max-width: 768px) {
+    #store-dark-col { display: none; }
+    }
+    </style>
+
     </head>
 
 
 
 <body class="antialiased">
-
+    <!-- Inline bunny symbol -->
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" focusable="false">
+        <symbol id="icon-bunny" viewBox="0 0 24 24">
+            <path d="M17.3 3.7c-1.1-1.1-2.9-1.3-4.2-.5-.3.2-.5.4-.7.7-.8 1-1 2.3-.5 3.5-.9.4-1.7 1.1-2.3 2-.9 1.3-1 2.9-.4 4.3.7 1.7 2.2 3 4 3.6 1.9.6 4 .3 5.5-1 1.4-1.2 2.1-3.1 1.9-4.9-.1-1.1-.6-2.1-1.3-2.9.9-.8 1.3-2 1-3.2-.2-1.4-1.1-2.3-2.5-2.8zM9.5 16.5c-.9-.3-1.6-1-2-1.9-.4-1 .1-2.2 1.1-2.6.9-.4 2 .1 2.3 1.1.2.6.1 1.2-.3 1.7-.4.6-1.1 1-1.7 1.7z"/>
+        </symbol>
+    </svg>
     <!-- ====== FULL SCREEN ONBOARDING MODAL ====== -->
     <div id="onboarding-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto overflow-hidden">
@@ -557,19 +710,28 @@
         <header class="mb-6">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <!-- Bunny Head Icon -->
-                    <svg class="bunny-icon text-pink-500" viewBox="0 0 24 24" fill="currentColor"
+                    <svg class="bunny-icon header-logo-icon" viewBox="0 0 24 24" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M12.6,6.3c0-0.8-0.7-1.5-1.5-1.5H12c-0.8,0-1.5,0.7-1.5,1.5v0c0,0.8,0.7,1.5,1.5,1.5h-0.1C11.9,7.8,12.6,7.1,12.6,6.3zM15.6,6.3c0-0.8-0.7-1.5-1.5-1.5h-0.1c-0.8,0-1.5,0.7-1.5,1.5v0c0,0.8,0.7,1.5,1.5,1.5h0C14.9,7.8,15.6,7.1,15.6,6.3z M9,12c-0.8,0-1.5,0.7-1.5,1.5S7.7,15,8.5,15S10,14.3,10,13.5S9.8,12,9,12z M15.5,15c0.8,0,1.5-0.7,1.5-1.5s-0.7-1.5-1.5-1.5s-1.5,0.7-1.5,1.5S14.7,15,15.5,15z M21.4,11.5c-0.2-1.2-0.6-2.4-1.2-3.5c-1.2-2-3-3.2-5.1-3.7C14.3,2.9,13.2,2,12,2s-2.3,0.9-3.1,2.2c-2.1,0.5-3.9,1.7-5.1,3.7C3.1,8,2.7,9.1,2.6,10.4C2.5,10.9,2.5,11.4,2.5,12c0,4.1,2.7,7.7,6.4,8.7c1.1,0.3,2.2,0.4,3.1,0.4c1,0,2.1-0.1,3.1-0.4c3.8-1,6.4-4.5,6.4-8.7C21.5,11.9,21.5,11.7,21.4,11.5z M19.5,12c0,3.6-2.2,6.7-5.4,7.5c-0.9,0.2-1.8,0.3-2.1,0.3c-0.4,0-1.2-0.1-2.1-0.3C6.7,18.7,4.5,15.6,4.5,12c0-0.5,0-0.7,0.1-1.2c0.2-1,0.5-1.9,1-2.8c0.9-1.5,2.3-2.5,4-3c0.3,1,1.2,1.8,2.4,1.8s2.1-0.8,2.4-1.8c1.7,0.5,3.1,1.5,4,3c0.5,0.9,0.8,1.8,1,2.8C19.5,11.3,19.5,11.5,19.5,12z" />
+                        <use href="#icon-bunny"></use>
                     </svg>
                     <h1 class="text-2xl font-bold" data-i18n="appTitle">Bunny Budget</h1>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <div class="flex items-center space-x-1 bg-pink-100 text-pink-700 font-bold text-lg px-4 py-2 rounded-full">
-                        <span>🪙</span>
+                    <div class="coin-display flex items-center space-x-1 bg-pink-100 text-pink-700 font-bold text-lg px-4 py-2 rounded-full">
+                        <svg class="bunny-icon-sm" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                           <use href="#icon-bunny"></use>
+                        </svg>
                         <span id="bunny-coin-total">0</span>
                     </div>
+
+                    <button id="dark-theme-toggle" class="text-gray-500 hover:text-pink-500 p-2">
+                        <svg id="theme-icon-moon" class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                        </svg>
+                        <svg id="theme-icon-sun" class="bunny-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12h2.25m.386-6.364l1.591 1.591M12 12a3 3 0 110-6 3 3 0 010 6z" />
+                        </svg>
+                    </button>
 
                     <button id="show-settings-modal-btn" class="text-gray-500 hover:text-pink-500 p-2">
                         <svg class="bunny-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -587,7 +749,7 @@
             <!-- ====== Dashboard Page ====== -->
             <section id="dashboard-page" class="page active space-y-6">
                 <!-- Money to Budget -->
-                <div class="bg-white p-5 rounded-2xl shadow-lg">
+                <div id="dashboard-hero-card" class="bg-white p-5 rounded-2xl shadow-lg">
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="text-sm font-medium text-gray-500" data-i18n="dashboardMoneyToBudget">Money to
@@ -608,10 +770,10 @@
                     </div>
                 </div>
                 
-                <div id="bills-card-container" class="bg-white p-5 rounded-2xl shadow-lg space-y-3 hidden">
-                    <button id="bills-card-toggle-btn" class="w-full flex justify-between items-center text-left">
+                <div id="bills-card-container" class="smart-section hidden">
+                    <button id="bills-card-toggle-btn" class="smart-section-header w-full flex justify-between items-center text-left">
                         <div>
-                            <h2 class="text-xl font-semibold" data-i18n="dashboardBillsTitle">Bills & Fixed Debts</h2>
+                            <h2 data-i18n="dashboardBillsTitle">Monthly Bills</h2>
                         </div>
                         <div class="flex items-center space-x-2">
                             <span id="bills-card-total" class="font-semibold text-lg text-red-600">€0.00</span>
@@ -627,29 +789,46 @@
                     </div>
                 </div>
 
-                <div id="variable-envelopes-container" class="hidden">
-                    <h2 class="text-xl font-semibold mb-3" data-i18n="dashboardVariableEnvelopes">Variable Envelopes
-                    </h2>
-                    <div id="variable-envelopes-list" class="space-y-3">
-                        <!-- JS will render envelopes here -->
+                <div id="variable-envelopes-container" class="smart-section hidden">
+                    <div id="envelope-summary-card" class="smart-section-header cursor-pointer" data-view="spent">
+                        <input type="hidden" id="env-summary-spent" value="0">
+                        <input type="hidden" id="env-summary-available" value="0">
+                        
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 id="env-summary-label" class="text-xl font-bold" data-i18n="dashboardVariableEnvelopes">Spending Envelopes</h2>
+                            <span id="env-summary-value" class="font-bold text-lg text-gray-900">€0.00</span>
+                        </div>
+                        <progress class="w-full" id="env-summary-progress" value="0" max="1"></progress>
+                        <div class="flex justify-between items-center text-sm text-gray-500 mt-2">
+                            <span id="env-summary-budgeted" class="font-medium">Budgeted: €0.00</span>
+                            <span id="env-summary-inflows" class="font-medium text-green-600 hidden"></span>
+                        </div>
                     </div>
-                    <p id="variable-envelopes-empty" class="text-gray-500" data-i18n="dashboardNoVariable">No variable
+                    <div id="variable-envelopes-list" class="smart-section-body">
+                        </div>
+                    <p id="variable-envelopes-empty" class="text-gray-500 p-5" data-i18n="dashboardNoVariable">No spending
                         envelopes budgeted yet. Go to the 'Manage' page to add some!</p>
                 </div>
 
                 <!-- Sinking Funds (Goals) -->
-                <div id="saving-goals-container" class="hidden"> <h2 class="text-xl font-semibold mb-3" data-i18n="dashboardSinkingFunds">Savings Goals</h2>
-                    <div id="saving-goals-list" class="space-y-3">
+                <div id="saving-goals-container" class="smart-section hidden">
+                    <div class="smart-section-header">
+                        <h2 data-i18n="dashboardSinkingFunds">Savings Goals</h2>
                         </div>
-                    <p id="saving-goals-empty" class="text-gray-500" data-i18n="dashboardNoSinking">No savings
+                    <div id="saving-goals-list" class="smart-section-body">
+                        </div>
+                    <p id="saving-goals-empty" class="text-gray-500 p-5" data-i18n="dashboardNoSinking">No savings
                         goals. Go to the 'Manage' page to create one!</p>
                 </div>
 
                 <!-- Debt Paydown Goals -->
-                <div id="debt-goals-container" class="hidden"> <h2 class="text-xl font-semibold mb-3" data-i18n="dashboardDebtGoals">Debt Paydown Goals</h2>
-                    <div id="debt-goals-list" class="space-y-3">
+                <div id="debt-goals-container" class="smart-section hidden">
+                    <div class="smart-section-header">
+                        <h2 data-i18n="dashboardDebtGoals">Debt Paydown Goals</h2>
+                    </div>
+                    <div id="debt-goals-list" class="smart-section-body">
                         </div>
-                    <p id="debt-goals-empty" class="text-gray-500" data-i18n="dashboardNoDebtGoals">No debt
+                    <p id="debt-goals-empty" class="text-gray-500 p-5" data-i18n="dashboardNoDebtGoals">No debt
                         paydown goals. Go to 'Manage' to add one.</p>
                 </div>
             </section>
@@ -685,43 +864,46 @@
                             <span data-i18n="budgetTotalIncome">Total Income</span>
                             <span id="budget-summary-total-income" class="text-gray-900">€0.00</span>
                         </div>
-
-                        <div id="fixed-costs-container" class="border-t border-gray-200 pt-4 hidden">
-                            <button id="fixed-costs-toggle-btn" class="w-full flex justify-between items-center text-left">
-                                <span class="text-lg font-semibold" data-i18n="budgetFixedCosts">Bills & Debts</span>
-                                <div class="flex items-center space-x-2">
-                                    <span id="budget-summary-fixed-costs" class="font-medium text-red-600">€0.00</span>
-                                    <svg id="fixed-costs-chevron" class="w-5 h-5 text-gray-500 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                    </svg>
-                                </div>
-                            </button>
-                            <div id="fixed-costs-details" class="mt-2 hidden space-y-2">
-                                <div id="fixed-costs-list" class="space-y-2">
-                                </div>
-                            </div>
-                        </div>
-                        
                     </div>
 
                 </div> <div
-                    class="bg-pink-50 border-2 border-pink-200 p-4 rounded-lg space-y-3">
+                    class="bg-white p-5 rounded-2xl shadow-lg space-y-3">
                     <div>
-                            <p class="text-sm font-medium text-pink-700" data-i18n="budgetMoneyToBudget">Money to Budget
-                            </p>
-                            <p id="budget-money-to-budget" class="text-3xl font-bold text-pink-900">€0.00</p>
-                        </div>
+                        <p class="text-sm font-medium text-gray-500" data-i18n="budgetMoneyToBudget">Money to Budget
+                        </p>
+                        <p id="budget-money-to-budget" class="text-3xl font-bold text-pink-900">€0.00</p>
+                    </div>
+                    
+                    <div class="space-y-1 border-t border-pink-100 pt-3">
                         <div class="flex justify-between">
                             <p class="text-sm font-medium text-pink-700" data-i18n="budgetTotalAssigned">Total Assigned
                             </p>
                             <p id="budget-total-assigned" class="text-lg font-semibold text-pink-900">€0.00</p>
                         </div>
-                        <div class="flex justify-between">
-                            <p class="text-sm font-medium text-pink-700" data-i18n="budgetRemainingToAssign">Remaining
-                            </p>
-                            <p id="budget-remaining" class="text-lg font-semibold text-green-600">€0.00</p>
+                        
+                        <div class="flex justify-between pl-4">
+                            <p class="text-sm text-pink-700 opacity-75" data-i18n="assignBills">Bills</p>
+                            <p id="budget-assigned-bills" class="text-sm font-medium text-pink-900 opacity-75">€0.00</p>
+                        </div>
+                        <div class="flex justify-between pl-4">
+                            <p class="text-sm text-pink-700 opacity-75" data-i18n="assignEnvelopes">Envelopes</p>
+                            <p id="budget-assigned-envelopes" class="text-sm font-medium text-pink-900 opacity-75">€0.00</p>
+                        </div>
+                        <div class="flex justify-between pl-4">
+                            <p class="text-sm text-pink-700 opacity-75" data-i18n="assignSavings">Contribute to Savings</p>
+                            <p id="budget-assigned-savings" class="text-sm font-medium text-pink-900 opacity-75">€0.00</p>
+                        </div>
+                        <div class="flex justify-between pl-4">
+                            <p class="text-sm text-pink-700 opacity-75" data-i18n="assignDebts">Pay Down Debts</p>
+                            <p id="budget-assigned-debts" class="text-sm font-medium text-pink-900 opacity-75">€0.00</p>
                         </div>
                     </div>
+                    <div class="flex justify-between border-t border-pink-100 pt-3">
+                        <p class="text-sm font-medium text-pink-700" data-i18n="budgetRemainingToAssign">Remaining
+                        </p>
+                        <p id="budget-remaining" class="text-lg font-semibold text-green-600">€0.00</p>
+                    </div>
+                </div>
 
                 <div class="bg-white rounded-2xl shadow-lg">
                     <h2 class="text-xl font-semibold p-5" data-i18n="assignTitle">Assign Your Money</h2>
@@ -869,6 +1051,7 @@
                                 <input type="date" id="category-goal-date"
                                     class="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
                             </div>
+                        </div>
 
                             <button type="submit"
                                 class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all"
@@ -1040,9 +1223,9 @@
                         </div>
                         
                         <div id="stats-filter-buttons" class="flex items-center space-x-1 bg-gray-100 p-1 rounded-lg">
-                            <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600" data-months="3">3M</button>
-                            <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600" data-months="6">6M</button>
-                            <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600 active" data-months="12">12M</button>
+                            <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600" data-months="3" data-i18n="stats3M">3M</button>
+                            <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600" data-months="6" data-i18n="stats6M">6M</button>
+                            <button class="stats-filter-btn px-3 py-1 rounded-md text-sm font-medium text-gray-600 active" data-months="12" data-i18n="stats12M">12M</button>
                         </div>
                     </div>
 
@@ -1085,9 +1268,65 @@
             <section id="store-page" class="page space-y-6">
                 <div class="bg-white p-5 rounded-2xl shadow-lg">
                     <h2 class="text-xl font-semibold mb-3" data-i18n="storeTitle">Bunny Store</h2>
-                    <div id="store-item-list" class="space-y-4">
-                        </div>
+
+                    <!-- Store tabs (Light / Dark) -->
+                    <div class="store-tabs flex items-center gap-3 mb-4">
+                        <button id="store-tab-light" class="store-tab-btn px-3 py-2 rounded-md border" data-tab="light">Light Themes</button>
+                        <button id="store-tab-dark"  class="store-tab-btn px-3 py-2 rounded-md border" data-tab="dark">Dark Themes</button>
                     </div>
+
+                    <!-- Two-column store grid (responsive) -->
+                    <div id="store-grid" class="grid gap-4 grid-cols-1 md:grid-cols-2">
+                        <div id="store-light-col" class="space-y-3"></div>
+                        <div id="store-dark-col"  class="space-y-3"></div>
+                    </div>
+                </div>
+                <script>
+                (function(){
+                    function setupStoreTabs() {
+                        const lightCol = document.getElementById('store-light-col');
+                        const darkCol  = document.getElementById('store-dark-col');
+
+                        // Collect already-rendered cards if they exist (class .store-item)
+                        const items = document.querySelectorAll('.store-item');
+                        items.forEach(item => {
+                        const type = item.dataset.themeType || (item.classList.contains('theme-dark') ? 'dark' : 'light');
+                        const clone = item.cloneNode(true);
+                        if (type === 'dark') darkCol.appendChild(clone);
+                        else lightCol.appendChild(clone);
+                        });
+
+                        const btnLight = document.getElementById('store-tab-light');
+                        const btnDark  = document.getElementById('store-tab-dark');
+
+                        function setActive(tab) {
+                        if (window.innerWidth <= 768) {
+                            lightCol.style.display = tab === 'light' ? '' : 'none';
+                            darkCol.style.display  = tab === 'dark' ? '' : 'none';
+                        } else {
+                            lightCol.style.display = '';
+                            darkCol.style.display  = '';
+                        }
+                        // simple active style
+                        btnLight && btnLight.classList.toggle('active', tab === 'light');
+                        btnDark  && btnDark.classList.toggle('active', tab === 'dark');
+                        }
+
+                        btnLight && btnLight.addEventListener('click', () => setActive('light'));
+                        btnDark  && btnDark.addEventListener('click', () => setActive('dark'));
+
+                        setActive('light');
+                        window.addEventListener('resize', () => setActive('light'));
+                    }
+
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', setupStoreTabs);
+                    } else {
+                        setupStoreTabs();
+                    }
+                    })();
+                </script>
+
             </section>
 
 
@@ -1875,6 +2114,17 @@
         // --- INTERNATIONALIZATION (i18n) ---
         const translations = {
             de: {
+                // --- NEW KEYS ADDED ---
+                dashboardTotalSpentAll: "Gesamte Monatsausgaben",
+                demoModeResets: "Setzt zurück in",
+                storeBuy: "Kaufen für",
+                storeEquip: "Ausrüsten",
+                storeEquipped: "Ausgerüstet",
+                storeToastEquipped: "ausgerüstet",
+                storeToastNoCoins: "Nicht genügend Coins!",
+                storeToastPurchased: "Kauf erfolgreich!",
+                // --- END NEW KEYS ---
+
                 penaltyWarning: "Warnung: Frühes Abheben kostet 5 🪙!",
                 penaltyToast: "Du hast 5 🪙 für frühes Abheben verloren!",
                 dashboardInflows: "Eingänge",
@@ -1883,27 +2133,27 @@
                 modalGoalTabTransfer: "Umbuchen",
                 appTitle: "Bunny Budget",
                 navDashboard: "Übersicht",
-                navManage: "Verwalten", // NEW
-                navSettings: "Einst.", // Kept for reference
+                navManage: "Verwalten",
+                navSettings: "Einst.",
                 navStats: "Statistik",
-                navStore: "Shop", // NEW
-                dashboardMoneyToBudget: "Zu Budgetieren",
+                navStore: "Shop",
+                dashboardMoneyToBudget: "Zuzuweisen",
                 dashboardTotalBudgeted: "Gesamt Budgetiert",
                 dashboardTotalSpent: "Gesamt Ausgegeben (Variabel)",
                 dashboardVariableEnvelopes: "Ausgaben-Umschläge",
-                dashboardNoVariable: "Noch keine Ausgaben-Umschläge budgetiert. Gehe zur 'Verwalten'-Seite, um welche hinzuzufügen!", // MODIFIED
+                dashboardNoVariable: "Noch keine Ausgaben-Umschläge budgetiert. Gehe zur 'Verwalten'-Seite, um welche hinzuzufügen!",
                 dashboardSinkingFunds: "Sparziele",
-                dashboardNoSinking: "Keine Sparziele. Gehe zur 'Verwalten'-Seite, um einen zu erstellen!", // MODIFIED
+                dashboardNoSinking: "Keine Sparziele. Gehe zur 'Verwalten'-Seite, um einen zu erstellen!",
                 dashboardDebtGoals: "Schuldenziele",
-                dashboardNoDebtGoals: "Keine Tilgungsziele. Gehe zu 'Verwalten', um eines hinzuzufügen.", // MODIFIED
-                dashboardBillsTitle: "Rechnungen & Fixkosten",
+                dashboardNoDebtGoals: "Keine Tilgungsziele. Gehe zu 'Verwalten', um eines hinzuzufügen.",
+                dashboardBillsTitle: "Monatliche Rechnungen",
                 dashboardBillsEmpty: "Keine monatlichen Rechnungen oder Fixkosten. Gehe zu 'Verwalten', um eine hinzuzufügen.",
                 dashboardRemaining: "Verfügbar",
                 dashboardBudgeted: "Budgetiert",
                 dashboardSpent: "Ausgegeben",
                 dashboardOf: "von",
-                dashboardTotalSaved: "Gesamt Gespart", // <-- FIX: Changed from "Assigned" to "Saved"
-                dashboardTotalPaid: "Gesamt Bezahlt", // <-- NEW
+                dashboardTotalSaved: "Gesamt Gespart",
+                dashboardTotalPaid: "Gesamt Bezahlt",
                 budgetIncomeTitle: "Einkommen",
                 budgetRollover: "Übertrag Ersparnisse",
                 budgetAddIncome: "+ Hinzuf.",
@@ -1911,7 +2161,7 @@
                 budgetTotalIncome: "Gesamteinkommen",
                 budgetCostsTitle: "Fixkosten",
                 budgetFixedCosts: "Rechnungen & Schulden",
-                budgetMoneyToBudget: "Zu Budgetieren",
+                budgetMoneyToBudget: "Zuzuweisen",
                 budgetTotalAssigned: "Gesamt Zugewiesen",
                 budgetRemainingToAssign: "Übrig",
                 budgetNoFixed: "Keine Fixkosten, Schulden oder Spar-Rechnungen.",
@@ -1937,10 +2187,10 @@
                 settingsTypeDebtGoal: "Schulden (Tilgungsziel)",
                 settingsCategoryName: "Name",
                 settingsGoalAmount: "Gesamtziel (Optional)",
-                settingsGoalDate: "Zieldatum (Optional)", // NEW
+                settingsGoalDate: "Zieldatum (Optional)",
                 settingsDefaultAmount: "Monatl. Zahlung (Optional)",
-                goalDateLabel: "Zieldatum", // NEW
-                suggestedContribution: "Empfohlen", // NEW
+                goalDateLabel: "Zieldatum",
+                suggestedContribution: "Empfohlen",
                 settingsAddCategoryButton: "Kategorie Hinzufügen",
                 modalEditCategoryTitle: "Kategorie Bearbeiten",
                 settingsManageCategories: "Kategorien Verwalten",
@@ -1961,11 +2211,11 @@
                 settingsResetButton: "App Zurücksetzen",
                 helpHowToUseTitle: "Wie man Bunny Budget nutzt",
                 helpHowToUseStep1Title: "1. Richte dein Budget ein",
-                helpHowToUseStep1Desc: "Gehe zum Tab 'Verwalten'. Gib zuerst dein monatliches Gehalt ein. Füge dann alle deine monatlichen Rechnungen (wie 'Miete' oder 'Internet') als 'Fixkosten' und alle monatlichen Schuldenzahlungen als 'Schulden (Feste Zahlung)' hinzu.", // MODIFIED
+                helpHowToUseStep1Desc: "Gehe zum Tab 'Verwalten'. Gib zuerst dein monatliches Gehalt ein. Füge dann alle deine monatlichen Rechnungen (wie 'Miete' oder 'Internet') als 'Fixkosten' und alle monatlichen Schuldenzahlungen als 'Schulden (Feste Zahlung)' hinzu.",
                 helpHowToUseStep2Title: "2. Füge deine Kategorien hinzu",
-                helpHowToUseStep2Desc: "Füge in 'Verwalten' deine Ausgabenkategorien (wie 'Lebensmittel' oder 'Tanken') als 'Variable Umschläge' hinzu. Füge deine Sparziele (wie 'Urlaub') als 'Spartopf (Ziele)' oder 'Schulden (Tilgungsziele)' hinzu.", // MODIFIED
+                helpHowToUseStep2Desc: "Füge in 'Verwalten' deine Ausgabenkategorien (wie 'Lebensmittel' oder 'Tanken') als 'Variable Umschläge' hinzu. Füge deine Sparziele (wie 'Urlaub') als 'Spartopf (Ziele)' oder 'Schulden (Tilgungsziele)' hinzu.",
                 helpHowToUseStep3Title: "3. Weise dein Geld zu",
-                helpHowToUseStep3Desc: "Gehe zum Tab 'Verwalten'. Füge 'Sonst. Einkommen' hinzu, das du diesen Monat erhalten hast. Die App zeigt dein 'Geld zu Budgetieren' (dein Gesamteinkommen minus aller Fixkosten, Schulden und Jährl. Rechnungen). Weise dieses Geld deinen Variablen Umschlägen und Sparzielen zu.", // MODIFIED
+                helpHowToUseStep3Desc: "Gehe zum Tab 'Verwalten'. Füge 'Sonst. Einkommen' hinzu, das du diesen Monat erhalten hast. Die App zeigt dein 'Geld zu Budgetieren' (dein Gesamteinkommen minus aller Fixkosten, Schulden und Jährl. Rechnungen). Weise dieses Geld deinen Variablen Umschlägen und Sparzielen zu.",
                 helpHowToUseStep4Title: "4. Verfolge deine Ausgaben",
                 helpHowToUseStep4Desc: "Drücke auf dem 'Übersicht'-Tab den großen 'pinken + Knopf', um eine Ausgabe hinzuzufügen. Wähle den Umschlag, aus dem du ausgegeben hast, und sieh zu, wie der 'Verfügbar'-Betrag sinkt.",
                 helpHowToUseStep5Title: "5. Korrigiere Fehler",
@@ -1974,7 +2224,7 @@
                 helpTermSalaryTitle: "Gehalt",
                 helpTermSalaryDesc: "Dein gesamtes *wiederkehrendes* monatliches Einkommen. Dies ist die Basis für dein Budget.",
                 helpTermOtherIncomeTitle: "Sonst. Einkommen",
-                helpTermOtherIncomeDesc: "Einmaliges oder variables Einkommen (wie ein Nebenjob oder ein verkaufter Artikel). Füge dies auf der 'Verwalten'-Seite hinzu.", // MODIFIED
+                helpTermOtherIncomeDesc: "Einmaliges oder variables Einkommen (wie ein Nebenjob oder ein verkaufter Artikel). Füge dies auf der 'Verwalten'-Seite hinzu.",
                 helpTermFixedCostTitle: "Fixkosten",
                 helpTermFixedCostDesc: "Eine Rechnung, die jeden Monat gleich hoch ist, wie Miete oder Internet. Diese wird bezahlt, *bevor* du budgetierst.",
                 helpTermDebtPaymentTitle: "Schulden (Feste Zahlung)",
@@ -1982,7 +2232,7 @@
                 helpTermSinkingBillTitle: "Spartopf (Jhrl. Rechnung)",
                 helpTermSinkingBillDesc: "Für nicht-monatliche Rechnungen (wie die jährliche Autoversicherung). Die App spart jeden Monat 1/12 der Kosten und behandelt es wie Fixkosten, damit du nie von der Rechnung überrascht wirst.",
                 helpTermMoneyToBudgetTitle: "Geld zu Budgetieren",
-                helpTermMoneyToBudgetDesc: "Dies ist dein 'Gesamteinkommen' (Gehalt + Sonstiges) minus all deiner 'Fixkosten', 'Schulden (Feste Zahlungen)' und 'Spartöpfe (Rechnungen)'. Dies ist das Geld, das du auf der 'Verwalten'-Seite zuweisen kannst.", // MODIFIED
+                helpTermMoneyToBudgetDesc: "Dies ist dein 'Gesamteinkommen' (Gehalt + Sonstiges) minus all deiner 'Fixkosten', 'Schulden (Feste Zahlungen)' und 'Spartöpfe (Rechnungen)'. Dies ist das Geld, das du auf der 'Verwalten'-Seite zuweisen kannst.",
                 helpTermVariableEnvelopeTitle: "Variabler Umschlag",
                 helpTermVariableEnvelopeDesc: "Dein 'digitaler Umschlag' für monatliche Ausgaben, die sich ändern, wie Lebensmittel, Tanken oder Auswärts Essen. Du gibst mit dem '+'-Knopf daraus aus.",
                 helpTermSinkingGoalTitle: "Spartopf (Ziel)",
@@ -2026,7 +2276,7 @@
                 onboardingHelpButton: "Wie funktioniert das? Lies die Anleitung",
                 onboardingUseTemplate: "Mit Vorlage Starten",
                 onboardingStartFresh: "Neu Starten",
-                onboardingTryDemo: "Demo Testen", // <-- ADD THIS
+                onboardingTryDemo: "Demo Testen", // <-- Comment removed
                 onboardingRestore: "Aus Backup Wiederherstellen",
                 back: "Zurück",
                 next: "Weiter",
@@ -2038,8 +2288,8 @@
                 statsEntry: "Coins verdient mit",
                 onboardingLanguageTitle: "Sprache Wählen",
                 onboardingLanguageSubtitle: "Wähle deine bevorzugte Sprache.",
-                storeTitle: "Bunny Shop", // NEW
-                storeComingSoon: "Der Bunny Shop kommt bald! Gib deine 🪙 für lustige neue Designs und Icons aus.", // NEW
+                storeTitle: "Bunny Shop",
+                storeComingSoon: "Der Bunny Shop kommt bald! Gib deine 🪙 für lustige neue Designs und Icons aus.",
                 
                 // --- NEW v3.0 Keys (Refactor) ---
                 modalAddTransactionTitle: "Transaktion Hinzufügen",
@@ -2082,7 +2332,8 @@
                 toastInvalidDate: "Ungültiges Datum.",
                 toastInvalidAmountDate: "Ungültiger Betrag oder Datum.",
                 toastInvalidSourceAmount: "Ungültige Quelle oder Betrag.",
-                toastErrorDeleteIncome: "Fehler beim Löschen der Einnahme.",
+                toastErrorDeleteIncome: "Ungültige Quelle oder Betrag.",
+                ErorLöschenEinnahme: "Fehler beim Löschen der Einnahme.",
                 toastErrorDeleteCategory: "Fehler beim Löschen der Kategorie.",
                 toastEnterCategoryName: "Bitte gib einen Kategorienamen ein.",
                 toastResetFailed: "Zurücksetzen fehlgeschlagen. Bitte lade die App neu.",
@@ -2144,6 +2395,21 @@
                 assignSavings: "Sparziele Besparen",
                 assignDebts: "Schulden Bezahlen",
                 // --- End NEW v3.3 Keys ---
+                // --- NEWLY ADDED KEYS ---
+                toastDemoOver: "Demo-Zeit ist um. App wird zurückgesetzt.",
+                toastBackupFailed: "Backup fehlgeschlagen. Siehe Konsole für Details.",
+                toastInvalidCoinAmount: "Ungültiger Coin-Betrag.",
+                toastGaveCoins: "🪙 gegeben!",
+                toastTookCoins: "🪙 genommen!",
+                toastErrorGivingCoins: "Fehler beim Geben von Coins.",
+                stats3M: "3M",
+                stats6M: "6M",
+                stats12M: "12M",
+                noDefaultSet: "Kein Standard",
+                // --- NEW KEYS FOR TOASTS ---
+                toastDemoStarted: "Demo-Modus gestartet! App wird in 10 Minuten zurückgesetzt.",
+                toastSnapshotError: "Fehler beim Speichern des monatlichen Snapshots!",
+                toastEarnedCoins: "Du hast",
             },
             en: {
                 penaltyWarning: "Warning: Withdrawing early will cost 5 🪙!",
@@ -2158,9 +2424,10 @@
                 navSettings: "Settings", // Kept for reference
                 navStats: "Stats",
                 navStore: "Store", // NEW
-                dashboardMoneyToBudget: "Money to Budget",
+                dashboardMoneyToBudget: "Money to Assign",
                 dashboardTotalBudgeted: "Total Budgeted",
-                dashboardTotalSpent: "Total Spent On Envelopes",
+                dashboardTotalSpent: "Total Spent (Envelopes)",
+                dashboardVariableEnvelopes: "Variable Envelopes",
                 dashboardTotalSpentAll: "Total Monthly Spending", // <-- ADD THIS
                 demoModeResets: "Resets in", // <-- ADD THIS
                 // --- NEW: PHASE 4 ---
@@ -2176,7 +2443,7 @@
                 dashboardNoSinking: "No savings goals. Go to the 'Manage' page to create one!", // MODIFIED
                 dashboardDebtGoals: "Debt Goals",
                 dashboardNoDebtGoals: "No debt goals. Go to 'Manage' to add one.", // MODIFIED
-                dashboardBillsTitle: "Bills & Fixed Debts",
+                dashboardBillsTitle: "Monthly Bills",
                 dashboardBillsEmpty: "No monthly bills or fixed debts. Go to 'Manage' to add one.",
                 dashboardRemaining: "Available",
                 dashboardBudgeted: "Budgeted",
@@ -2191,7 +2458,7 @@
                 budgetTotalIncome: "Total Income",
                 budgetCostsTitle: "Fixed Costs",
                 budgetFixedCosts: "Bills & Debts",
-                budgetMoneyToBudget: "Money to Budget",
+                budgetMoneyToBudget: "Money to Assign",
                 budgetTotalAssigned: "Total Assigned",
                 budgetRemainingToAssign: "Remaining",
                 budgetNoFixed: "No fixed costs, debts, or sinking fund bills.",
@@ -2424,6 +2691,21 @@
                 assignSavings: "Contribute to Savings",
                 assignDebts: "Pay Down Debts",
                 // --- End NEW v3.3 Keys ---
+                // --- NEWLY ADDED KEYS ---
+                toastDemoOver: "Demo time is over. Resetting app...",
+                toastBackupFailed: "Backup failed. See console for details.",
+                toastInvalidCoinAmount: "Invalid coin amount.",
+                toastGaveCoins: "🪙 given!",
+                toastTookCoins: "🪙 taken!",
+                toastErrorGivingCoins: "Error giving coins.",
+                stats3M: "3M",
+                stats6M: "6M",
+                stats12M: "12M",
+                noDefaultSet: "No default",
+                // --- NEW KEYS FOR TOASTS ---
+                toastDemoStarted: "Demo Mode Started! App will reset in 10 minutes.",
+                toastSnapshotError: "Error saving monthly snapshot!",
+                toastEarnedCoins: "You earned",
             }
         };
 
@@ -3492,80 +3774,151 @@
             }
         };
 
-        // --- NEW: PHASE 3 (THEME_STORE) ---
+        // --- NEW: Map for readable theme keys to CSS variables (v5.2) ---
+        // (We removed the 'keymap' as you requested by simplifying names)
+        const themeKeyMap = {
+            primaryLight: '--theme-primary-light',
+            primary: '--theme-primary',
+            primaryDark: '--theme-primary-dark',
+            page: '--theme-page',
+            card: '--theme-card',
+            ui: '--theme-ui',
+            text: '--theme-text',
+            green: '--theme-green',
+            red: '--theme-red',
+            redDark: '--theme-red-dark',
+            heroStart: '--theme-hero-start',
+            heroEnd: '--theme-hero-end',
+            glassBg: '--theme-glass-bg',
+            glassBorder: '--theme-glass-border',
+            browserTheme: 'theme-color-meta' // Special case
+        };
+        // --- END NEW MAP ---
+
+        // --- NEW: THEME_STORE (v5.2) ---
         const THEME_STORE = {
-            'default': {
-                id: 'default',
+            // Bunny Pink (NEW DEFAULT)
+            'pink': {
+                id: 'pink',
                 name: 'Bunny Pink',
                 price: 0,
+                isDark: false,
                 colors: {
-                    primaryLight: 'rgb(253, 242, 248)',    // --bunny-pink-light
-                    primary: 'rgb(244, 114, 182)',         // --bunny-pink
-                    primaryDark: 'rgb(219, 39, 119)',    // --bunny-pink-dark
-                    pageBackground: 'rgb(247, 243, 248)',  // --bunny-gray-light
-                    uiElements: 'rgb(229, 224, 231)',      // --bunny-gray-medium
-                    textColor: 'rgb(63, 60, 71)',       // --bunny-gray-dark
-                    accentGreen: 'rgb(52, 211, 153)',     // --bunny-green
-                    cardBackground: 'rgb(255, 255, 255)',  // --bunny-white
-                    accentRed: 'rgb(239, 68, 68)',       // --bunny-red
-                    accentRedDark: 'rgb(220, 38, 38)',   // --bunny-red-dark
-                    browserTheme: 'rgb(244, 114, 182)'     // theme-color-meta
+                    primaryLight: 'rgb(253, 242, 248)',
+                    primary: 'rgb(244, 114, 182)',
+                    primaryDark: 'rgb(219, 39, 119)',
+                    page: 'rgb(247, 243, 248)',
+                    card: 'rgb(255, 255, 255)',
+                    ui: 'rgb(229, 224, 231)',
+                    text: 'rgb(63, 60, 71)',
+                    green: 'rgb(52, 211, 153)',
+                    red: 'rgb(239, 68, 68)',
+                    redDark: 'rgb(220, 38, 38)',
+                    heroStart: 'rgb(219, 39, 119)',
+                    heroEnd: 'rgb(244, 114, 182)',
+                    glassBg: 'rgba(255, 255, 255, 0.7)',
+                    glassBorder: 'rgba(255, 255, 255, 0.2)',
+                    browserTheme: 'rgb(244, 114, 182)'
                 }
             },
+            // NEW: Bunny Dark (FIXED)
+            'dark': {
+                id: 'dark',
+                name: 'Bunny Dark',
+                price: 0,
+                isDark: true,
+                colors: {
+                    primaryLight: 'rgb(220, 38, 127)',
+                    primary: 'rgb(244, 114, 182)',
+                    primaryDark: 'rgb(175, 23, 93)',
+                    page: 'rgb(10, 10, 12)',
+                    card: 'rgb(24, 24, 28)',
+                    ui: 'rgb(40, 40, 45)',
+                    text: 'rgb(238, 238, 240)',
+                    green: 'rgb(52, 211, 153)',
+                    red: 'rgb(248, 113, 113)',
+                    redDark: 'rgb(239, 68, 68)',
+                    heroStart: 'rgb(244, 114, 182)',
+                    heroEnd: 'rgb(219, 39, 119)',
+                    glassBg: 'rgba(20, 20, 24, 0.6)',
+                    glassBorder: 'rgba(60, 60, 70, 0.2)',
+                    browserTheme: 'rgb(10, 10, 12)'
+                },
+            },
+            // Ocean Blue
+            'ocean': {
+                id: 'ocean',
+                name: 'Ocean Blue',
+                price: 0,
+                isDark: false,
+                colors: {
+                    primaryLight: 'rgb(239, 246, 255)',
+                    primary: 'rgb(59, 130, 246)',
+                    primaryDark: 'rgb(29, 78, 216)',
+                    page: 'rgb(243, 244, 246)',
+                    card: 'rgb(255, 255, 255)',
+                    ui: 'rgb(229, 231, 235)',
+                    text: 'rgb(17, 24, 39)',
+                    green: 'rgb(16, 185, 129)',
+                    red: 'rgb(239, 68, 68)',
+                    redDark: 'rgb(220, 38, 38)',
+                    heroStart: 'rgb(29, 78, 216)',
+                    heroEnd: 'rgb(59, 130, 246)',
+                    glassBg: 'rgba(255, 255, 255, 0.7)',
+                    glassBorder: 'rgba(255, 255, 255, 0.2)',
+                    browserTheme: 'rgb(59, 130, 246)'
+                }
+            },
+            // Panda Purple
+            'purple': {
+                id: 'purple',
+                name: 'Panda Purple',
+                price: 0,
+                isDark: false,
+                colors: {
+                    primaryLight: 'rgb(237, 231, 246)',
+                    primary: 'rgb(103, 58, 183)',
+                    primaryDark: 'rgb(81, 45, 168)',
+                    page: 'rgb(250, 250, 250)',
+                    card: 'rgb(255, 255, 255)',
+                    ui: 'rgb(238, 238, 238)',
+                    text: 'rgb(33, 33, 33)',
+                    green: 'rgb(52, 211, 153)',
+                    red: 'rgb(239, 68, 68)',
+                    redDark: 'rgb(220, 38, 38)',
+                    heroStart: 'rgb(81, 45, 168)',
+                    heroEnd: 'rgb(103, 58, 183)',
+                    glassBg: 'rgba(255, 255, 255, 0.7)',
+                    glassBorder: 'rgba(255, 255, 255, 0.2)',
+                    browserTheme: 'rgb(103, 58, 183)'
+                }
+            },
+            // Spooky Pumpkin
             'halloween': {
                 id: 'halloween',
                 name: 'Spooky Pumpkin',
                 price: 100,
+                isDark: true,
                 colors: {
-                    primaryLight: 'rgb(28, 20, 17)',   // --bunny-pink-light
-                    primary: 'rgb(217, 72, 15)',         // --bunny-pink
-                    primaryDark: 'rgb(180, 52, 3)',    // --bunny-pink-dark
-                    pageBackground: 'rgb(10, 10, 10)',  // --bunny-gray-light
-                    uiElements: 'rgb(34, 34, 34)',      // --bunny-gray-medium
-                    textColor: 'rgb(224, 224, 224)',       // --bunny-gray-dark
-                    accentGreen: 'rgb(132, 204, 22)',     // --bunny-green
-                    cardBackground: 'rgb(28, 28, 28)',  // --bunny-white
-                    accentRed: 'rgb(244, 63, 94)',       // --bunny-red
-                    accentRedDark: 'rgb(190, 18, 60)',   // --bunny-red-dark
-                    browserTheme: 'rgb(217, 72, 15)'     // theme-color-meta
-                }
-            },
-            'panda': {
-                id: 'panda',
-                name: 'Panda Purple',
-                price: 0,
-                colors: {
-                    primaryLight: 'rgb(237, 231, 246)',    // --bunny-pink-light (A very light, elegant lilac for cards)
-                    primary: 'rgb(103, 58, 183)',         // --bunny-pink (A strong, deep "Material" purple)
-                    primaryDark: 'rgb(81, 45, 168)',    // --bunny-pink-dark (A darker shade for hovers)
-                    pageBackground: 'rgb(250, 250, 250)',  // --bunny-gray-light (Clean, minimal off-white)
-                    uiElements: 'rgb(238, 238, 238)',      // --bunny-gray-medium (Light neutral gray for borders/inputs)
-                    textColor: 'rgb(33, 33, 33)',       // --bunny-gray-dark (A strong, dark gray for text)
-                    accentGreen: 'rgb(52, 211, 153)',     // --bunny-green (Standard Green)
-                    cardBackground: 'rgb(255, 255, 255)',  // --bunny-white (Pure white cards)
-                    accentRed: 'rgb(239, 68, 68)',       // --bunny-red (Standard Red)
-                    accentRedDark: 'rgb(220, 38, 38)',   // --bunny-red-dark (Standard Dark Red)
-                    browserTheme: 'rgb(103, 58, 183)'     // theme-color-meta (The main purple)
+                    primaryLight: 'rgb(255, 237, 213)',
+                    primary: 'rgb(249, 115, 22)',
+                    primaryDark: 'rgb(194, 65, 12)',
+                    page: 'rgb(17, 24, 39)',
+                    card: 'rgb(31, 41, 55)',
+                    ui: 'rgb(55, 65, 81)',
+                    text: 'rgb(243, 244, 246)',
+                    green: 'rgb(132, 204, 22)',
+                    red: 'rgb(248, 113, 113)',
+                    redDark: 'rgb(239, 68, 68)',
+                    heroStart: 'rgb(194, 65, 12)',
+                    heroEnd: 'rgb(249, 115, 22)',
+                    glassBg: 'rgba(55, 65, 81, 0.7)',
+                    glassBorder: 'rgba(70, 80, 95, 0.2)',
+                    browserTheme: 'rgb(31, 41, 55)'
                 }
             }
         };
-        // --- END PHASE 3 ---
-
-        // --- NEW: Map for readable theme keys to CSS variables ---
-        const themeKeyMap = {
-            primaryLight: '--bunny-pink-light',
-            primary: '--bunny-pink',
-            primaryDark: '--bunny-pink-dark',
-            pageBackground: '--bunny-gray-light',
-            uiElements: '--bunny-gray-medium',
-            textColor: '--bunny-gray-dark',
-            accentGreen: '--bunny-green',
-            cardBackground: '--bunny-white',
-            accentRed: '--bunny-red',
-            accentRedDark: '--bunny-red-dark',
-            browserTheme: 'theme-color-meta' // Special case
-        };
-        // --- END NEW MAP ---
+        // --- END NEW THEME_STORE ---
 
         // --- MAIN APP ---
         const app = {
@@ -3639,7 +3992,7 @@
                         // Time's up!
                         clearInterval(this.demoTimerInterval);
                         timerSpan.textContent = "0:00";
-                        this.showToast("Demo time is over. Resetting app...");
+                        this.showToast(i18n.t('toastDemoOver'));
                         // Call reset *after* toast shows
                         setTimeout(() => {
                             this.onConfirmReset();
@@ -3786,6 +4139,9 @@
             cacheDOMElements() {
                 this.dom = {
                     themeColorMeta: document.querySelector('meta[name="theme-color"]'), // <-- ADD THIS
+                    darkThemeToggle: document.getElementById('dark-theme-toggle'),
+                    themeIconMoon: document.getElementById('theme-icon-moon'),
+                    themeIconSun: document.getElementById('theme-icon-sun'),
                     appContainer: document.getElementById('app-container'),
                     // Onboarding
                     bunnyCoinTotal: document.getElementById('bunny-coin-total'),
@@ -3904,11 +4260,12 @@
                     otherIncomeTotalSpan: document.getElementById('other-income-total-span'),
                     otherIncomeChevron: document.getElementById('other-income-chevron'),
                     
-                    fixedCostsContainer: document.getElementById('fixed-costs-container'),
-                    fixedCostsToggleBtn: document.getElementById('fixed-costs-toggle-btn'),
-                    fixedCostsDetails: document.getElementById('fixed-costs-details'),
-                    fixedCostsList: document.getElementById('fixed-costs-list'),
-                    fixedCostsChevron: document.getElementById('fixed-costs-chevron'),
+                    // NEW: Budget breakdown elements
+                    budgetAssignedBills: document.getElementById('budget-assigned-bills'),
+                    budgetAssignedEnvelopes: document.getElementById('budget-assigned-envelopes'),
+                    budgetAssignedSavings: document.getElementById('budget-assigned-savings'), // <-- REVISED
+                    budgetAssignedDebts: document.getElementById('budget-assigned-debts'),   // <-- ADDED
+                    
                     budgetVariableEmpty: document.getElementById('budget-variable-empty'),
                     budgetSinkingFundEmpty: document.getElementById('budget-sinking-fund-empty'),
                     budgetDebtGoalEmpty: document.getElementById('budget-debt-goal-empty'),
@@ -4232,7 +4589,7 @@
                     try {
                         sessionStorage.setItem('bunnyBudgetDemo', 'true');
                         sessionStorage.setItem('bunnyBudgetDemoStart', Date.now());
-                        this.showToast("Demo Mode Started! App will reset in 10 minutes.");
+                        this.showToast(i18n.t('toastDemoStarted'));
                     } catch (e) {
                         console.warn("Could not set demo flags in sessionStorage.");
                     }
@@ -4365,10 +4722,7 @@
                     this.dom.otherIncomeChevron.classList.toggle('rotate-180');
                 });
 
-                this.dom.fixedCostsToggleBtn.addEventListener('click', () => {
-                    this.dom.fixedCostsDetails.classList.toggle('hidden');
-                    this.dom.fixedCostsChevron.classList.toggle('rotate-180');
-                });
+
                 
                 // NEW: Accordion listener for "Assign" sections
                 this.dom.budgetForm.addEventListener('click', (e) => this.handleAssignAccordionClick(e));
@@ -4411,6 +4765,13 @@
 
                 // NEW: App Settings Modal
                 this.dom.showSettingsModalBtn.addEventListener('click', () => this.showSettingsModal());
+                // NEW: Dark Mode
+                if (this.dom && this.dom.darkThemeToggle) {
+                    this.dom.darkThemeToggle.addEventListener('click', () => this.toggleDarkMode());
+                } else {
+                    console.warn('dark-theme-toggle element not found during attachListeners');
+                }
+
                 this.dom.cancelSettingsButton.addEventListener('click', () => this.hideSettingsModal());
                 this.dom.appSettingsModal.addEventListener('click', (e) => { if (e.target === this.dom.appSettingsModal) this.hideSettingsModal(); });
                 
@@ -4428,7 +4789,17 @@
                 this.dom.exportSummariesButton.addEventListener('click', () => this.onExportSummariesCSV());
 
                 // Transaction History Modal
-                this.dom.variableEnvelopesList.addEventListener('click', (e) => this.handleEnvelopeClick(e));
+                this.dom.variableEnvelopesList.addEventListener('click', (e) => {
+                    // --- NEW: Check for summary card click ---
+                    const summaryCard = e.target.closest('#envelope-summary-card');
+                    if (summaryCard) {
+                        this.onToggleEnvelopeSummary();
+                        return; // Stop here
+                    }
+                    // --- End New ---
+                
+                    this.handleEnvelopeClick(e)
+                });
                 
                 // NEW: Goal Hub Click Listeners (Task 3)
                 this.dom.savingGoalsList.addEventListener('click', (e) => this.handleGoalCardClick(e));
@@ -4500,13 +4871,23 @@
                     // --- END PHASE 3 ---
                 ]);
 
-                // --- NEW: PHASE 3 ---
-                // Load and apply the active theme
+                // --- NEW: PHASE 3 (v5) ---
                 this.inventory = inventory || [];
-                this.activeThemeId = activeThemeId || 'default';
-                const activeTheme = THEME_STORE[this.activeThemeId] || THEME_STORE['default'];
-                this.applyTheme(activeTheme);
-                // --- END PHASE 3 ---
+                
+                // Get theme preferences
+                const preferredThemeId = await dbStore.getSetting('activeThemeId') || 'pink'; // <-- FIX: Default to pink
+                const isDarkMode = await dbStore.getSetting('isDarkMode') === 'true';
+
+                this.activeThemeId = preferredThemeId; // This is the 'light' theme
+                
+                // Apply the correct theme on load
+                if (isDarkMode) {
+                    this.applyTheme(THEME_STORE['dark'], true);
+                } else {
+                    const activeTheme = THEME_STORE[this.activeThemeId] || THEME_STORE['pink']; // <-- FIX: Default to pink
+                    this.applyTheme(activeTheme, false);
+                }
+                // --- END PHASE 3 (v5) ---
 
                 // Apply settings
                 i18n.setCurrency(
@@ -4611,7 +4992,7 @@
                         coins: newCoins,
                         rollover: finalTotalRollover
                     });
-                    coinToastMessage = ` You earned ${newCoins} 🪙!`;
+                    coinToastMessage = ` ${i18n.t('toastEarnedCoins')} ${newCoins} 🪙!`;
                 }
 
                 // --- 3. NEW: Create and Save Snapshot ---
@@ -4637,7 +5018,7 @@
                 } catch (e) {
                     console.error("Failed to create or save snapshot:", e);
                     // We shouldn't stop the new month process, but log the error
-                    this.showToast("Error saving monthly snapshot!");
+                    this.showToast(i18n.t('toastSnapshotError'));
                 }
                 // --- End NEW Snapshot Logic ---
 
@@ -4736,15 +5117,25 @@
                 let totalBills = 0;
                 let hasBills = false;
                 
+                // Get a map of what's ACTUALLY budgeted for bills this month
+                const billBudgetMap = new Map(
+                    this.budget.filter(b => b.type === 'bill').map(b => [b.categoryId, b.amount])
+                );
+
                 billCategories.forEach(cat => {
+                    // Get the assigned amount from our map
+                    const assignedAmount = billBudgetMap.get(cat.id) || 0;
+                    
+                    // Only show bills that have been assigned money
+                    if (assignedAmount === 0) return;
+
                     hasBills = true;
-                    const amount = cat.amount || 0;
-                    totalBills += amount;
+                    totalBills += assignedAmount;
                     
                     const item = `
                         <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                             <span class="font-medium text-gray-700">${cat.name}</span>
-                            <span class="font-medium text-gray-800">${this.formatCurrency(amount)}</span>
+                            <span class="font-medium text-gray-800">${this.formatCurrency(assignedAmount)}</span>
                         </div>
                     `;
                     this.dom.billsCardList.insertAdjacentHTML('beforeend', item);
@@ -4777,29 +5168,52 @@
 
                 const envelopeAvailable = (envelopeBudgeted + envelopeInflowsTotal) - envelopeSpentTotal;
                 
-                // --- NEW: Add Summary Card ---
-                // Only show the summary card if there is anything budgeted
-                if (envelopeBudgeted > 0) {
+                // --- NEW: Update Smart Section Header ---
+                if (envelopeBudgeted > 0 || envelopeInflowsTotal > 0) {
                     hasVariable = true; // Show the section
-                    const summaryCard = `
-                        <div id="envelope-summary-card" class="bg-pink-50 border-2 border-pink-200 p-4 rounded-2xl shadow-inner cursor-pointer" data-view="spent">
-                            <input type="hidden" id="env-summary-spent" value="${envelopeSpentTotal}">
-                            <input type="hidden" id="env-summary-available" value="${envelopeAvailable}">
-                            
-                            <div class="flex justify-between items-center mb-2">
-                                <span id="env-summary-label" class="font-semibold text-lg text-pink-800">${i18n.t('dashboardTotalSpent') || 'Total Spent'}</span>
-                                <span id="env-summary-value" class="font-bold text-lg text-pink-900">${this.formatCurrency(envelopeSpentTotal)}</span>
-                            </div>
-                            <progress class="w-full" value="${envelopeSpentTotal}" max="${envelopeBudgeted + envelopeInflowsTotal}"></progress>
-                            <div class="flex justify-between items-center text-sm text-pink-700 mt-2">
-                                <span>${i18n.t('dashboardBudgeted')}: ${this.formatCurrency(envelopeBudgeted)}</span>
-                                ${envelopeInflowsTotal > 0 ? `<span>${i18n.t('dashboardInflows')}: ${this.formatCurrency(envelopeInflowsTotal)}</span>` : ''}
-                            </div>
-                        </div>
-                    `;
-                    this.dom.variableEnvelopesList.insertAdjacentHTML('beforeend', summaryCard);
+                    
+                    // Get the elements from the static header
+                    const label = document.getElementById('env-summary-label');
+                    const value = document.getElementById('env-summary-value');
+                    const progress = document.getElementById('env-summary-progress');
+                    const budgetedEl = document.getElementById('env-summary-budgeted');
+                    const inflowsEl = document.getElementById('env-summary-inflows');
+                    const hiddenSpent = document.getElementById('env-summary-spent');
+                    const hiddenAvailable = document.getElementById('env-summary-available');
+                    
+                    // Update hidden values for the toggle
+                    hiddenSpent.value = envelopeSpentTotal;
+                    hiddenAvailable.value = envelopeAvailable;
+                    
+                    // Update progress bar
+                    progress.value = envelopeSpentTotal;
+                    progress.max = envelopeBudgeted + envelopeInflowsTotal;
+                    
+                    // Update text fields
+                    budgetedEl.textContent = `${i18n.t('dashboardBudgeted')}: ${this.formatCurrency(envelopeBudgeted)}`;
+                    if (envelopeInflowsTotal > 0) {
+                        inflowsEl.textContent = `${i18n.t('dashboardInflows')}: ${this.formatCurrency(envelopeInflowsTotal)}`;
+                        inflowsEl.classList.remove('hidden');
+                    } else {
+                        inflowsEl.textContent = '';
+                        inflowsEl.classList.add('hidden');
+                    }
+                    
+                    // Update the main label/value based on the current toggle state
+                    const currentView = document.getElementById('envelope-summary-card').dataset.view;
+                    if (currentView === 'spent') {
+                        label.textContent = i18n.t('dashboardVariableEnvelopes') || 'Spending Envelopes';
+                        value.textContent = `${this.formatCurrency(envelopeSpentTotal)} ${i18n.t('dashboardSpent')}`;
+                        value.classList.remove('text-green-600');
+                        value.classList.add('text-gray-900');
+                    } else {
+                        label.textContent = i18n.t('dashboardVariableEnvelopes') || 'Spending Envelopes';
+                        value.textContent = `${this.formatCurrency(envelopeAvailable)} ${i18n.t('dashboardRemaining')}`;
+                        value.classList.add('text-green-600');
+                        value.classList.remove('text-gray-900');
+                    }
                 }
-                // --- End New Summary Card ---
+                // --- End New Smart Section Header Update ---
 
                 variableCategories.forEach(cat => {
                     const budgetItem = this.budget.find(b => b.id === `envelope-${cat.id}`);
@@ -4822,11 +5236,11 @@
 
                     // NEW: Show inflows if they exist
                     const inflowsHTML = inflows > 0 ? 
-                        `<span class="text-xs block text-green-600">${i18n.t('dashboardInflows') || 'Inflows'}: +${this.formatCurrency(inflows)}</span>` : 
+                        `<span class="text-xs block text-green-600">${i18n.t('dashboardInflows')}: +${this.formatCurrency(inflows)}</span>` : 
                         '';
 
                     const card = `
-                <div class="bg-white p-4 rounded-2xl shadow hover:shadow-md transition-shadow cursor-pointer" data-category-id="${cat.id}" data-category-name="${cat.name}">
+                <div class="glass-card cursor-pointer" data-category-id="${cat.id}" data-category-name="${cat.name}">
                     <div class="flex justify-between items-center mb-2">
                         <span class="font-semibold text-lg text-gray-800">${cat.name}</span>
                         <div class="text-right">
@@ -4871,7 +5285,7 @@
                     this.dom.dashboardToggleValue.classList.remove('text-green-600');
                     this.dom.dashboardToggleValue.classList.add('text-gray-800');
                 } else {
-                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardRemaining') || 'Total Available';
+                    this.dom.dashboardToggleLabel.textContent = i18n.t('dashboardRemaining');
                     this.dom.dashboardToggleValue.textContent = this.formatCurrency(totalAvailable);
                     this.dom.dashboardToggleValue.classList.remove('text-gray-800');
                     this.dom.dashboardToggleValue.classList.add('text-green-600');
@@ -4908,7 +5322,7 @@
                     }
 
                     const card = `
-                <div class="bg-white p-4 rounded-2xl shadow hover:shadow-md transition-shadow cursor-pointer goal-card-clickable" data-category-id="${cat.id}" data-category-name="${cat.name}">
+                <div class="glass-card cursor-pointer goal-card-clickable" data-category-id="${cat.id}" data-category-name="${cat.name}">
                     <div class="flex justify-between items-center">
                         <span class="font-semibold text-lg text-gray-800">${cat.name}</span>
                         <span class="font-bold text-green-600 text-right">${savedText}</span>
@@ -4997,7 +5411,6 @@
                 this.dom.budgetSummarySalary.textContent = this.formatCurrency(this.salary);
                 // this.dom.budgetSummaryOtherIncome.textContent = this.formatCurrency(calculations.otherIncomeTotal); // DELETED
                 this.dom.budgetSummaryTotalIncome.textContent = this.formatCurrency(calculations.totalIncome);
-                this.dom.budgetSummaryFixedCosts.textContent = `-${this.formatCurrency(calculations.totalFixed)}`;
                 this.dom.budgetMoneyToBudget.textContent = this.formatCurrency(calculations.moneyToBudget);
 
                 // --- Part 2: Render the Other Income list (Expandable) ---
@@ -5055,23 +5468,6 @@
                     this.dom.otherIncomeList.insertAdjacentHTML('beforeend', item);
                 });
 
-                // --- Part 3: Render the Fixed Costs list (Expandable) ---
-                this.dom.fixedCostsList.innerHTML = '';
-                // NEW: Use the correct 'bill' type
-                const fixedCategories = this.categories.filter(c => c.type === 'bill');
-
-                // Conditionally show the whole container
-                this.dom.fixedCostsContainer.classList.toggle('hidden', fixedCategories.length === 0);
-
-                fixedCategories.forEach(cat => {
-                    const item = `
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <span class="font-medium text-gray-800">${cat.name}</span>
-                            <span class="font-medium text-gray-600">${this.formatCurrency(cat.amount)}</span>
-                        </div>
-                    `;
-                    this.dom.fixedCostsList.insertAdjacentHTML('beforeend', item);
-                });
 
 
                 // --- Part 4: Render the Assign Money Card (NEW v4 Logic) ---
@@ -5190,6 +5586,9 @@
                 // Loop through categories and render
                 let hasBill = false, hasEnvelope = false, hasSaving = false, hasDebt = false;
 
+                // --- FIX: Create a map of the CURRENT budget to show live values ---
+                const budgetMap = new Map(this.budget.map(b => [b.id, b.amount]));
+
                 this.categories.forEach(cat => {
                     let listElement, icon;
 
@@ -5218,7 +5617,14 @@
                             return;
                     }
 
-                    const formattedAmount = cat.amount ? this.formatCurrency(cat.amount) : i18n.t('noDefaultSet') || 'No default';
+                    // --- FIX: Look up the current budget amount ---
+                    const budgetId = `${cat.type}-${cat.id}`;
+                    const currentAmount = budgetMap.get(budgetId);
+                    
+                    // Show the current budgeted amount if it exists, otherwise fall back to the category's default
+                    const amountToShow = (currentAmount !== undefined) ? currentAmount : cat.amount;
+                    
+                    const formattedAmount = amountToShow ? this.formatCurrency(amountToShow) : i18n.t('noDefaultSet');
                     const item = `
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div class="flex items-center space-x-3">
@@ -5272,7 +5678,7 @@
             async giveCoins(amount, reason = "Admin adjustment") {
                 if (typeof amount !== 'number' || amount === 0) {
                     console.error("Invalid amount. Use a non-zero number.");
-                    this.showToast("Invalid coin amount.");
+                    this.showToast(i18n.t('toastInvalidCoinAmount')); // <-- FIX
                     return;
                 }
 
@@ -5289,12 +5695,14 @@
                     this.bunnyCoins.push({ id: newId, ...coinEntry });
                     this.renderBunnyCoins(); // Update header
                     
-                    const message = amount > 0 ? `You gave ${amount} 🪙!` : `You took ${Math.abs(amount)} 🪙!`;
+                    const message = amount > 0 ? 
+                        `${amount} ${i18n.t('toastGaveCoins')}` : 
+                        `${Math.abs(amount)} ${i18n.t('toastTookCoins')}`;
                     this.showToast(message);
                     console.log(message, coinEntry); // Log to console for your records
                 } catch (e) {
                     console.error("Failed to give coins:", e);
-                    this.showToast("Error giving coins.");
+                    this.showToast(i18n.t('toastErrorGivingCoins')); // <-- FIX
                 }
             },
 
@@ -5817,7 +6225,6 @@
                 const newCategory = { 
                     name, 
                     type,
-                    // --- THIS IS THE FIX ---
                     // If it's a BILL, the 'amount' (250) is its fixed cost.
                     // If it's a GOAL, the 'amount' (75) is its *default planned* amount.
                     amount: amount, 
@@ -5828,23 +6235,20 @@
                 const newId = await dbStore.addCategory(newCategory);
                 this.categories.push({ id: newId, ...newCategory });
 
-                // 3. --- THIS IS THE NEW, CORRECT LOGIC ---
+                // 3. --- THIS IS THE CORRECTED LOGIC ---
                 
-                let finalInitialBalance = currentBalance; // Start with the "Initial Stock"
+                let finalInitialBalance = currentBalance; // Start with "Initial Stock"
                 
-                // A "Bill" (like Rent or Car Loan *as a fixed cost*)
-                // does NOT get added to the budget. It's a fixed cost.
-                // Its envelope balance is 0. This is correct.
-                
-                // An "Envelope", "Saving", or "Debt" (Goal) IS budgettable.
-                const budgettableTypes = ['envelope', 'saving', 'debt'];
+                // ALL types ("bill", "envelope", "saving", "debt") can be budgeted.
+                const budgettableTypes = ['bill', 'envelope', 'saving', 'debt'];
                 
                 if (budgettableTypes.includes(type)) {
-                    // This is a budgettable item.
-                    // Its starting balance is its "Initial Stock" + its first "Monthly Planned Amount".
-                    finalInitialBalance += amount;
+                    // For "envelope", "saving", "debt", the balance includes the first contribution
+                    if (type !== 'bill') {
+                        finalInitialBalance += amount;
+                    }
                     
-                    // If a "Monthly Planned" amount was entered, add it to this month's budget
+                    // If an amount was entered, add it to this month's budget
                     if (amount > 0) {
                         const newBudgetItem = {
                             id: `${type}-${newId}`,
@@ -5857,9 +6261,9 @@
                     }
                 }
                 
-                // 4. Create and save the envelope ONCE with the correct final balance
-                // For a "Bill", finalInitialBalance will be 0 (correct).
-                // For a "Goal", finalInitialBalance will be "Initial Stock + Planned" (correct).
+                // 4. Create and save the envelope
+                // For "Bill", finalInitialBalance will be 0 (correct).
+                // For "Goal", finalInitialBalance will be "Initial Stock + Planned" (correct).
                 const newEnvelope = { 
                     categoryId: newId, 
                     type: type, 
@@ -5913,6 +6317,34 @@
             },
 
             /**
+             * NEW: Toggles the visibility of goal-related fields in the edit modal.
+             * This function was missing, causing the edit modal to fail.
+             */
+            toggleGoalAmountField(context) {
+                let type, goalAmountGroup, goalDateGroup;
+                
+                if (context === 'edit') {
+                    // We are in the "Edit Category" modal
+                    type = this.dom.editCategoryType.value;
+                    goalAmountGroup = this.dom.editCategoryGoalAmountGroup;
+                    goalDateGroup = this.dom.editCategoryGoalDateGroup;
+                } else {
+                    // 'add' context is handled by handleCategoryTypeClick
+                    return; 
+                }
+
+                if (!goalAmountGroup || !goalDateGroup) return; // Safety check
+
+                if (type === 'saving' || type === 'debt') {
+                    goalAmountGroup.classList.remove('hidden');
+                    goalDateGroup.classList.remove('hidden');
+                } else {
+                    goalAmountGroup.classList.add('hidden');
+                    goalDateGroup.classList.add('hidden');
+                }
+            },
+
+            /**
              * Handle Edit Category form submission
              * @param {Event} e - The form event
              */
@@ -5922,7 +6354,7 @@
                 const name = this.dom.editCategoryName.value;
                 const amount = parseFloat(this.dom.editCategoryAmount.value) || 0; // This is the new "Monthly Payment"
                 const goalAmount = parseFloat(this.dom.editCategoryGoalAmount.value) || 0;
-                const goalDate = this.dom.editCategoryGoalDate.value || null; // NEW
+                const goalDate = this.dom.editCategoryGoalDate.value || null;
 
                 const cat = this.categories.find(c => c.id === id);
                 if (!cat) return;
@@ -5932,11 +6364,19 @@
                     return;
                 }
 
+                // --- FIX: Get the OLD budget amount before making changes ---
+                const budgetId = `${cat.type}-${id}`;
+                // --- FIX: All 4 types can be in the budget array ---
+                const budgettableTypes = ['bill', 'envelope', 'saving', 'debt'];
+                const oldBudgetItem = this.budget.find(b => b.id === budgetId);
+                const oldAmount = oldBudgetItem ? oldBudgetItem.amount : 0;
+                // --- End Fix ---
+
                 // 1. Update the category's properties
                 cat.name = name;
                 cat.amount = amount;
                 cat.goalAmount = goalAmount;
-                cat.goalDate = goalDate; // NEW
+                cat.goalDate = goalDate;
 
                 // 2. Save the category to the DB
                 await dbStore.updateCategory(cat);
@@ -5944,28 +6384,17 @@
                 // 3. Update the local state for categories
                 this.categories = this.categories.map(c => c.id === id ? cat : c);
 
-                // 4. --- NEW: Update the *actual budget value* for this month ---
-                const budgettableTypes = ['envelope', 'saving', 'debt'];
+                // 4. Update the *actual budget value* for this month
                 if (budgettableTypes.includes(cat.type)) {
-                    const budgetId = `${cat.type}-${id}`;
                     const budgetItemIndex = this.budget.findIndex(b => b.id === budgetId);
 
                     if (amount > 0) {
-                        // User set a new default amount, so update or create the budget item
                         if (budgetItemIndex > -1) {
-                            // Budget item exists, just update its amount
                             this.budget[budgetItemIndex].amount = amount;
                         } else {
-                            // Budget item doesn't exist, create it
-                            this.budget.push({
-                                id: budgetId,
-                                categoryId: id,
-                                type: cat.type,
-                                amount: amount
-                            });
+                            this.budget.push({ id: budgetId, categoryId: id, type: cat.type, amount: amount });
                         }
                     } else {
-                        // User cleared the default amount, so remove it from the budget
                         if (budgetItemIndex > -1) {
                             this.budget.splice(budgetItemIndex, 1);
                         }
@@ -5973,13 +6402,26 @@
 
                     // 5. Save the updated budget array to the DB
                     await dbStore.saveBudget(this.budget);
+                    
+                    // --- FIX: Apply the difference to the envelope balance ---
+                    // --- This logic should ONLY run for goals, not bills or envelopes ---
+                    const diff = amount - oldAmount;
+                    if (diff !== 0 && (cat.type === 'saving' || cat.type === 'debt')) {
+                        let envelope = this.envelopes.find(e => e.categoryId === id);
+                        if (envelope) {
+                            envelope.balance = (envelope.balance || 0) + diff;
+                        } else {
+                            envelope = { categoryId: id, type: cat.type, balance: diff };
+                            this.envelopes.push(envelope);
+                        }
+                        await dbStore.saveEnvelope(envelope);
+                    }
+                    // --- End Fix ---
                 }
-                // --- End of new logic ---
 
                 this.hideEditCategoryModal();
                 this.showToast(i18n.t('toastCategoryUpdated'));
 
-                // Re-render the modal list *before* re-rendering all pages
                 this.renderManageCategoriesModal();
                 this.renderAllPages();
             },
@@ -6097,9 +6539,9 @@
 
                 console.log("Budget auto-saved.");
 
-                // 5. Re-render everything
-                // renderAllPages() will now use the *correct* this.envelopes array
-                this.renderAllPages();
+                // 5. Re-render the dashboard
+                // This updates the dashboard totals without stealing focus from the Manage page.
+                this.renderDashboard();
             },
 
             /**
@@ -6244,19 +6686,20 @@
                 const label = document.getElementById('env-summary-label');
                 const value = document.getElementById('env-summary-value');
 
+                // --- FIX: The label (h2) never changes. Only the value (span) changes. ---
+                label.textContent = i18n.t('dashboardVariableEnvelopes') || 'Spending Envelopes'; // Stays consistent
+
                 if (currentView === 'spent') {
                     // Switch to "Available" view
-                    label.textContent = i18n.t('dashboardRemaining') || 'Total Available';
-                    value.textContent = this.formatCurrency(available);
-                    value.classList.remove('text-pink-900');
+                    value.textContent = `${this.formatCurrency(available)} ${i1S8n.t('dashboardRemaining')}`;
+                    value.classList.remove('text-gray-900');
                     value.classList.add('text-green-600'); // Use green for available
                     card.dataset.view = 'available';
                 } else {
                     // Switch back to "Spent" view
-                    label.textContent = i18n.t('dashboardTotalSpent');
-                    value.textContent = this.formatCurrency(spent);
+                    value.textContent = `${this.formatCurrency(spent)} ${i18n.t('dashboardSpent')}`;
                     value.classList.remove('text-green-600');
-                    value.classList.add('text-pink-900'); // Back to pink
+                    value.classList.add('text-gray-900'); // Back to default
                     card.dataset.view = 'spent';
                 }
             },
@@ -6915,23 +7358,55 @@
 
             // --- Calculations & Formatting ---
 
-            /**
+           /**
              * Update the budget summary (Assigned vs Remaining) on the Budget page
              */
             updateBudgetSummary() {
                 const inputs = this.dom.budgetForm.querySelectorAll('.budget-input');
                 let totalAssigned = 0;
+                
+                // NEW: Variables for the breakdown
+                let totalBillsAssigned = 0;
+                let totalEnvelopesAssigned = 0;
+                // --- FIX: Split Savings and Debts ---
+                let totalSavingsAssigned = 0;
+                let totalDebtsAssigned = 0;
+
                 inputs.forEach(input => {
-                    totalAssigned += parseFloat(input.value) || 0;
+                    const amount = parseFloat(input.value) || 0;
+                    const type = input.dataset.type;
+                    
+                    totalAssigned += amount;
+                    
+                    // NEW: Calculate breakdown
+                    if (type === 'bill') {
+                        totalBillsAssigned += amount;
+                    } else if (type === 'envelope') {
+                        totalEnvelopesAssigned += amount;
+                    // --- FIX: Split Savings and Debts ---
+                    } else if (type === 'saving') {
+                        totalSavingsAssigned += amount;
+                    } else if (type === 'debt') {
+                        totalDebtsAssigned += amount;
+                    }
                 });
 
                 const calculations = this.calculateBudget();
                 const remaining = calculations.moneyToBudget - totalAssigned;
 
+                // Update totals
                 this.dom.budgetTotalAssigned.textContent = this.formatCurrency(totalAssigned);
                 this.dom.budgetRemaining.textContent = this.formatCurrency(remaining);
                 this.dom.budgetRemaining.classList.toggle('text-red-500', remaining < 0);
                 this.dom.budgetRemaining.classList.toggle('text-green-600', remaining >= 0);
+                
+                // NEW: Update breakdown
+                this.dom.budgetAssignedBills.textContent = this.formatCurrency(totalBillsAssigned);
+                this.dom.budgetAssignedEnvelopes.textContent = this.formatCurrency(totalEnvelopesAssigned);
+                
+                // --- FIX: Populate new HTML elements ---
+                this.dom.budgetAssignedSavings.textContent = this.formatCurrency(totalSavingsAssigned);
+                this.dom.budgetAssignedDebts.textContent = this.formatCurrency(totalDebtsAssigned);
             },
 
             /**
@@ -6949,7 +7424,7 @@
                 const totalIncome = this.salary + otherIncomeTotal + this.lastMonthRollover;
 
                 // 3. Calculate money to budget
-                const moneyToBudget = totalIncome - totalFixed;
+                const moneyToBudget = totalIncome;
 
                 // 4. Calculate total budgeted (assigned this month to envelopes/goals/debt)
                 const totalBudgeted = this.budget
@@ -6973,7 +7448,12 @@
                 });
 
                 // --- NEW: Calculate a true total spent ---
-                const totalSpent = totalFixed + totalVariableSpent;
+                // Sum what was *actually budgeted* for bills
+                const totalBilled = this.budget
+                    .filter(b => b.type === 'bill')
+                    .reduce((sum, b) => sum + (b.amount || 0), 0);
+                
+                const totalSpent = totalBilled + totalVariableSpent;
 
                 return {
                     totalIncome,
@@ -7171,27 +7651,41 @@
                 
                 // Get a simple list of owned theme IDs
                 const ownedThemeIds = new Set(this.inventory.map(item => item.id));
+                const allThemes = Object.values(THEME_STORE);
 
-                // Loop through every theme in our catalog
-                for (const theme of Object.values(THEME_STORE)) {
-                    // Check user's status for this theme
+                // --- NEW: Separate themes into Light and Dark ---
+                const lightThemes = allThemes.filter(t => !t.isDark).sort((a,b) => a.price - b.price);
+                const darkThemes = allThemes.filter(t => t.isDark).sort((a,b) => a.price - b.price);
+
+                // Re-usable function to render a theme card
+                const createThemeCard = (theme) => {
                     const isOwned = ownedThemeIds.has(theme.id);
-                    const isEquipped = (this.activeThemeId === theme.id);
+                    // We can't "equip" dark mode, it's a toggle
+                    const isEquipped = (this.activeThemeId === theme.id) && !theme.isDark;
                     
                     let buttonHTML = '';
                     if (isEquipped) {
                         buttonHTML = `
                             <button class="w-full bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed" disabled>
-                                ${i18n.t('storeEquipped') || 'Equipped'}
+                                ${i18n.t('storeEquipped')}
                             </button>`;
                     } else if (isOwned) {
-                        buttonHTML = `
+                        // Can't "equip" a dark theme, it's handled by the toggle
+                        if(theme.isDark) {
+                             buttonHTML = `
+                            <button class="w-full bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed" disabled>
+                                Owned (Use 🌙 Toggle)
+                            </button>`;
+                        } else {
+                            buttonHTML = `
                             <button class="store-equip-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg" data-theme-id="${theme.id}">
                                 ${i18n.t('storeEquip') || 'Equip'}
                             </button>`;
+                        }
                     } else {
                         // Not owned, show buy button
-                        const canAfford = this.bunnyCoins.reduce((sum, c) => sum + c.coins, 0) >= theme.price;
+                        const totalCoins = this.bunnyCoins.reduce((sum, c) => sum + c.coins, 0);
+                        const canAfford = totalCoins >= theme.price;
                         const disabled = canAfford ? '' : 'disabled';
                         const classes = canAfford ? 'bg-pink-500 hover:bg-pink-600' : 'bg-pink-200 cursor-not-allowed';
                         
@@ -7203,24 +7697,34 @@
                     }
 
                     // Create the theme card
-                    const card = `
+                    return `
                         <div class="bg-gray-50 p-4 rounded-xl shadow-lg border">
                             <h3 class="text-lg font-semibold text-gray-900">${theme.name}</h3>
                             <div class="flex space-x-2 my-3">
-                                <div class="w-1/2 h-10 rounded border" style="background-color: ${theme.colors.pageBackground}"></div>
-                                <div class="w-1/2 h-10 rounded border" style="background-color: ${theme.colors.cardBackground}"></div>
+                                <div class="w-1/2 h-10 rounded border" style="background-color: ${theme.colors.page}"></div>
+                                <div class="w-1/2 h-10 rounded border" style="background-color: ${theme.colors.card}"></div>
                             </div>
                             <div class="flex space-x-2 my-3">
                                 <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.primary}"></div>
-                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.textColor}"></div>
-                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.accentGreen}"></div>
-                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.accentRed}"></div>
+                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.text}"></div>
+                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.green}"></div>
+                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.red}"></div>
                             </div>
                             ${buttonHTML}
                         </div>
                     `;
-                    listEl.insertAdjacentHTML('beforeend', card);
-                }
+                };
+
+                // --- NEW: Render sections ---
+                listEl.insertAdjacentHTML('beforeend', '<h2 class="text-2xl font-bold mb-3">Light Themes</h2>');
+                lightThemes.forEach(theme => {
+                    listEl.insertAdjacentHTML('beforeend', createThemeCard(theme));
+                });
+
+                listEl.insertAdjacentHTML('beforeend', '<h2 class="text-2xl font-bold mt-8 mb-3">Dark Themes</h2>');
+                darkThemes.forEach(theme => {
+                    listEl.insertAdjacentHTML('beforeend', createThemeCard(theme));
+                });
             },
             /**
              * Renders the snapshot analysis charts
@@ -7574,7 +8078,7 @@
                     this.showToast(i18n.t('toastBackupSuccess'));
                 } catch (e) {
                     console.error("Backup failed:", e);
-                    this.showToast("Backup failed. See console for details.");
+                    this.showToast(i18n.t('toastBackupFailed'));
                 }
             },
 
@@ -8032,8 +8536,6 @@
 
                 // Re-render the charts with the new date range
                 this.renderStatsSnapshots();
-
-                this.showToast("Error giving coins.");
             },
             
             // --- NEW: PHASE 3 (THEME ENGINE) ---
@@ -8041,7 +8543,7 @@
              * Applies a theme object's colors to the app
              * @param {object} theme - A theme object from THEME_STORE
              */
-            applyTheme(theme) {
+            applyTheme(theme, isDark = false) {
                 if (!theme || !theme.colors) {
                     console.error("Invalid theme object", theme);
                     return;
@@ -8049,28 +8551,74 @@
                 
                 const root = document.documentElement;
                 
-                // --- MODIFIED: Use the themeKeyMap to set CSS variables ---
                 for (const [key, value] of Object.entries(theme.colors)) {
                     const cssVar = themeKeyMap[key];
-                    if (!cssVar) continue; // Skip if key isn't in our map
+                    if (!cssVar) continue; 
 
                     if (cssVar === 'theme-color-meta') {
-                        // Set the browser's top bar color
                         if (this.dom.themeColorMeta) {
                             this.dom.themeColorMeta.setAttribute('content', value);
                         }
                     } else {
-                        // Set the CSS variable
                         root.style.setProperty(cssVar, value);
                     }
                 }
-                // --- END MODIFICATION ---
                 
-                // Save this as the active theme, *unless* in demo mode
-                if (!this.isDemoMode) {
-                    dbStore.saveSetting('activeThemeId', theme.id);
+                // Update icons
+                if (isDark) {
+                    this.dom.themeIconMoon.classList.add('hidden');
+                    this.dom.themeIconSun.classList.remove('hidden');
+                } else {
+                    this.dom.themeIconMoon.classList.remove('hidden');
+                    this.dom.themeIconSun.classList.add('hidden');
                 }
-                this.activeThemeId = theme.id;
+
+                // --- safe icon handling + guard ---
+                try {
+                    if (this.dom && this.dom.themeIconMoon && this.dom.themeIconSun) {
+                        if (isDark) {
+                            this.dom.themeIconMoon.classList.add('hidden');
+                            this.dom.themeIconSun.classList.remove('hidden');
+                        } else {
+                            this.dom.themeIconMoon.classList.remove('hidden');
+                            this.dom.themeIconSun.classList.add('hidden');
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Theme icons not available:', e);
+                }
+
+                // Save state safely
+                if (!this.isDemoMode && typeof dbStore !== 'undefined' && dbStore && dbStore.saveSetting) {
+                    try {
+                        if (isDark) {
+                            dbStore.saveSetting('isDarkMode', 'true');
+                        } else {
+                            dbStore.saveSetting('isDarkMode', 'false');
+                            if (theme && theme.id) {
+                                dbStore.saveSetting('activeThemeId', theme.id);
+                                this.activeThemeId = theme.id;
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Failed to persist theme setting:', e);
+                    }
+                }
+            },
+            /**
+             * NEW: Toggles between dark mode and the last active light theme
+             */
+            async toggleDarkMode() {
+                const isDarkMode = await dbStore.getSetting('isDarkMode') === 'true';
+                
+                if (isDarkMode) {
+                    // Turn dark mode OFF, switch to light theme
+                    const lightTheme = THEME_STORE[this.activeThemeId] || THEME_STORE['pink'];
+                    this.applyTheme(lightTheme, false);
+                } else {
+                    // Turn dark mode ON
+                    this.applyTheme(THEME_STORE['dark'], true);
+                }
             },
 
             /**
@@ -8099,7 +8647,7 @@
                 const totalCoins = this.bunnyCoins.reduce((sum, c) => sum + c.coins, 0);
                 
                 if (totalCoins < theme.price) {
-                    this.showToast(i18n.t('storeToastNoCoins') || 'Not enough coins!');
+                    this.showToast(i18n.t('storeToastNoCoins'));
                     return;
                 }
 
@@ -8117,7 +8665,7 @@
                     this.onEquipTheme(themeId);
                     
                     // 4. Show success
-                    this.showToast(i18n.t('storeToastPurchased') || 'Purchase successful!');
+                    this.showToast(i18n.t('storeToastPurchased'));
                     return; // Stop here, do not save
                 }
                 // --- End Demo Mode Check ---
