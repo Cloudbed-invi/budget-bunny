@@ -1,8 +1,8 @@
 // Bunny Budget PWA service worker – with activation toast
 // Bump VERSION and CACHE_NAME on each deploy
-const VERSION = 'v1.1.2';
-const CACHE_NAME = 'theme-fix-v2';
-const RELEASE_NOTE = 'UI and Bug Fixes';
+const VERSION = 'v1.1.3';
+const CACHE_NAME = 'theme-fix-v3';
+const RELEASE_NOTE = 'UI charts and demo mode fix';
 
 const APP_SHELL = ['./index.html']; // repo-relative for GitHub Pages
 

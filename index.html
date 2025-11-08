@@ -5699,6 +5699,12 @@
                 // 2. Render the new Snapshot charts
                 // Re-render the charts with the new date range
                 this.renderStatsSnapshots();
+
+                setTimeout(() => {
+                    if (window.app) {
+                        window.app.renderStatsSnapshots();
+                    }
+                }, 0);
             },
 
             /**
@@ -7805,8 +7811,111 @@
                 // Set the correct view state (important for mobile layout)
                 this.setStoreActiveTab(activeTab);
             },
+            // --- Start of FIX for app.renderStatsSnapshots ---
+            // Locate and replace the entire app.renderOverviewChart method:
+
             /**
-             * Renders the snapshot analysis charts
+             * Renders the main Income vs. Spend vs. Savings chart (NOW STACKED AREA)
+             */
+            renderOverviewChart(filteredSnaps, labels) {
+                if (this.overviewChart) {
+                    this.overviewChart.destroy();
+                }
+
+                // --- Get colors from the active theme (same as before) ---
+                const theme = THEME_STORE[this.activeThemeId] || THEME_STORE['pink'];
+                const themeColors = theme.colors;
+                const addAlpha = (color, alpha) => color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+
+                const incomeColor = themeColors.green;
+                const spentColor = themeColors.red; 
+                const savedColor = themeColors.primary; 
+
+                // Extract data
+                const incomeData = filteredSnaps.map(s => s.calculations.totalIncome);
+                const spentData = filteredSnaps.map(s => s.calculations.totalSpent); 
+                const savedData = filteredSnaps.map(s => s.totalRollover);
+
+                this.overviewChart = new Chart(this.dom.statsOverviewChart.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Total Saved',
+                                data: savedData,
+                                backgroundColor: savedColor,
+                                stack: 'stack1',
+                                borderRadius: 4,
+                            },
+                            {
+                                label: 'Total Spent',
+                                data: spentData,
+                                backgroundColor: spentColor,
+                                stack: 'stack1',
+                                borderRadius: 4,
+                            },
+                            {
+                                label: 'Total Income',
+                                data: incomeData,
+                                borderColor: incomeColor,
+                                backgroundColor: addAlpha(incomeColor, 0.2),
+                                type: 'line',
+                                fill: false,
+                                tension: 0.2,
+                                pointRadius: 6,
+                                order: 0,
+                            },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20
+                                }
+                            },
+                            // *** FIX: Stabilized Zoom for Pan/Scroll on Drag ***
+                            zoom: {
+                                pan: {
+                                    enabled: true, // Enable dragging
+                                    mode: 'x',
+                                    threshold: 5,
+                                },
+                                zoom: {
+                                    // Wheel/Pinch disabled for button-only zoom, but drag (pan) is active
+                                    wheel: { enabled: false }, 
+                                    pinch: { enabled: false },
+                                    mode: 'x',
+                                }
+                            }
+                            // *** END FIX ***
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 0,
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                grid: {
+                                    color: themeColors.ui,
+                                    drawBorder: false,
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            /**
+             * Renders the snapshot analysis charts (Corrected Logic)
              */
             renderStatsSnapshots() {
                 if (this.snapshots.length === 0) {
@@ -7823,127 +7932,28 @@
                 // 1. PRE-FILTER THE DATA based on the selected range
                 const allSortedSnaps = [...this.snapshots].sort((a, b) => a.month.localeCompare(b.month));
                 
-                // Get the last N months. (e.g., if 3M, get the last 3 items)
+                // Get the last N months.
                 const filteredSnaps = allSortedSnaps.slice(-this.statsDateRange); 
                 
                 const labels = filteredSnaps.map(s => this.formatMonthYear(s.month));
 
                 // 2. Render the main overview chart with *filtered* data
+                // Call directly on 'this' as it's part of the app object
                 this.renderOverviewChart(filteredSnaps, labels);
                 
                 // 3. Populate the category dropdown (only needs to happen once)
-                // Check if it's already populated to avoid re-running
                 if (this.dom.statsCategorySelect.options.length <= 1) {
                     this.populateStatsCategorySelect();
                 }
 
                 // 4. Render the category chart with *filtered* data
-                this.renderCategoryChart();
+                // Call directly on 'this' as it's part of the app object
+                this.renderCategoryChart(); 
             },
 
-            /**
-             * Renders the main "Income vs Spend vs Savings" overview chart
-             */
-            renderOverviewChart(sortedSnaps, labels) {
-                if (this.overviewChart) {
-                    this.overviewChart.destroy();
-                }
+            // --- End of FIX for app.renderStatsSnapshots ---
 
-                // --- NEW: Get colors from the active theme ---
-                const theme = THEME_STORE[this.activeThemeId] || THEME_STORE['default'];
-                const themeColors = theme.colors;
-                
-                // Helper to add transparency to our 'rgb(...)' strings
-                const addAlpha = (color, alpha) => color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
-                
-                const primaryColor = themeColors.primary;
-                const primaryColorBG = addAlpha(primaryColor, 0.1);
-                const accentGreen = addAlpha(themeColors.accentGreen, 0.7);
-                const textColor = addAlpha(themeColors.textColor, 0.7);
-                // --- END NEW ---
-
-                const incomeData = sortedSnaps.map(s => s.calculations.totalIncome);
-                const spendingData = sortedSnaps.map(s => s.calculations.totalFixed + s.calculations.totalVariableSpent);
-                const savingsData = sortedSnaps.map(s => s.totalRollover);
-
-                this.overviewChart = new Chart(this.dom.statsOverviewChart.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                type: 'line',
-                                label: 'Total Income',
-                                data: incomeData,
-                                borderColor: primaryColor, // <-- UPDATED
-                                backgroundColor: primaryColorBG, // <-- UPDATED
-                                fill: true,
-                                tension: 0.1,
-                                order: 1,
-                                pointRadius: 4, // <-- Make dot visible
-                                pointHitRadius: 15 // <-- Make dot easy to tap
-                            },
-                            {
-                                type: 'bar',
-                                label: 'Total Spending',
-                                data: spendingData,
-                                backgroundColor: textColor, // <-- UPDATED
-                                order: 2
-                            },
-                            {
-                                type: 'bar',
-                                label: 'Savings (Rollover)',
-                                data: savingsData,
-                                backgroundColor: accentGreen, // <-- UPDATED
-                                order: 3
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom', 
-                                labels: {
-                                    padding: 20 
-                                }
-                            },
-                            // --- FIX: Mobile-friendly Zoom Options ---
-                            zoom: {
-                                pan: {
-                                    enabled: true, // Allow panning (drag)
-                                    mode: 'x',
-                                    threshold: 5,
-                                },
-                                zoom: {
-                                    wheel: {
-                                        enabled: false, // <-- Disable wheel zoom
-                                    },
-                                    pinch: {
-                                        enabled: false // <-- Disable pinch zoom
-                                    },
-                                    mode: 'x',
-                                }
-                            }
-                            // --- END NEW ZOOM OPTIONS ---
-                        },
-                        scales: {
-                            x: {
-                                stacked: true,
-                                ticks: {
-                                    autoSkip: true, 
-                                    maxRotation: 0, 
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                stacked: true
-                            }
-                        }
-                    }
-                });
-            },
+            
 
             /**
              * Populates the category select dropdown with all unique categories from all snapshots
@@ -7997,21 +8007,22 @@
                 this.dom.statsCategorySelect.insertAdjacentHTML('beforeend', createOptgroup('Debts', grouped.debt));
             },
 
+            // Locate and replace the entire app.renderCategoryChart method:
+
             /**
-             * Renders the drill-down chart for a single selected category
+             * Renders the drill-down chart for a single selected category (NOW COLUMN CHART)
              */
             renderCategoryChart() {
                 if (this.categoryChart) {
                     this.categoryChart.destroy();
                 }
 
-                // --- NEW: Get colors from the active theme ---
-                const theme = THEME_STORE[this.activeThemeId] || THEME_STORE['default'];
+                // --- Get colors from the active theme (same as before) ---
+                const theme = THEME_STORE[this.activeThemeId] || THEME_STORE['pink']; 
                 const themeColors = theme.colors;
                 const addAlpha = (color, alpha) => color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
                 
                 const primaryColor = themeColors.primary;
-                const primaryColorBG = addAlpha(primaryColor, 0.1);
                 // --- END NEW ---
 
                 const selectedCategoryName = this.dom.statsCategorySelect.value;
@@ -8022,12 +8033,32 @@
                 
                 this.dom.statsCategoryChart.classList.remove('hidden');
 
-                // --- NEW: Filter data based on state ---
+                // --- Data Fetching ---
                 const allSortedSnaps = [...this.snapshots].sort((a, b) => a.month.localeCompare(b.month));
                 const filteredSnaps = allSortedSnaps.slice(-this.statsDateRange);
                 const labels = filteredSnaps.map(s => this.formatMonthYear(s.month));
                 
-                const categoryData = filteredSnaps.map(snapshot => { // Use filteredSnaps
+                // Find category info to determine color and label
+                const snapshotWithCat = this.snapshots.find(s => s.categories.some(c => c.name === selectedCategoryName));
+                const catInfo = snapshotWithCat ? snapshotWithCat.categories.find(c => c.name === selectedCategoryName) : null;
+                
+                let chartLabel = selectedCategoryName;
+                let barColor = primaryColor;
+                
+                if (catInfo) {
+                    if (catInfo.type === 'envelope') {
+                        chartLabel = `${i18n.t('statsChartSpentIn')} ${selectedCategoryName}`;
+                        barColor = themeColors.red;
+                    } else if (catInfo.type === 'bill') {
+                        chartLabel = `${i18n.t('statsChartPaidFor')} ${selectedCategoryName}`;
+                        barColor = themeColors.green;
+                    } else { // Saving or Debt
+                        chartLabel = `${i18n.t('statsChartSavedIn')} ${selectedCategoryName}`;
+                        barColor = primaryColor;
+                    }
+                }
+                
+                const categoryData = filteredSnaps.map(snapshot => { 
                     const cat = snapshot.categories.find(c => c.name === selectedCategoryName);
                     if (!cat) return 0;
 
@@ -8035,48 +8066,39 @@
                     const catType = cat.type;
 
                     switch (catType) {
-                        case 'envelope': // RENAMED
+                        case 'envelope': 
+                            // [CORRECT] Envelopes show SPENT amount
                             return snapshot.transactions
                                 .filter(t => t.categoryId === catId && t.amount > 0)
                                 .reduce((sum, t) => sum + t.amount, 0);
-                        case 'bill': // RENAMED
-                            return cat.amount || 0;
-                        case 'saving': // RENAMED
-                        case 'debt': // RENAMED
+                                
+                        case 'bill': 
+                        case 'saving': 
+                        case 'debt': 
+                            // [FIX] Bills, Saving, and Debt show BUDGETED amount
                             const budgetItem = snapshot.budget.find(b => b.id === `${catType}-${catId}`);
-                            return budgetItem ? budgetItem.amount : 0;
+                            // Fall back to the category's default amount if no budget item was saved for that month
+                            return budgetItem ? budgetItem.amount : (cat.amount || 0); 
+                            
                         default:
                             return 0;
                     }
                 });
-                const snapshotWithCat = this.snapshots.find(s => s.categories.some(c => c.name === selectedCategoryName));
-                const catInfo = snapshotWithCat ? snapshotWithCat.categories.find(c => c.name === selectedCategoryName) : null;
-                
-                let chartLabel = selectedCategoryName;
-                if (catInfo && catInfo.type === 'envelope') {
-                    chartLabel = `${i18n.t('statsChartSpentIn')} ${selectedCategoryName}`;
-                } else if (catInfo && (catInfo.type === 'saving' || catInfo.type === 'debt')) {
-                    chartLabel = `${i18n.t('statsChartSavedIn')} ${selectedCategoryName}`;
-                } else {
-                    chartLabel = `${i18n.t('statsChartPaidFor')} ${selectedCategoryName}`;
-                }
-
+                // --- End Data Fetching ---
 
 
                 this.categoryChart = new Chart(this.dom.statsCategoryChart.getContext('2d'), {
-                    type: 'line',
+                    type: 'bar',
                     data: {
                         labels: labels,
                         datasets: [
                             {
                                 label: chartLabel,
                                 data: categoryData,
-                                borderColor: primaryColor, // <-- UPDATED
-                                backgroundColor: primaryColorBG, // <-- UPDATED
-                                fill: true,
-                                tension: 0.1,
-                                pointRadius: 4, // <-- Make dot visible
-                                pointHitRadius: 15 // <-- Make dot easy to tap
+                                backgroundColor: barColor,
+                                borderRadius: 6,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8,
                             }
                         ]
                     },
@@ -8090,34 +8112,36 @@
                                     padding: 20
                                 }
                             },
-                            // --- FIX: Mobile-friendly Zoom Options ---
+                            // *** FIX: Stabilized Zoom for Pan/Scroll on Drag ***
                             zoom: {
                                 pan: {
-                                    enabled: true, // Allow panning (drag)
+                                    enabled: true, // Enable dragging
                                     mode: 'x',
-                                    threshold: 5,
                                 },
                                 zoom: {
-                                    wheel: {
-                                        enabled: false, // <-- Disable wheel zoom
-                                    },
-                                    pinch: {
-                                        enabled: false // <-- Disable pinch zoom
-                                    },
+                                    wheel: { enabled: false }, 
+                                    pinch: { enabled: false },
                                     mode: 'x',
                                 }
                             }
-                            // --- END NEW ZOOM OPTIONS ---
+                            // *** END FIX ***
                         },
                         scales: {
                             x: {
+                                grid: {
+                                    display: false
+                                },
                                 ticks: {
                                     autoSkip: true, 
                                     maxRotation: 0, 
                                 }
                             },
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                grid: {
+                                    color: themeColors.ui,
+                                    drawBorder: false,
+                                }
                             }
                         }
                     }
@@ -8768,6 +8792,7 @@
 
         // --- App Entry Point ---
         document.addEventListener('DOMContentLoaded', () => {
+            window.app = app;
             //window.dbStore = dbStore; // NEW: Expose DB for testing
             app.init();
         });
