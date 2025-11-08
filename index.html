@@ -89,11 +89,17 @@
 
         /* 3. The Body (for inner cards) */
         .smart-section-body {
-            padding: 1rem; /* 16px */
+            padding: 1rem;
             display: grid;
-            gap: 0.75rem; /* 12px */
-            background-color: rgba(0, 0, 0, 0.02); /* Slight tint for depth */
+            gap: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            overflow-x: hidden;
+            /* Keep tall expanded lists contained and scrollable */
+            max-height: 40vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
+
 
         /* 4. The "Glassmorphism" Inner Card (FIXED FOR DARK MODE) */
         .glass-card {
@@ -245,12 +251,13 @@
         
         /* 6. Text Overrides (Inside ALL Cards & Buttons) */
         /* This forces all text to obey the theme */
+        /* ADDED: font-semibold and font-medium as universal catch-alls */
+        .font-semibold, .font-medium, 
         .bg-white .text-gray-900, .bg-white .text-gray-800, 
-        .bg-white .text-gray-700, .bg-white .font-semibold, 
-        .bg-white .font-medium, .bg-white h2, .bg-white h3,
+        .bg-white .text-gray-700, .bg-white h2, .bg-white h3,
         .bg-gray-50 .text-gray-900, .bg-gray-50 .text-gray-800,
         .bg-gray-50 .text-gray-700, .bg-gray-50 .text-gray-600,
-        .bg-gray-50 .font-semibold, .bg-gray-50 h3, .bg-gray-50 p,
+        .bg-gray-50 h3, .bg-gray-50 p,
         .bg-gray-100 .text-gray-600, .bg-gray-200 .text-gray-800,
         .chart-zoom-btn, .category-type-btn {
             color: var(--theme-text) !important;
@@ -265,6 +272,12 @@
         .bg-white .text-pink-700 {
             color: var(--theme-text) !important;
             opacity: 0.75 !important;
+        }
+
+        /* NEW: Explicit fix for text-gray-800 to ensure theme compatibility */
+        .text-gray-800 {
+            color: var(--theme-text) !important;
+            opacity: 0.9 !important;
         }
         
         /* 8. Text Overrides (Inside Highlighted Cards) */
@@ -364,6 +377,11 @@
             height: 1.5rem;
             transition: all 0.2s ease;
         }
+        /* NEW: Make the logo icon bigger on the header */
+        .header-logo-icon {
+            width: 2rem !important; /* Larger size */
+            height: 2rem !important; /* Larger size */
+        }
 
         .bunny-icon-sm {
             width: 1.25rem;
@@ -434,6 +452,33 @@
             /* Standard */
             cursor: pointer; /* Ensures all buttons get the pointer */
         }
+        
+        /* NEW: AGGRESSIVE FIX FOR OVERFLOWING TEXT/CONTENT */
+        #app-container {
+            /* Prevents the container from expanding beyond its max-width due to overflowing content */
+            overflow-x: hidden !important; 
+            /* Prevents horizontal scrollbar from appearing */
+            width: 100% !important;
+        }
+
+        /* Fix: allow flex children to shrink inside smart-section containers (prevents items from overflowing) */
+        .smart-section, .smart-section * {
+            box-sizing: border-box;
+        }
+
+        /* Ensure flex items inside smart sections can shrink */
+        .smart-section .flex,
+        .smart-section .flex > * {
+            min-width: 0; /* allow truncation / shrinking inside flex */
+        }
+
+        /* Defensive wrapping for long text */
+        .smart-section-body, .smart-section-body * {
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        
         /* NEW: Re-enable text selection for inputs and textareas */
         input[type="text"],
         input[type="number"],
@@ -498,6 +543,40 @@
             color: var(--theme-primary);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        /* --- NEW: MODERN STORE TAB STYLES (v5.3) --- */
+        /* 1. The container (Segmented Control look) */
+        .store-tabs {
+            gap: 0.5rem;
+            background-color: var(--theme-ui); 
+            padding: 0.25rem;
+            border-radius: 0.75rem;
+        }
+
+        /* 2. The Button style */
+        .store-tab-btn {
+            flex-grow: 1; 
+            text-align: center;
+            padding: 0.5rem 0.75rem; 
+            border: none; 
+            border-radius: 0.5rem; 
+            font-weight: 500;
+            color: var(--theme-text);
+            background-color: transparent; 
+            transition: all 0.2s ease;
+        }
+
+        /* 3. Hover/Active State */
+        .store-tab-btn:hover {
+            background-color: var(--theme-card);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .store-tab-btn.active {
+            background-color: var(--theme-card) !important;
+            color: var(--theme-primary) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06) !important; 
+        }
+        /* --- END MODERN STORE TAB STYLES --- */
     </style>
     <!-- Chart.js - for new stats page -->
     <script src="./chart.min.js"></script>
@@ -522,29 +601,6 @@
         }
     })();
     </script>
-    <style>
-    .store-tab-btn {
-    background: transparent;
-    border: 1px solid rgba(100,100,110,0.12);
-    transition: all .12s;
-    }
-    .store-tab-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    }
-    .store-tab-btn.active {
-    background: linear-gradient(90deg, rgba(244,114,182,0.12), rgba(219,39,119,0.06));
-    border-color: transparent;
-    }
-    #store-grid { margin-top: 8px; }
-    @media (min-width: 769px) {
-    #store-light-col, #store-dark-col { display: block; }
-    }
-    @media (max-width: 768px) {
-    #store-dark-col { display: none; }
-    }
-    </style>
-
     </head>
 
 
@@ -552,8 +608,16 @@
 <body class="antialiased">
     <!-- Inline bunny symbol -->
     <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" focusable="false">
-        <symbol id="icon-bunny" viewBox="0 0 24 24">
-            <path d="M17.3 3.7c-1.1-1.1-2.9-1.3-4.2-.5-.3.2-.5.4-.7.7-.8 1-1 2.3-.5 3.5-.9.4-1.7 1.1-2.3 2-.9 1.3-1 2.9-.4 4.3.7 1.7 2.2 3 4 3.6 1.9.6 4 .3 5.5-1 1.4-1.2 2.1-3.1 1.9-4.9-.1-1.1-.6-2.1-1.3-2.9.9-.8 1.3-2 1-3.2-.2-1.4-1.1-2.3-2.5-2.8zM9.5 16.5c-.9-.3-1.6-1-2-1.9-.4-1 .1-2.2 1.1-2.6.9-.4 2 .1 2.3 1.1.2.6.1 1.2-.3 1.7-.4.6-1.1 1-1.7 1.7z"/>
+        <symbol id="icon-bunny" viewBox="0 0 456.97 328.87">
+          <g id="Layer_1-2" data-name="Layer 1">
+            <g id="EGkuJ3">
+              <g>
+                <path d="m360.5,222.68c-2.22,5.32-4.38,10.65-6.66,15.93-10.22,23.71-22.24,46.45-36.6,67.93-4.48,6.7-9.59,12.91-15.33,18.6-1.37,1.36-2.79,1.94-4.71,1.76-2.57-.24-5.15-.33-7.68-.9-.83-.19-1.65-.41-2.47-.88.14-.21.21-.37.32-.47,7.56-7.2,13.63-15.61,19.39-24.25,10.5-15.74,19.29-32.44,27.41-49.5,4.99-10.48,9.47-21.18,13.65-32.01.08-.2.13-.41.23-.76-8.19-3.56-15.72-8.23-22.78-14.02-.69,2.08-1.31,4.02-1.97,5.94-7.84,22.91-17.43,45.05-29.58,66.03-5.1,8.8-10.68,17.28-17.44,24.92-2.01,2.28-3.96,4.63-6.89,5.91-7.11,3.1-15.17-.78-17.11-8.31-2.85-11.04-3.59-22.31-3.6-33.66-.01-14.06,1.31-28.01,3.32-41.91,4.02-27.85,10.56-55.1,19.41-81.79,1.04-3.14,2.14-6.26,3.26-9.37.24-.69.24-1.24-.04-1.95-1.37-3.43-3.68-6.19-6.12-8.87-.72-.8-1.44-1.6-2.13-2.43-.34-.42-.86-.89-.53-1.47.29-.53.94-.55,1.5-.56,2.24-.06,4.33.48,6.33,1.49,4.83,2.43,8.31,6.36,11.53,10.53,4.79,6.23,8.63,13.06,12.21,20.03,5.42,10.55,11.49,20.68,18.96,29.93,7.71,9.54,16.46,17.94,26.99,24.35,7.58,4.61,15.77,7.53,24.46,9.24,10.61,2.08,21.28,3.16,32.08,2.56,14.93-.83,28.9-4.65,41.11-13.71.76-.56,1.5-1.16,2.23-1.76,3.09-2.52,3.53-7.21.79-10.09-11.11-11.65-20.16-24.82-28.57-38.48-7.17-11.65-13.97-23.53-21.44-34.99-4.92-7.54-10-14.97-15.95-21.73-5.87-6.67-12.85-12.05-20.6-16.41-8.97-5.05-18.5-8.57-28.7-9.99-18.49-2.57-35.25,1.57-50.08,13.15-10.2,7.97-18.07,17.87-24.58,28.94-7.72,13.12-13.21,27.19-17.55,41.74-4.35,14.56-7.43,29.4-9.65,44.43-1.5,10.13-2.71,20.3-3.5,30.51-1.33,17.05-1.86,34.12-1.45,51.22.24,10.16.75,20.3,1.68,30.42.44,4.75.94,9.5,1.72,14.22.31,1.86-.08,2.67-1.88,3.24-3.45,1.08-6.87.84-10.21-.56-.8-.34-1.22-.89-1.35-1.84-2.87-20.55-3.73-41.22-3.56-61.94.11-13.61.79-27.19,2.13-40.73,2.24-22.6,6.46-44.83,12.75-66.66,4.05-14.05,8.76-27.89,14.84-41.19,6.31-13.81,14.98-25.99,26.38-36.12,11.85-10.54,25.43-17.69,41.11-20.59,7.89-1.46,15.83-1.49,23.77-.31,16.48,2.45,30.63,9.83,43.31,20.38,9.64,8.02,17.21,17.78,24.12,28.12,7.65,11.45,14.39,23.47,21.46,35.27,6.27,10.45,12.86,20.67,20.63,30.1,3.87,4.7,8.38,8.77,12.56,13.16,3.56,3.74,5.82,8.09,5.48,13.46-.18,2.86-1.15,5.45-2.69,7.84-2.67,4.13-6.3,7.27-10.43,9.85-8.68,5.43-18.24,8.57-28.21,10.6-8.55,1.75-17.2,2.41-25.92,2.33-9.42-.08-18.68-1.41-27.81-3.72-.45-.11-.89-.31-1.38-.19Z"/>
+                <path d="m137.59,275.12c-.04,8.71-.51,18.33-1.73,27.91-.48,3.74-2.12,6.8-5.82,8.17-3.76,1.39-7.19.25-10.07-2.26-3.48-3.03-6.29-6.72-9.2-10.28-15.12-18.47-27.43-38.72-37.88-60.12-11.12-22.78-19.99-46.39-26.02-71.03-4.65-18.99-7.53-38.22-7.3-57.82.15-13.19,1.89-26.15,6.38-38.63.88-2.44,1.89-4.82,4.09-6.42,2.48-1.81,5.18-1.67,7.87-.7,4.27,1.52,7.7,4.33,10.91,7.42,7.62,7.33,13.81,15.8,19.42,24.7,17.43,27.61,29.86,57.34,37.47,89.09,3.34,13.92,6.12,27.96,8.18,42.13,2.26,15.56,3.63,31.19,3.7,47.86Z"/>
+                <path d="m109.43,328.2c-.64.59-1.28.67-1.93.67-3.5.04-6.96-.3-10.35-1.22-.79-.21-1.37-.62-1.92-1.2-20.07-21.53-36.82-45.4-50.64-71.37-14.85-27.9-26.26-57.13-34.3-87.68-3.49-13.26-6.39-26.66-8.23-40.27C-.01,111.78-.58,96.37.62,80.89c1.26-16.2,4.37-32.01,9.65-47.38,3.4-9.9,7.58-19.46,12.6-28.64C24.55,1.82,27.26.26,30.64.09c12.02-.62,23.4,1.96,34.24,7.12,10.88,5.18,20.32,12.36,28.96,20.68,16.42,15.82,29.05,34.4,39.59,54.47,12.16,23.16,20.44,47.75,26.36,73.17,3.52,15.09,6.13,30.34,7.96,45.72,2.07,17.32,3.16,34.7,3.52,52.14.35,16.58-.14,33.14-1.19,49.69-.45,7.13-1.18,14.24-1.75,21.36-.06.75-.32,1.07-1.09,1.08-2.04.03-4.05-.2-5.97-.86-1.99-.68-2.78-1.86-2.74-3.99.25-14.85.31-29.7-.04-44.55-.34-14.55-1.02-29.07-2.21-43.58-1.19-14.67-2.92-29.27-5.27-43.8-4.27-26.44-10.24-52.46-19.64-77.6-7.83-20.93-17.78-40.74-31.44-58.54-8.82-11.49-19.08-21.47-31.18-29.5-7.5-4.97-15.49-8.91-24.31-11-3.36-.79-6.77-1.17-10.22-1.35-1.09-.06-1.49.41-1.9,1.25-6.76,13.7-11.87,27.98-15.17,42.91-3.8,17.15-5.28,34.51-4.75,52.04.79,25.74,5.52,50.81,13.21,75.35,7.79,24.86,18.31,48.55,30.96,71.32,10.21,18.39,21.79,35.87,34.6,52.55,5.51,7.17,11.3,14.1,17.29,20.87.31.35.6.71.96,1.14Z"/>
+              </g>
+            </g>
+          </g>
         </symbol>
     </svg>
     <!-- ====== FULL SCREEN ONBOARDING MODAL ====== -->
@@ -708,19 +772,18 @@
 
         <!-- Header -->
         <header class="mb-6">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <svg class="bunny-icon header-logo-icon" viewBox="0 0 24 24" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <use href="#icon-bunny"></use>
-                    </svg>
-                    <h1 class="text-2xl font-bold" data-i18n="appTitle">Bunny Budget</h1>
-                </div>
-                <div class="flex items-center space-x-2">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="bunny-icon header-logo-icon" viewBox="0 0 24 24" fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <use href="#icon-bunny"></use>
+                </svg>
+                <h1 class="text-2xl font-bold" data-i18n="appTitle">Bunny Budget</h1>
+            </div>
+            <div class="flex items-center space-x-2">
                     <div class="coin-display flex items-center space-x-1 bg-pink-100 text-pink-700 font-bold text-lg px-4 py-2 rounded-full">
-                        <svg class="bunny-icon-sm" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                           <use href="#icon-bunny"></use>
-                        </svg>
+                        <img src=".\icons\bunny_coin.png" alt="Bunny Coin" 
+                            class="h-5 w-5" style="vertical-align: middle;">
                         <span id="bunny-coin-total">0</span>
                     </div>
 
@@ -1281,52 +1344,6 @@
                         <div id="store-dark-col"  class="space-y-3"></div>
                     </div>
                 </div>
-                <script>
-                (function(){
-                    function setupStoreTabs() {
-                        const lightCol = document.getElementById('store-light-col');
-                        const darkCol  = document.getElementById('store-dark-col');
-
-                        // Collect already-rendered cards if they exist (class .store-item)
-                        const items = document.querySelectorAll('.store-item');
-                        items.forEach(item => {
-                        const type = item.dataset.themeType || (item.classList.contains('theme-dark') ? 'dark' : 'light');
-                        const clone = item.cloneNode(true);
-                        if (type === 'dark') darkCol.appendChild(clone);
-                        else lightCol.appendChild(clone);
-                        });
-
-                        const btnLight = document.getElementById('store-tab-light');
-                        const btnDark  = document.getElementById('store-tab-dark');
-
-                        function setActive(tab) {
-                        if (window.innerWidth <= 768) {
-                            lightCol.style.display = tab === 'light' ? '' : 'none';
-                            darkCol.style.display  = tab === 'dark' ? '' : 'none';
-                        } else {
-                            lightCol.style.display = '';
-                            darkCol.style.display  = '';
-                        }
-                        // simple active style
-                        btnLight && btnLight.classList.toggle('active', tab === 'light');
-                        btnDark  && btnDark.classList.toggle('active', tab === 'dark');
-                        }
-
-                        btnLight && btnLight.addEventListener('click', () => setActive('light'));
-                        btnDark  && btnDark.addEventListener('click', () => setActive('dark'));
-
-                        setActive('light');
-                        window.addEventListener('resize', () => setActive('light'));
-                    }
-
-                    if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', setupStoreTabs);
-                    } else {
-                        setupStoreTabs();
-                    }
-                    })();
-                </script>
-
             </section>
 
 
@@ -3821,17 +3838,17 @@
                     browserTheme: 'rgb(244, 114, 182)'
                 }
             },
-            // NEW: Bunny Dark (FIXED)
+            // NEW: Bunny Dark
             'dark': {
                 id: 'dark',
                 name: 'Bunny Dark',
                 price: 0,
                 isDark: true,
                 colors: {
-                    primaryLight: 'rgb(220, 38, 127)',
+                    primaryLight: 'rgb(255, 145, 199)',
                     primary: 'rgb(244, 114, 182)',
-                    primaryDark: 'rgb(175, 23, 93)',
-                    page: 'rgb(10, 10, 12)',
+                    primaryDark: 'rgb(0, 0, 0)',
+                    page: 'rgb(0, 0, 0)',
                     card: 'rgb(24, 24, 28)',
                     ui: 'rgb(40, 40, 45)',
                     text: 'rgb(238, 238, 240)',
@@ -4170,7 +4187,12 @@
                     helpPage: document.getElementById('help-page'),
                     statsPage: document.getElementById('stats-page'),
                     storePage: document.getElementById('store-page'), // NEW
-
+                    // NEW: Store Columns
+                    storeLightCol: document.getElementById('store-light-col'),
+                    storeDarkCol: document.getElementById('store-dark-col'),
+                    // NEW: Store Tabs
+                    storeTabLight: document.getElementById('store-tab-light'),
+                    storeTabDark: document.getElementById('store-tab-dark'),
                     // Nav
                     navButtons: document.querySelectorAll('.nav-button'),
                     navDashboard: document.getElementById('nav-dashboard'),
@@ -4738,11 +4760,19 @@
                 this.dom.budgetDebtList.addEventListener('input', budgetInputHandler);
 
                 // NEW: Envelope Summary Card Toggle
-                // --- NEW: PHASE 4 ---
-                // Store Page Listeners
-                const storeList = document.getElementById('store-item-list');
-                if (storeList) {
-                    storeList.addEventListener('click', (e) => {
+                // --- NEW: PHASE 4 (Store Tab Listeners) ---
+                if (this.dom.storeTabLight) {
+                    this.dom.storeTabLight.addEventListener('click', () => this.setStoreActiveTab('light'));
+                }
+                if (this.dom.storeTabDark) {
+                    this.dom.storeTabDark.addEventListener('click', () => this.setStoreActiveTab('dark'));
+                }
+                window.addEventListener('resize', () => this.handleStoreResize());
+                
+                // --- Store Grid Click Listener (Buy/Equip) ---
+                const storeGrid = document.getElementById('store-grid');
+                if (storeGrid) {
+                    storeGrid.addEventListener('click', (e) => { // Listen on the grid container
                         const buyBtn = e.target.closest('.store-buy-btn');
                         if (buyBtn) {
                             this.onBuyTheme(buyBtn.dataset.themeId);
@@ -4755,7 +4785,7 @@
                         }
                     });
                 }
-                // --- END PHASE 4 ---
+                // --- END PHASE 4 (Store Listeners) ---
 
                 // NEW: Bills Card Toggle
                 this.dom.billsCardToggleBtn.addEventListener('click', () => {
@@ -4884,7 +4914,7 @@
                 if (isDarkMode) {
                     this.applyTheme(THEME_STORE['dark'], true);
                 } else {
-                    const activeTheme = THEME_STORE[this.activeThemeId] || THEME_STORE['pink']; // <-- FIX: Default to pink
+                    const activeTheme = THEME_STORE[this.activeThemeId] || THEME_STORE['pink']; 
                     this.applyTheme(activeTheme, false);
                 }
                 // --- END PHASE 3 (v5) ---
@@ -5133,12 +5163,13 @@
                     totalBills += assignedAmount;
                     
                     const item = `
-                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                            <span class="font-medium text-gray-700">${cat.name}</span>
-                            <span class="font-medium text-gray-800">${this.formatCurrency(assignedAmount)}</span>
-                        </div>
-                    `;
-                    this.dom.billsCardList.insertAdjacentHTML('beforeend', item);
+                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg overflow-hidden min-w-0">
+                        <span class="font-medium text-gray-700 truncate flex-1 min-w-0 pr-2">${cat.name}</span>
+                        <span class="font-medium text-gray-800 flex-shrink-0 ml-2">${this.formatCurrency(assignedAmount)}</span>
+                    </div>
+                `;
+                this.dom.billsCardList.insertAdjacentHTML('beforeend', item);
+
                 });
 
                 // Show/hide the card and empty message
@@ -5242,7 +5273,7 @@
                     const card = `
                 <div class="glass-card cursor-pointer" data-category-id="${cat.id}" data-category-name="${cat.name}">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="font-semibold text-lg text-gray-800">${cat.name}</span>
+                        <span class="font-semibold text-lg text-gray-800 truncate flex-1 min-w-0 pr-2">${cat.name}</span>
                         <div class="text-right">
                             <span class="font-bold text-lg ${remaining < 0 ? 'text-red-500' : 'text-gray-800'}">${this.formatCurrency(remaining)}</span>
                             <span class="text-xs text-gray-400 block">${i18n.t('dashboardRemaining')}</span>
@@ -7640,50 +7671,94 @@
                 }
             },
             /**
+             * NEW: Handles the display logic for Store tabs (mobile-friendly).
+             * @param {string} tab - 'light' or 'dark'
+             */
+            setStoreActiveTab(tab) {
+                const lightCol = this.dom.storeLightCol;
+                const darkCol = this.dom.storeDarkCol;
+                const btnLight = this.dom.storeTabLight;
+                const btnDark = this.dom.storeTabDark;
+                
+                if (!lightCol || !darkCol || !btnLight || !btnDark) return;
+
+                // 1. Manage visibility based on screen size (mobile hides one column)
+                if (window.innerWidth <= 768) {
+                    lightCol.style.display = tab === 'light' ? '' : 'none';
+                    darkCol.style.display = tab === 'dark' ? '' : 'none';
+                } else {
+                    // Desktop always shows both columns
+                    lightCol.style.display = '';
+                    darkCol.style.display = '';
+                }
+
+                // 2. Set active button styles
+                btnLight.classList.toggle('active', tab === 'light');
+                btnDark.classList.toggle('active', tab === 'dark');
+            },
+
+            /**
+             * NEW: Re-runs tab logic on resize to handle mobile/desktop switch.
+             */
+            handleStoreResize() {
+                // Determine the currently active tab by checking the class
+                const activeTabElement = document.querySelector('.store-tabs .store-tab-btn.active');
+                const activeTab = activeTabElement ? activeTabElement.dataset.tab : 'light';
+                
+                this.setStoreActiveTab(activeTab);
+            },
+            
+            /**
              * NEW: PHASE 4
              * Renders the items in the Bunny Store
              */
-            renderStorePage() {
-                const listEl = document.getElementById('store-item-list');
-                if (!listEl) return; // Not on the store page
-
-                listEl.innerHTML = ''; // Clear the list
+            async renderStorePage() {
+                const lightCol = this.dom.storeLightCol;
+                const darkCol = this.dom.storeDarkCol;
                 
+                if (!lightCol || !darkCol) return;
+
+                lightCol.innerHTML = ''; // Clear the light list
+                darkCol.innerHTML = '';  // Clear the dark list
+                
+                // --- CORE BUG FIX: Fetch current dark mode status ---
+                const isAppInDarkMode = await dbStore.getSetting('isDarkMode') === 'true'; 
+                // --- END BUG FIX ---
+
                 // Get a simple list of owned theme IDs
                 const ownedThemeIds = new Set(this.inventory.map(item => item.id));
                 const allThemes = Object.values(THEME_STORE);
 
-                // --- NEW: Separate themes into Light and Dark ---
+                // Separate themes into Light and Dark, sorting by price
                 const lightThemes = allThemes.filter(t => !t.isDark).sort((a,b) => a.price - b.price);
                 const darkThemes = allThemes.filter(t => t.isDark).sort((a,b) => a.price - b.price);
 
                 // Re-usable function to render a theme card
-                const createThemeCard = (theme) => {
+                const createThemeCardHTML = (theme) => {
                     const isOwned = ownedThemeIds.has(theme.id);
-                    // We can't "equip" dark mode, it's a toggle
-                    const isEquipped = (this.activeThemeId === theme.id) && !theme.isDark;
                     
+                    // --- CORRECTED EQUIPPED LOGIC ---
+                    let isEquipped = false;
+                    if (theme.isDark) {
+                        // For dark themes, it is equipped if the app is currently in dark mode.
+                        isEquipped = isAppInDarkMode;
+                    } else {
+                        // For light themes, it is equipped if the app is NOT in dark mode AND its ID matches the active theme ID.
+                        isEquipped = !isAppInDarkMode && (theme.id === this.activeThemeId);
+                    }
+                    // --- END CORRECTED EQUIPPED LOGIC ---
+
                     let buttonHTML = '';
                     if (isEquipped) {
-                        buttonHTML = `
-                            <button class="w-full bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed" disabled>
-                                ${i18n.t('storeEquipped')}
-                            </button>`;
+                        buttonHTML = `<button class="w-full bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed" disabled>${i18n.t('storeEquipped')}</button>`;
                     } else if (isOwned) {
-                        // Can't "equip" a dark theme, it's handled by the toggle
+                        // If it's a dark theme and owned, direct the user to the moon toggle
                         if(theme.isDark) {
-                             buttonHTML = `
-                            <button class="w-full bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed" disabled>
-                                Owned (Use 🌙 Toggle)
-                            </button>`;
+                            buttonHTML = `<button class="w-full bg-gray-200 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed" disabled>Owned (Use 🌙 Toggle)</button>`;
                         } else {
-                            buttonHTML = `
-                            <button class="store-equip-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg" data-theme-id="${theme.id}">
-                                ${i18n.t('storeEquip') || 'Equip'}
-                            </button>`;
+                            buttonHTML = `<button class="store-equip-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg" data-theme-id="${theme.id}">${i18n.t('storeEquip') || 'Equip'}</button>`;
                         }
                     } else {
-                        // Not owned, show buy button
                         const totalCoins = this.bunnyCoins.reduce((sum, c) => sum + c.coins, 0);
                         const canAfford = totalCoins >= theme.price;
                         const disabled = canAfford ? '' : 'disabled';
@@ -7696,9 +7771,9 @@
                             </button>`;
                     }
 
-                    // Create the theme card
+                    // Create the theme card with a consistent class
                     return `
-                        <div class="bg-gray-50 p-4 rounded-xl shadow-lg border">
+                        <div class="store-item bg-gray-50 p-4 rounded-xl shadow-lg border" data-theme-type="${theme.isDark ? 'dark' : 'light'}">
                             <h3 class="text-lg font-semibold text-gray-900">${theme.name}</h3>
                             <div class="flex space-x-2 my-3">
                                 <div class="w-1/2 h-10 rounded border" style="background-color: ${theme.colors.page}"></div>
@@ -7706,7 +7781,7 @@
                             </div>
                             <div class="flex space-x-2 my-3">
                                 <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.primary}"></div>
-                                <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.text}"></div>
+                                <div class="w-1/4 h-10 rounded border flex items-center justify-center" style="color: ${theme.colors.text}; background-color: ${theme.colors.card}">${theme.isDark ? 'Text' : 'Text'}</div>
                                 <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.green}"></div>
                                 <div class="w-1/4 h-10 rounded border" style="background-color: ${theme.colors.red}"></div>
                             </div>
@@ -7715,16 +7790,20 @@
                     `;
                 };
 
-                // --- NEW: Render sections ---
-                listEl.insertAdjacentHTML('beforeend', '<h2 class="text-2xl font-bold mb-3">Light Themes</h2>');
+                // Render the themes into the columns
                 lightThemes.forEach(theme => {
-                    listEl.insertAdjacentHTML('beforeend', createThemeCard(theme));
+                    lightCol.insertAdjacentHTML('beforeend', createThemeCardHTML(theme));
                 });
-
-                listEl.insertAdjacentHTML('beforeend', '<h2 class="text-2xl font-bold mt-8 mb-3">Dark Themes</h2>');
                 darkThemes.forEach(theme => {
-                    listEl.insertAdjacentHTML('beforeend', createThemeCard(theme));
+                    darkCol.insertAdjacentHTML('beforeend', createThemeCardHTML(theme));
                 });
+                
+                // Find the currently active tab (or default to 'light')
+                const activeTabElement = document.querySelector('.store-tabs .store-tab-btn.active');
+                const activeTab = activeTabElement ? activeTabElement.dataset.tab : 'light';
+
+                // Set the correct view state (important for mobile layout)
+                this.setStoreActiveTab(activeTab);
             },
             /**
              * Renders the snapshot analysis charts
