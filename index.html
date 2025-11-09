@@ -704,62 +704,37 @@
             </div>
 
             <div id="onboarding-step-help" class="onboarding-step p-6 md:p-8">
-                <div class="space-y-6 max-h-[70vh] overflow-y-auto pr-2"> <div class="space-y-4">
+                <div class="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+                    <div class="space-y-4">
                         <h2 class="text-2xl font-bold text-center text-gray-800" data-i18n="helpHowToUseTitle">How to Use Bunny Budget</h2>
-                    <div class="space-y-4 text-gray-700">
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep1Title">1. Setup Your
-                                Budget</h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpHowToUseStep1Desc">Go to the <strong
-                                    class="text-pink-600">Manage</strong> tab.
-                                First, enter your monthly **Salary**. Then, add all your monthly bills (like 'Rent' or
-                                'Internet') as **Fixed Costs** and any monthly debt payments as **Debts (Fixed
-                                Payment)**.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep2Title">2. Add Your
-                                Categories</h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpHowToUseStep2Desc">In <strong
-                                    class="text-pink-600">Manage</strong>, add your spending
-                                categories (like 'Groceries' or 'Gas') as **Variable Envelopes**. Add your savings goals
-                                (like 'Vacation') as **Sinking Fund (Goals)** or **Debt (Paydown Goals)**.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep3Title">3. Assign Your
-                                Money</h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpHowToUseStep3Desc">Go to the <strong
-                                    class="text-pink-600">Manage</strong> tab.
-                                Add any **Other Income** you received this month. The app shows your "Money to Budget"
-                                (your Total Income minus all Fixed Costs, Debts, and Annual Bills). Assign this money
-                                into your Variable Envelopes and savings goals.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep4Title">4. Track Your
-                                Spending</h3>
-                            <p data-i18n="helpHowToUseStep4Desc">On the <strong
-                                    class="text-pink-600">Dashboard</strong> tab, press
-                                the big **pink '+' button** to add an expense. Select the envelope you spent from, and
-                                watch the 'Remaining' amount go down.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep5Title">5. Fix Mistakes
-                            </h3>
-                            <p data-i18n="helpHowToUseStep5Desc">Made a typo? On the <strong
-                                    class="text-pink-600">Dashboard</strong>, click the
-                                **Variable Envelope** card (e.g., "Groceries"). A list of all transactions will appear.
-                                Click a transaction to **Edit** or **Delete** it.</p>
+                        <div class="space-y-4 text-gray-700">
+                            <div class="space-y-1">
+                                <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep1Title">1. Setup Your Income & Bills</h3>
+                                <p data-i18n="helpHowToUseStep1Desc">Go to the <strong class="text-pink-600">Manage</strong> tab. First, enter your monthly **Salary**. Then, add all your recurring costs (like 'Rent' or 'Internet') as a **Bill** category.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep2Title">2. Add Your Categories</h3>
+                                <p data-i18n="helpHowToUseStep2Desc">In <strong class="text-pink-600">Manage</strong>, add your flexible spending categories (like 'Groceries' or 'Gas') as an **Envelope**. Add your goals (like 'Vacation' or 'Credit Card') as a **Saving** or **Debt** category.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep3Title">3. Assign Your Money</h3>
+                                <p data-i18n="helpHowToUseStep3Desc">Go to the <strong class="text-pink-600">Manage</strong> tab. Add any **Other Income** you received. The app shows your "Money to Assign". Assign this money into your Bills, Envelopes, Savings, and Debts until it reaches zero.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep4Title">4. Track Your Spending</h3>
+                                <p data-i18n="helpHowToUseStep4Desc">On the <strong class="text-pink-600">Dashboard</strong> tab, press the big **pink '+' button** to add an expense. Select the **Envelope** you spent from (e.g., "Groceries").</p>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep5Title">5. Fix Mistakes</h3>
+                                <p data-i18n="helpHowToUseStep5Desc">Made a typo? On the <strong class="text-pink-600">Dashboard</strong>, click an **Envelope** card. A list of all its transactions will appear. Click a transaction to **Edit** or **Delete** it.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                </div> <div class="w-full pt-6 mt-6 border-t border-gray-200"> <button id="onboarding-help-back"
-                        class="text-gray-500 hover:text-gray-800 font-medium transition-all"
-                        data-i18n="back">Back</button>
+                <div class="w-full pt-6 mt-6 border-t border-gray-200">
+                    <button id="onboarding-help-back" class="text-gray-500 hover:text-gray-800 font-medium transition-all" data-i18n="back">Back</button>
                 </div>
             </div>
-
         </div>
     </div>
     
@@ -1134,124 +1109,66 @@
             
             <!-- ====== Help Page (Unchanged) ====== -->
             <section id="help-page" class="page space-y-6">
-                <!-- How to Use -->
-                <div class="bg-white p-5 rounded-2xl shadow-lg">
-                    <h2 class="text-xl font-semibold mb-3" data-i18n="helpHowToUseTitle">How to Use Bunny Budget</h2>
-                    <div class="space-y-4 text-gray-700">
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep1Title">1. Setup Your
-                                Budget</h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpHowToUseStep1Desc">Go to the <strong
-                                    class="text-pink-600">Manage</strong> tab.
-                                First, enter your monthly **Salary**. Then, add all your monthly bills (like 'Rent' or
-                                'Internet') as **Fixed Costs** and any monthly debt payments as **Debts (Fixed
-                                Payment)**.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep2Title">2. Add Your
-                                Categories</h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpHowToUseStep2Desc">In <strong
-                                    class="text-pink-600">Manage</strong>, add your spending
-                                categories (like 'Groceries' or 'Gas') as **Variable Envelopes**. Add your savings goals
-                                (like 'Vacation') as **Sinking Fund (Goals)** or **Debt (Paydown Goals)**.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep3Title">3. Assign Your
-                                Money</h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpHowToUseStep3Desc">Go to the <strong
-                                    class="text-pink-600">Manage</strong> tab.
-                                Add any **Other Income** you received this month. The app shows your "Money to Budget"
-                                (your Total Income minus all Fixed Costs, Debts, and Annual Bills). Assign this money
-                                into your Variable Envelopes and savings goals.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep4Title">4. Track Your
-                                Spending</h3>
-                            <p data-i18n="helpHowToUseStep4Desc">On the <strong
-                                    class="text-pink-600">Dashboard</strong> tab, press
-                                the big **pink '+' button** to add an expense. Select the envelope you spent from, and
-                                watch the 'Remaining' amount go down.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep5Title">5. Fix Mistakes
-                            </h3>
-                            <p data-i18n="helpHowToUseStep5Desc">Made a typo? On the <strong
-                                    class="text-pink-600">Dashboard</strong>, click the
-                                **Variable Envelope** card (e.g., "Groceries"). A list of all transactions will appear.
-                                Click a transaction to **Edit** or **Delete** it.</p>
-                        </div>
+            <div class="bg-white p-5 rounded-2xl shadow-lg">
+                <h2 class="text-xl font-semibold mb-3" data-i18n="helpHowToUseTitle">How to Use Bunny Budget</h2>
+                <div class="space-y-4 text-gray-700">
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep1Title">1. Setup Your Income & Bills</h3>
+                        <p data-i18n="helpHowToUseStep1Desc">Go to the <strong class="text-pink-600">Manage</strong> tab. First, enter your monthly **Salary**. Then, add all your recurring costs (like 'Rent' or 'Internet') as a **Bill** category.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep2Title">2. Add Your Categories</h3>
+                        <p data-i18n="helpHowToUseStep2Desc">In <strong class="text-pink-600">Manage</strong>, add your flexible spending categories (like 'Groceries' or 'Gas') as an **Envelope**. Add your goals (like 'Vacation' or 'Credit Card') as a **Saving** or **Debt** category.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep3Title">3. Assign Your Money</h3>
+                        <p data-i18n="helpHowToUseStep3Desc">Go to the <strong class="text-pink-600">Manage</strong> tab. Add any **Other Income** you received. The app shows your "Money to Assign". Assign this money into your Bills, Envelopes, Savings, and Debts until it reaches zero.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep4Title">4. Track Your Spending</h3>
+                        <p data-i18n="helpHowToUseStep4Desc">On the <strong class="text-pink-600">Dashboard</strong> tab, press the big **pink '+' button** to add an expense. Select the **Envelope** you spent from (e.g., "Groceries").</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpHowToUseStep5Title">5. Fix Mistakes</h3>
+                        <p data-i18n="helpHowToUseStep5Desc">Made a typo? On the <strong class="text-pink-600">Dashboard</strong>, click an **Envelope** card. A list of all its transactions will appear. Click a transaction to **Edit** or **Delete** it.</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Budgeting Terms Explained -->
-                <div class="bg-white p-5 rounded-2xl shadow-lg">
-                    <h2 class="text-xl font-semibold mb-3" data-i18n="helpTermsTitle">Budgeting Terms Explained</h2>
-                    <div class="space-y-4 text-gray-700">
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermSalaryTitle">Salary</h3>
-                            <p data-i18n="helpTermSalaryDesc">Your total *recurring* monthly income. This is the baseline
-                                for your budget.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermOtherIncomeTitle">Other Income
-                            </h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpTermOtherIncomeDesc">One-time or variable income (like a side job or
-                                selling an item). Add this on the <strong class="text-pink-600">Manage</strong> page.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermFixedCostTitle">Fixed Cost</h3>
-                            <p data-i18n="helpTermFixedCostDesc">A bill that is the same amount every month, like Rent or
-                                Internet. This is paid *before* you budget.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermDebtPaymentTitle">Debt (Fixed
-                                Payment)</h3>
-                            <p data-i18n="helpTermDebtPaymentDesc">A monthly payment for a debt (like a car loan). This
-                                is treated like a Fixed Cost and is paid *before* you budget.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermSinkingBillTitle">Sinking Fund
-                                (Annual Bill)</h3>
-                            <p data-i18n="helpTermSinkingBillDesc">For non-monthly bills (like annual car insurance or a
-                                quarterly tax). The app saves 1/12th of the cost every month, treating it like a Fixed
-                                Cost so you're never surprised by the bill.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermMoneyToBudgetTitle">Money to
-                                Budget</h3>
-                            <!-- MODIFIED: Updated help text to reflect new "Manage" page -->
-                            <p data-i18n="helpTermMoneyToBudgetDesc">This is your Total Income (Salary + Other) minus
-                                all your Fixed Costs, Debts (Fixed Payments), and Sinking Fund (Bills). This is the
-                                money you get to assign on the <strong class="text-pink-600">Manage</strong> page.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermVariableEnvelopeTitle">Variable
-                                Envelope</h3>
-                            <p data-i18n="helpTermVariableEnvelopeDesc">Your "digital envelope" for monthly spending that
-                                changes, like Groceries, Gas, or Dining Out. You spend from these using the '+' button.
-                            </p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermSinkingGoalTitle">Sinking Fund
-                                (Goal)</h3>
-                            <p data-i18n="helpTermSinkingGoalDesc">Your "digital savings envelope" for a big, optional
-                                goal, like Vacation, Christmas, or an Emergency Fund. You assign money to it, but you
-                                don't spend from it.</p>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="font-semibold text-gray-900" data-i18n="helpTermDebtGoalTitle">Debt (Paydown
-                                Goal)</h3>
-                            <p data-i18n="helpTermDebtGoalDesc">A "digital envelope" to pay off a debt faster (like a
-                                credit card). You assign extra money from your 'Money to Budget' to this goal.</p>
-                        </div>
+            <div class="bg-white p-5 rounded-2xl shadow-lg">
+                <h2 class="text-xl font-semibold mb-3" data-i18n="helpTermsTitle">Budgeting Terms Explained</h2>
+                <div class="space-y-4 text-gray-700">
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpTermSalaryTitle">Salary</h3>
+                        <p data-i18n="helpTermSalaryDesc">Your total *recurring* monthly income. This is the baseline for your budget.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpTermOtherIncomeTitle">Other Income</h3>
+                        <p data-i18n="helpTermOtherIncomeDesc">One-time or variable income (like a side job or selling an item). Add this on the <strong class="text-pink-600">Manage</strong> page.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpTermBillTitle">Category: Bill</h3>
+                        <p data-i18n="helpTermBillDesc">For recurring costs, like Rent, Utilities, or a Car Payment. You assign money to these first to make sure they're paid.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpTermEnvelopeTitle">Category: Envelope</h3>
+                        <p data-i18n="helpTermEnvelopeDesc">Your "digital envelope" for flexible spending, like Groceries, Gas, or Dining Out. You spend from these using the '+' button.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpTermSavingTitle">Category: Saving</h3>
+                        <p data-i18n="helpTermSavingDesc">Your "digital savings jar" for a positive goal, like Vacation or an Emergency Fund. Money you assign here builds up over time.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpTermDebtTitle">Category: Debt</h3>
+                        <p data-i18n="helpTermDebtDesc">A "digital envelope" to pay off a specific debt, like a Credit Card. This is separate from a fixed 'Bill' (like a car payment) and is for extra paydown.</p>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-semibold text-gray-900" data-i18n="helpTermMoneyToBudgetTitle">Money to Assign</h3>
+                        <p data-i18n="helpTermMoneyToBudgetDesc">This is your Total Income (Salary + Other Income + Rollover) for the month. Your goal is to assign all of this money to your categories until this number is €0.00.</p>
                     </div>
                 </div>
-
-            </section>
+            </div>
+        </section>
 
             <!-- ====== Stats Page (NEW: With Charts) ====== -->
             <section id="stats-page" class="page space-y-6">
@@ -1695,20 +1612,23 @@
 
             <div class="border-b border-gray-200">
                 <nav id="settings-tab-nav" class="flex -mb-px" aria-label="Tabs">
-                    <button class="settings-tab-btn active border-pink-500 text-pink-600 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="general" data-i18n="settingsTabGeneral">
+                    <button class="settings-tab-btn active border-pink-500 text-pink-600 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="general" data-i18n="settingsTabGeneral">
                         General
                     </button>
-                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="backup" data-i18n="settingsTabData">
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="backup" data-i18n="settingsTabData">
                         Backup
                     </button>
-                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="export" data-i18n="settingsTabExport">
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="export" data-i18n="settingsTabExport">
                         Export
                     </button>
-                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="help" data-i18n="settingsTabHelp">
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="help" data-i18n="settingsTabHelp">
                         Help
                     </button>
-                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 w-1/5 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="danger" data-i18n="settingsTabDanger">
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="danger" data-i18n="settingsTabDanger">
                         Danger
+                    </button>
+                    <button class="settings-tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="donate" data-i18n="settingsTabDonate">
+                        Donate
                     </button>
                 </nav>
             </div>
@@ -1818,6 +1738,22 @@
                     <p class="text-gray-600" data-i18n="settingsResetSubtitle">This will permanently delete all your
                         data (salary, categories, transactions) and restart the app.</p>
                     <button id="reset-app-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg text-base sm:text-lg transition-all" data-i18n="settingsResetButton" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: pointer;">Reset App</button>
+                </div>
+                <div id="settings-tab-donate" class="settings-tab-panel hidden space-y-4">
+                    <h3 class="text-xl font-semibold" data-i18n="donateTitle">Support Bunny Budget</h3>
+                    <p class="text-gray-600" data-i18n="donateSubtitle">This app is a free, open-source project. If you find it helpful, please consider supporting its development!</p>
+                    
+                    <div class="space-y-3">
+                        <a href="https://buymeacoffee.com/cloudbed" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-4 rounded-lg transition-all">
+                            <svg class="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M16.2 5.025H17.775V3.45H16.2V5.025ZM16.2 8.175H17.775V6.6H16.2V8.175ZM19.35 11.325C18.45 11.325 17.7 10.575 17.775 9.75H16.2V11.325H14.625V6.6H12.225V11.325H11.475C10.575 11.325 9.825 10.575 9.825 9.75H8.25V11.325H6.675V9.75C6.675 8.85 5.925 8.1 5.025 8.1C4.125 8.1 3.375 8.85 3.375 9.75C3.375 10.65 4.125 11.4 5.025 11.4C5.175 11.4 5.325 11.325 5.475 11.325V12.9H3.375C2.475 12.9 1.8 13.575 1.8 14.475V15.9C1.8 16.8 2.475 17.475 3.375 17.475H14.7C16.2 17.475 17.625 16.275 17.85 14.775H19.35C20.7 17.475 20.7 17.475 20.7 17.475C21.6 17.475 22.275 16.8 22.275 15.9V12.9C22.275 12.075 21.675 11.325 20.85 11.325H19.35ZM5.025 9.675C4.95 9.675 4.875 9.75 4.875 9.75C4.875 9.75 4.875 9.75 4.875 9.675C4.875 9.6 4.95 9.525 5.025 9.525C5.1 9.525 5.175 9.6 5.175 9.675C5.175 9.75 5.1 9.75 5.025 9.675Z"></path></svg>
+                            <span data-i18n="donateCoffee">Buy me a coffee</span>
+                        </a>
+                        
+                        <a href="https://paypal.me/cloudbedinvi" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all">
+                            <svg class="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M8.32 7.4L9.8 12.658c.11.39.438.642.84.642h3.332c.66 0 1.002-.63.818-1.25l-1.39-4.56c-.16-.52-.66-.89-1.22-.89H9.54c-.66 0-1.11.51-.97 1.15z m9.34 0L16.27 12.3c-.11.39-.438.642-.84.642h-1.33c-.55 0-.91-.27-.72-.78l.84-2.28c.11-.3.07-.65-.12-.91s-.5-.42-.84-.42H9.54c-.55 0-.91-.27-.72-.78l.84-2.28c.11-.3.07-.65-.12-.91s-.5-.42-.84-.42H7.29c-.55 0-.91-.27-.72-.78L7.41 2.9C7.52 2.39 8.02 2 8.57 2h5.16c.55 0 .91 .27.72.78l-.84 2.28c-.11.3-.07-.65.12.91s.5.42.84.42h1.33c.55 0 .91 .27.72.78z m-9.96 5.92c-.11-.39-.438-.642-.84-.642H3.53c-.66 0-1.002.63-.818 1.25l2.7 8.82c.16.52.66.89 1.22.89h1.72c.66 0 1.11-.51.97-1.15l-1.39-4.56c-.16-.52-.1-.98.12-1.34s.55-.58.96-.58h.42c.66 0 1.11-.51.97-1.15z"></path></svg>
+                            <span data-i18n="donatePaypal">Donate with PayPal</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -2226,36 +2162,39 @@
                 settingsDangerZone: "Gefahrenzone",
                 settingsResetSubtitle: "Dies löscht dauerhaft alle deine Daten (Gehalt, Kategorien, Transaktionen) und startet die App neu.",
                 settingsResetButton: "App Zurücksetzen",
-                helpHowToUseTitle: "Wie man Bunny Budget nutzt",
-                helpHowToUseStep1Title: "1. Richte dein Budget ein",
-                helpHowToUseStep1Desc: "Gehe zum Tab 'Verwalten'. Gib zuerst dein monatliches Gehalt ein. Füge dann alle deine monatlichen Rechnungen (wie 'Miete' oder 'Internet') als 'Fixkosten' und alle monatlichen Schuldenzahlungen als 'Schulden (Feste Zahlung)' hinzu.",
-                helpHowToUseStep2Title: "2. Füge deine Kategorien hinzu",
-                helpHowToUseStep2Desc: "Füge in 'Verwalten' deine Ausgabenkategorien (wie 'Lebensmittel' oder 'Tanken') als 'Variable Umschläge' hinzu. Füge deine Sparziele (wie 'Urlaub') als 'Spartopf (Ziele)' oder 'Schulden (Tilgungsziele)' hinzu.",
-                helpHowToUseStep3Title: "3. Weise dein Geld zu",
-                helpHowToUseStep3Desc: "Gehe zum Tab 'Verwalten'. Füge 'Sonst. Einkommen' hinzu, das du diesen Monat erhalten hast. Die App zeigt dein 'Geld zu Budgetieren' (dein Gesamteinkommen minus aller Fixkosten, Schulden und Jährl. Rechnungen). Weise dieses Geld deinen Variablen Umschlägen und Sparzielen zu.",
-                helpHowToUseStep4Title: "4. Verfolge deine Ausgaben",
-                helpHowToUseStep4Desc: "Drücke auf dem 'Übersicht'-Tab den großen 'pinken + Knopf', um eine Ausgabe hinzuzufügen. Wähle den Umschlag, aus dem du ausgegeben hast, und sieh zu, wie der 'Verfügbar'-Betrag sinkt.",
-                helpHowToUseStep5Title: "5. Korrigiere Fehler",
-                helpHowToUseStep5Desc: "Tippfehler gemacht? Klicke auf der 'Übersicht' auf eine 'Variable Umschlag'-Karte (z.B. „Lebensmittel“). Eine Liste aller Transaktionen wird angezeigt. Klicke auf eine Transaktion, um sie zu 'Bearbeiten' oder 'Löschen'.",
-                helpTermsTitle: "Budget-Begriffe Erklärt",
+                
+                // REPLACE the old 'helpHowToUse...' keys with these in German:
+                helpHowToUseTitle: "Hilfe-Anleitung",
+                helpHowToUseStep1Title: "1. Einkommen & Rechnungen Einrichten",
+                helpHowToUseStep1Desc: "Gehe zum 'Verwalten'-Tab. Gib zuerst dein monatliches Gehalt ein. Füge dann alle deine wiederkehrenden Kosten (wie 'Miete' oder 'Internet') als 'Rechnung'-Kategorie hinzu.",
+                helpHowToUseStep2Title: "2. Kategorien Hinzufügen",
+                helpHowToUseStep2Desc: "Füge in 'Verwalten' deine flexiblen Ausgabenkategorien (wie 'Lebensmittel' oder 'Tanken') als 'Umschlag' hinzu. Füge deine Ziele (wie 'Urlaub' oder 'Kreditkarte') als 'Sparen'- oder 'Schulden'-Kategorie hinzu.",
+                helpHowToUseStep3Title: "3. Geld Zuweisen",
+                helpHowToUseStep3Desc: "Gehe zum 'Verwalten'-Tab. Füge 'Sonst. Einkommen' hinzu. Die App zeigt dein 'Zuzuweisen'-Geld. Weise dieses Geld deinen Rechnungen, Umschlägen, Sparzielen und Schulden zu, bis es Null erreicht.",
+                helpHowToUseStep4Title: "4. Ausgaben Erfassen",
+                helpHowToUseStep4Desc: "Drücke auf dem 'Übersicht'-Tab den großen 'pinken + Knopf', um eine Ausgabe hinzuzufügen. Wähle den 'Umschlag', aus dem du ausgegeben hast (z.B. „Lebensmittel“).",
+                helpHowToUseStep5Title: "5. Fehler Korrigieren",
+                helpHowToUseStep5Desc: "Tippfehler? Klicke auf der 'Übersicht' auf eine 'Umschlag'-Karte. Eine Liste aller Transaktionen wird angezeigt. Klicke auf eine Transaktion, um sie zu 'Bearbeiten' oder 'Löschen'.",
+
+                // Paste this inside your de: { ... } object
+
+                // --- Help Page "Keywords" Section ---
+                helpHowToUseTitle: "Hilfe-Anleitung",
+                helpTermsTitle: "Begriffe, die du kennen solltest",
                 helpTermSalaryTitle: "Gehalt",
                 helpTermSalaryDesc: "Dein gesamtes *wiederkehrendes* monatliches Einkommen. Dies ist die Basis für dein Budget.",
                 helpTermOtherIncomeTitle: "Sonst. Einkommen",
                 helpTermOtherIncomeDesc: "Einmaliges oder variables Einkommen (wie ein Nebenjob oder ein verkaufter Artikel). Füge dies auf der 'Verwalten'-Seite hinzu.",
-                helpTermFixedCostTitle: "Fixkosten",
-                helpTermFixedCostDesc: "Eine Rechnung, die jeden Monat gleich hoch ist, wie Miete oder Internet. Diese wird bezahlt, *bevor* du budgetierst.",
-                helpTermDebtPaymentTitle: "Schulden (Feste Zahlung)",
-                helpTermDebtPaymentDesc: "Eine monatliche Zahlung für eine Schuld (wie ein Autokredit). Dies wird wie Fixkosten behandelt und *bevor* du budgetierst bezahlt.",
-                helpTermSinkingBillTitle: "Spartopf (Jhrl. Rechnung)",
-                helpTermSinkingBillDesc: "Für nicht-monatliche Rechnungen (wie die jährliche Autoversicherung). Die App spart jeden Monat 1/12 der Kosten und behandelt es wie Fixkosten, damit du nie von der Rechnung überrascht wirst.",
-                helpTermMoneyToBudgetTitle: "Geld zu Budgetieren",
-                helpTermMoneyToBudgetDesc: "Dies ist dein 'Gesamteinkommen' (Gehalt + Sonstiges) minus all deiner 'Fixkosten', 'Schulden (Feste Zahlungen)' und 'Spartöpfe (Rechnungen)'. Dies ist das Geld, das du auf der 'Verwalten'-Seite zuweisen kannst.",
-                helpTermVariableEnvelopeTitle: "Variabler Umschlag",
-                helpTermVariableEnvelopeDesc: "Dein 'digitaler Umschlag' für monatliche Ausgaben, die sich ändern, wie Lebensmittel, Tanken oder Auswärts Essen. Du gibst mit dem '+'-Knopf daraus aus.",
-                helpTermSinkingGoalTitle: "Spartopf (Ziel)",
-                helpTermSinkingGoalDesc: "Dein 'digitaler Spar-Umschlag' für ein großes, optionales Ziel, wie Urlaub, Weihnachten oder einen Notgroschen. Du weist ihm Geld zu, aber gibst nicht daraus aus.",
-                helpTermDebtGoalTitle: "Schulden (Tilgungsziel)",
-                helpTermDebtGoalDesc: "Ein 'digitaler Umschlag', um eine Schuld schneller abzubezahlen (wie eine Kreditkarte). Du weist diesem Ziel zusätzliches Geld von deinem 'Geld zu Budgetieren' zu.",
+                helpTermBillTitle: "Kategorie: Rechnung",
+                helpTermBillDesc: "Für wiederkehrende Kosten, wie Miete, Nebenkosten oder einen Autokredit. Diesem weist du zuerst Geld zu, um sicherzustellen, dass sie bezahlt werden.",
+                helpTermEnvelopeTitle: "Kategorie: Umschlag",
+                helpTermEnvelopeDesc: "Dein „digitaler Umschlag“ für flexible Ausgaben, wie Lebensmittel, Tanken oder Auswärts Essen. Du gibst mit dem '+'-Knopf daraus aus.",
+                helpTermSavingTitle: "Kategorie: Sparen",
+                helpTermSavingDesc: "Dein „digitales Sparschwein“ für ein positives Ziel, wie Urlaub oder einen Notgroschen. Geld, das du hier zuweist, sammelt sich über die Zeit an.",
+                helpTermDebtTitle: "Kategorie: Schulden",
+                helpTermDebtDesc: "Ein „digitaler Umschlag“, um eine bestimmte Schuld abzubezahlen, z. B. eine Kreditkarte. Dies ist getrennt von einer festen 'Rechnung' (wie einem Autokredit) und dient der zusätzlichen Tilgung.",
+                helpTermMoneyToBudgetTitle: "Zuzuweisen",
+                helpTermMoneyToBudgetDesc: "Dies ist dein Gesamteinkommen (Gehalt + Sonst. Einkommen + Übertrag) für den Monat. Dein Ziel ist es, dieses gesamte Geld deinen Kategorien zuzuweisen, bis dieser Betrag 0,00 € erreicht.",
                 modalAddExpenseTitle: "Ausgabe Hinzufügen",
                 modalAddExpenseCategory: "Kategorie",
                 modalAddExpenseAmount: "Betrag",
@@ -2427,6 +2366,14 @@
                 toastDemoStarted: "Demo-Modus gestartet! App wird in 10 Minuten zurückgesetzt.",
                 toastSnapshotError: "Fehler beim Speichern des monatlichen Snapshots!",
                 toastEarnedCoins: "Du hast",
+
+                // Add these new keys INSIDE the 'de: { ... }' object
+                settingsTabDonate: "Spenden",
+                donateTitle: "Bunny Budget Unterstützen",
+                donateSubtitle: "Diese App ist ein kostenloses Open-Source-Projekt. Wenn Sie es hilfreich finden, unterstützen Sie bitte die Entwicklung!",
+                donateCoffee: "Kauf mir einen Kaffee",
+                donatePaypal: "Spenden mit PayPal",
+                donateCrypto: "Oder per Krypto:",
             },
             en: {
                 penaltyWarning: "Warning: Withdrawing early will cost 5 🪙!",
@@ -2523,36 +2470,36 @@
                 settingsDangerZone: "Danger Zone",
                 settingsResetSubtitle: "This will permanently delete all your data (salary, categories, transactions) and restart the app.",
                 settingsResetButton: "Reset App",
-                helpHowToUseTitle: "How to Use Bunny Budget",
-                helpHowToUseStep1Title: "1. Setup Your Budget",
-                helpHowToUseStep1Desc: "Go to the Manage tab. First, enter your monthly Salary. Then, add all your monthly bills (like 'Rent' or 'Internet') as Fixed Costs and any monthly debt payments as Debts (Fixed Payment).", // MODIFIED
+
+                // REPLACE the old 'helpHowToUse...' keys with these:
+                helpHowToUseTitle: "Help Guide",
+                helpHowToUseStep1Title: "1. Setup Your Income & Bills",
+                helpHowToUseStep1Desc: "Go to the Manage tab. First, enter your monthly Salary. Then, add all your recurring costs (like 'Rent' or 'Internet') as a Bill category.",
                 helpHowToUseStep2Title: "2. Add Your Categories",
-                helpHowToUseStep2Desc: "In Manage, add your spending categories (like 'Groceries' or 'Gas') as Variable Envelopes. Add your savings goals (like 'Vacation') as Sinking Fund (Goals) or Debt (Paydown Goals).", // MODIFIED
+                helpHowToUseStep2Desc: "In Manage, add your flexible spending categories (like 'Groceries' or 'Gas') as an Envelope. Add your goals (like 'Vacation' or 'Credit Card') as a Saving or Debt category.",
                 helpHowToUseStep3Title: "3. Assign Your Money",
-                helpHowToUseStep3Desc: "Go to the Manage tab. Add any Other Income you received this month. The app shows your 'Money to Budget' (your Total Income minus all Fixed Costs, Debts, and Annual Bills). Assign this money into your Variable Envelopes and savings goals.", // MODIFIED
+                helpHowToUseStep3Desc: "Go to the Manage tab. Add any Other Income you received. The app shows your \"Money to Assign\". Assign this money into your Bills, Envelopes, Savings, and Debts until it reaches zero.",
                 helpHowToUseStep4Title: "4. Track Your Spending",
-                helpHowToUseStep4Desc: "On the Dashboard tab, press the big pink '+' button to add an expense. Select the envelope you spent from, and watch the 'Remaining' amount go down.",
+                helpHowToUseStep4Desc: "On the Dashboard tab, press the big pink '+' button to add an expense. Select the Envelope you spent from (e.g., \"Groceries\").",
                 helpHowToUseStep5Title: "5. Fix Mistakes",
-                helpHowToUseStep5Desc: "Made a typo? On the Dashboard, click the Variable Envelope card (e.g., \"Groceries\"). A list of all transactions will appear. Click a transaction to Edit or Delete it.",
-                helpTermsTitle: "Budgeting Terms Explained",
+                helpHowToUseStep5Desc: "Made a typo? On the Dashboard, click an Envelope card. A list of all its transactions will appear. Click a transaction to Edit or Delete it.",
+
+                // REPLACE the old 'helpTerm...' keys with these:
+                helpTermsTitle: "Keywords you need to Know",
                 helpTermSalaryTitle: "Salary",
                 helpTermSalaryDesc: "Your total *recurring* monthly income. This is the baseline for your budget.",
                 helpTermOtherIncomeTitle: "Other Income",
-                helpTermOtherIncomeDesc: "One-time or variable income (like a side job or selling an item). Add this on the **Manage** page.", // MODIFIED
-                helpTermFixedCostTitle: "Fixed Cost",
-                helpTermFixedCostDesc: "A bill that is the same amount every month, like Rent or Internet. This is paid *before* you budget.",
-                helpTermDebtPaymentTitle: "Debt (Fixed Payment)",
-                helpTermDebtPaymentDesc: "A monthly payment for a debt (like a car loan). This is treated like a Fixed Cost and is paid *before* you budget.",
-                helpTermSinkingBillTitle: "Sinking Fund (Annual Bill)",
-                helpTermSinkingBillDesc: "For non-monthly bills (like annual car insurance or a quarterly tax). The app saves 1/12th of the cost every month, treating it like a Fixed Cost so you're never surprised by the bill.",
-                helpTermMoneyToBudgetTitle: "Money to Budget",
-                helpTermMoneyToBudgetDesc: "This is your Total Income (Salary + Other) minus all your Fixed Costs, Debts (Fixed Payments), and Sinking Fund (Bills). This is the money you get to assign on the Manage page.", // MODIFIED
-                helpTermVariableEnvelopeTitle: "Variable Envelope",
-                helpTermVariableEnvelopeDesc: "Your 'digital envelope' for monthly spending that changes, like Groceries, Gas, or Dining Out. You spend from these using the '+' button.",
-                helpTermSinkingGoalTitle: "Sinking Fund (Goal)",
-                helpTermSinkingGoalDesc: "Your 'digital savings envelope' for a big, optional goal, like Vacation, Christmas, or an Emergency Fund. You assign money to it, but you don't spend from it.",
-                helpTermDebtGoalTitle: "Debt (Paydown Goal)",
-                helpTermDebtGoalDesc: "A 'digital envelope' to pay off a debt faster (like a credit card). You assign extra money from your 'Money to Budget' to this goal.",
+                helpTermOtherIncomeDesc: "One-time or variable income (like a side job or selling an item). Add this on the Manage page.",
+                helpTermBillTitle: "Category: Bill",
+                helpTermBillDesc: "For recurring costs, like Rent, Utilities, or a Car Payment. You assign money to these first to make sure they're paid.",
+                helpTermEnvelopeTitle: "Category: Envelope",
+                helpTermEnvelopeDesc: "Your \"digital envelope\" for flexible spending, like Groceries, Gas, or Dining Out. You spend from these using the '+' button.",
+                helpTermSavingTitle: "Category: Saving",
+                helpTermSavingDesc: "Your \"digital savings jar\" for a positive goal, like Vacation or an Emergency Fund. Money you assign here builds up over time.",
+                helpTermDebtTitle: "Category: Debt",
+                helpTermDebtDesc: "A \"digital envelope\" to pay off a specific debt, like a Credit Card. This is separate from a fixed 'Bill' (like a car payment) and is for extra paydown.",
+                helpTermMoneyToBudgetTitle: "Money to Assign",
+                helpTermMoneyToBudgetDesc: "This is your Total Income (Salary + Other Income + Rollover) for the month. Your goal is to assign all of this money to your categories until this number is €0.00.",
                 modalAddExpenseTitle: "Add Expense",
                 modalAddExpenseCategory: "Category",
                 modalAddExpenseAmount: "Amount",
@@ -2723,6 +2670,13 @@
                 toastDemoStarted: "Demo Mode Started! App will reset in 10 minutes.",
                 toastSnapshotError: "Error saving monthly snapshot!",
                 toastEarnedCoins: "You earned",
+
+                settingsTabDonate: "Donate",
+                donateTitle: "Support Bunny Budget",
+                donateSubtitle: "This app is a free, open-source project. If you find it helpful, please consider supporting its development!",
+                donateCoffee: "Buy me a coffee",
+                donatePaypal: "Donate with PayPal",
+                donateCrypto: "Or via Crypto:",
             }
         };
 

@@ -1,0 +1,67 @@
+# Bunny Budget 🪙
+
+![License](https://img.shields.io/github/license/YOUR_USERNAME/YOUR_REPO?style=for-the-badge)
+![Last Commit](https://img.shields.io/github/last-commit/YOUR_USERNAME/YOUR_REPO?style=for-the-badge&color=blue)
+![Repo Size](https://img.shields.io/github/repo-size/YOUR_USERNAME/YOUR_REPO?style=for-the-badge)
+
+A simple, offline-first, and private budgeting app built with vanilla JavaScript. Bunny Budget helps you manage your money using the digital envelope system.
+
+It's a **Progressive Web App (PWA)**, which means all your financial data stays 100% on your device and it works perfectly offline.
+
+## 📸 Screenshots
+
+*(This is the most important part! Add screenshots of your app here. You can drag & drop images into this README file on GitHub to upload them.)*
+
+| Dashboard | Manage Page |
+| :---: | :---: |
+| [Add Dashboard Screenshot] | [Add Manage Page Screenshot] |
+| **Stats Page** | **Theme Store** |
+| [Add Stats Screenshot] | [Add Store Screenshot] |
+
+
+## ✨ Key Features
+
+* **🔒 100% Private:** All data is stored *only* on your device in IndexedDB. There is no server, no account, and no tracking.
+* **Offline-First:** Works perfectly with or without an internet connection.
+* **Simple Budgeting:** A modern take on the envelope system. Assign your income to four simple categories:
+    * **Bills:** Recurring costs like Rent or Utilities.
+    * **Envelopes:** Flexible spending like Groceries or Gas.
+    * **Saving:** Goals you're saving up for, like a Vacation.
+    * **Debt:** Goals for paying down what you owe.
+* **Data Control:** Backup your entire budget to a JSON file and restore it anytime. Export your transactions to CSV.
+* **Gamification:** Earn 🪙 **Bunny Coins** for saving money at the end of the month.
+* **Customization:** Spend your coins in the **Theme Store** to unlock new light and dark themes.
+* **Monthly Stats:** Visualize your income vs. spending vs. savings with built-in charts.
+* **Multi-Language:** Full support for English and German.
+
+## 🚀 Getting Started
+
+1.  **Setup:** Go to the **Manage** tab and enter your monthly **Salary**.
+2.  **Add Categories:** Add your recurring **Bills** (like Rent), flexible **Envelopes** (like Groceries), and goals (**Saving** or **Debt**).
+3.  **Assign Money:** Assign your income to your categories until your "Money to Assign" is zero.
+4.  **Track Spending:** Use the big `+` button on the **Dashboard** to add expenses from your Envelopes.
+
+## 💻 Built With
+
+* **Vanilla HTML, CSS, & JavaScript:** No frameworks or libraries for a lightweight and fast experience.
+* **Tailwind CSS:** For the utility-first modern UI.
+* **IndexedDB:** For all client-side, offline database storage.
+* **Chart.js:** For the monthly statistics charts.
+* **PWA (Progressive Web App):** Makes the app installable on your phone or desktop.
+
+## 🤝 How to Contribute
+
+Contributions are welcome! If you'd like to help, please feel free to fork the repository, make your changes, and submit a pull request.
+
+For major changes, please open an issue first to discuss what you would like to change.
+
+## ❤️ Support the Project
+
+Bunny Budget is a free, open-source project. If you find it helpful, please consider supporting its development!
+
+[<img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee">](https://buymeacoffee.com/cloudbed)
+[<img src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal">](https://paypal.me/cloudbedinvi)
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
