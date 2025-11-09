@@ -1,8 +1,8 @@
 # Bunny Budget 🪙
 
-![License](https://img.shields.io/github/license/YOUR_USERNAME/YOUR_REPO?style=for-the-badge)
-![Last Commit](https://img.shields.io/github/last-commit/YOUR_USERNAME/YOUR_REPO?style=for-the-badge&color=blue)
-![Repo Size](https://img.shields.io/github/repo-size/YOUR_USERNAME/YOUR_REPO?style=for-the-badge)
+![License](https://img.shields.io/github/license/Cloudbed-invi/budget-bunny?style=for-the-badge)
+![Last Commit](https://img.shields.io/github/last-commit/Cloudbed-invi/budget-bunny?style=for-the-badge&color=blue)
+![Repo Size](https://img.shields.io/github/repo-size/Cloudbed-invi/budget-bunny?style=for-the-badge)
 
 A simple, offline-first, and private budgeting app built with vanilla JavaScript. Bunny Budget helps you manage your money using the digital envelope system.
 
@@ -10,13 +10,15 @@ It's a **Progressive Web App (PWA)**, which means all your financial data stays 
 
 ## 📸 Screenshots
 
-*(This is the most important part! Add screenshots of your app here. You can drag & drop images into this README file on GitHub to upload them.)*
-
 | Dashboard | Manage Page |
 | :---: | :---: |
-| [Add Dashboard Screenshot] | [Add Manage Page Screenshot] |
+| ![WhatsApp Image 2025-11-09 at 17 01 06_b6a20f54](https://github.com/user-attachments/assets/7162fe77-e113-4b56-b26d-5455d8705b23)
+ | ![WhatsApp Image 2025-11-09 at 17 01 06_3798e637](https://github.com/user-attachments/assets/6e100f7d-77b4-472c-8c23-aef6d7de105f)
+ |
 | **Stats Page** | **Theme Store** |
-| [Add Stats Screenshot] | [Add Store Screenshot] |
+| ![WhatsApp Image 2025-11-09 at 17 01 05_c8d82487](https://github.com/user-attachments/assets/0cdeeb30-5ba4-479e-9940-33665514d556)
+| ![WhatsApp Image 2025-11-09 at 17 01 05_d3b8b0fa](https://github.com/user-attachments/assets/8f8a8fba-9c85-44b5-9d4f-3d95e797de75)
+|
 
 
 ## ✨ Key Features
@@ -48,6 +50,10 @@ It's a **Progressive Web App (PWA)**, which means all your financial data stays 
 * **IndexedDB:** For all client-side, offline database storage.
 * **Chart.js:** For the monthly statistics charts.
 * **PWA (Progressive Web App):** Makes the app installable on your phone or desktop.
+
+## Acknowledgements
+
+**Note:** This project was developed with significant assistance from **Gemini**, Google's generative AI. My role involved providing the prompt engineering, foundational coding knowledge, and overall direction for the project.
 
 ## 🤝 How to Contribute
 
